@@ -18,8 +18,8 @@ DerivedData/
 
 *.hmap
 src/GoogleService-Info.plist
-src/GoogleService-Info.*
-*.GoogleService-Info.plist
+.DS_Store
+GoogleService-Info.plist
 
 *.ipa
 *.dSYM.zip
