@@ -2,6 +2,6 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "self:Retro Car Racing.xcodeproj">
+      location = "self:/Users/atillaozder/Documents/projects/swift/retro-car-racing/RCR.xcodeproj">
    </FileRef>
 </Workspace>
