@@ -13,6 +13,18 @@ import CoreMotion
 let fontName = "AmericanTypewriter-semibold"
 var gameCount: Double = 0
 
+enum Key: String {
+    case addCar = "add_car"
+    case addRoadLine = "add_road_line"
+    case score = "score"
+    case bestScore = "best_score"
+}
+
+enum Category: UInt32 {
+    case carCategory = 0x10
+    case playerCategory = 0x1
+}
+
 protocol SceneDelegate: class {
     func scene(_ scene: GameScene, didFinishGameWithScore score: Int)
     func scene(_ scene: GameScene, shouldPresentRewardBasedVideoAd present: Bool)
@@ -42,6 +54,13 @@ class GameScene: SKScene {
         }
     }
     
+    var scoreRatioLabel: SKLabelNode!
+    var scoreRatio: Int = 3 {
+        didSet {
+            scoreRatioLabel.text = "x\(scoreRatio)"
+        }
+    }
+    
     var livesArray: [SKSpriteNode] = []
     
     var possibleCars: [String] = [
@@ -54,43 +73,60 @@ class GameScene: SKScene {
         "old_car",
         "audi"
     ]
-    
-    let carCategory: UInt32 = 0x1 << 1
-    let playerCategory: UInt32 = 0x1 << 0
-    
+        
     let motionManager = CMMotionManager()
-    var xAcceleration: CGFloat = 0
+    lazy var destX: CGFloat = frame.midX
     
     var animationDuration: TimeInterval = 6
     
-    var roadLineDuration: TimeInterval = 1 {
+    var addRoadLineDuration: TimeInterval = 1 {
         didSet {
-            setRoadLineSequence()
+            let actions: [SKAction] = [
+                .wait(forDuration: addRoadLineDuration),
+                .run(addRoadLine)
+            ]
+            
+            removeAction(forKey: Key.addRoadLine.rawValue)
+            run(.repeatForever(.sequence(actions)), withKey: Key.addRoadLine.rawValue)
         }
     }
     
-    var carDuration: TimeInterval = 3 {
+    var addCarDuration: TimeInterval = 3 {
         didSet {
-            setCarSequence()
+            let actions: [SKAction] = [
+                .wait(forDuration: addCarDuration),
+                .run(addRandomCar)
+            ]
+            
+            removeAction(forKey: Key.addCar.rawValue)
+            run(.repeatForever(.sequence(actions)), withKey: Key.addCar.rawValue)
         }
     }
     
     override func didMove(to view: SKView) {
-        gameCount += 1
         player = SKSpriteNode(imageNamed: "black_viper")
         addPlayer()
         
-        road = SKShapeNode(rectOf: .init(width: (player.size.width * 2) - 20, height: frame.size.height * 2))
+        let roadSize: CGSize = .init(width: (player.size.width * 2) - 20, height: frame.size.height * 2)
+        road = SKShapeNode(rectOf: roadSize)
         road.fillColor = SKColor(red: 105/255, green: 105/255, blue: 105/255, alpha: 1)
         road.strokeColor = .darkGray
         road.position = .init(x: frame.midX, y: frame.minY)
         road.zPosition = -1
+        road.physicsBody = SKPhysicsBody(rectangleOf: roadSize)
+        road.physicsBody?.friction = 0
+        road.physicsBody?.isDynamic = false
+        road.physicsBody?.collisionBitMask = 0
         self.addChild(road)
         
         roadLine = SKShapeNode(rectOf: roadLineSize)
         roadLine.position = .init(x: frame.midX, y: frame.maxY + roadLineSize.height)
         roadLine.zPosition = -1
         roadLine.fillColor = .white
+        roadLine.physicsBody = SKPhysicsBody(rectangleOf: roadLineSize)
+        roadLine.physicsBody?.friction = 0
+        roadLine.physicsBody?.isDynamic = false
+        roadLine.physicsBody?.collisionBitMask = 0
         
         let texture = SKTexture(imageNamed: possibleCars[0])
         roadCar = SKSpriteNode(texture: texture)
@@ -105,21 +141,49 @@ class GameScene: SKScene {
         self.addGameScore()
         self.addLives()
         
-        self.setCarSequence()
-        self.setRoadLineSequence()
+        addCarDuration = 3
+        addRoadLineDuration = 1
+                
+        let _ = Timer.scheduledTimer(
+            timeInterval: 1,
+            target: self,
+            selector: #selector(speedUpGame),
+            userInfo: nil,
+            repeats: true)
         
-        let _ = Timer.scheduledTimer(timeInterval: 30, target: self, selector: #selector(speedUpGame), userInfo: nil, repeats: true)
-        
-        motionManager.accelerometerUpdateInterval = 0.2
+        setupMotionManager()
+    }
+    
+    override func update(_ currentTime: TimeInterval) {
+        var posX = destX
+        let roadMinX = road.frame.minX + 30
+        let roadMaxX = road.frame.maxX - 22
+
+        if posX < roadMinX {
+            posX = roadMinX
+        }
+
+        if posX > roadMaxX {
+            posX = roadMaxX
+        }
+
+        player.run(.moveTo(x: posX, duration: 0.1))
+    }
+    
+    func setupMotionManager() {
+        motionManager.accelerometerUpdateInterval = 0.1
         motionManager.startAccelerometerUpdates(to: OperationQueue.current!) { [weak self] (data, error) in
-            guard let `self` = self else { return }
-            if let aData = data {
-                self.xAcceleration = CGFloat(aData.acceleration.x) * 0.75 + self.xAcceleration * 0.25
-            }
+            guard
+                let `self` = self,
+                let data = data
+                else { return }
+            self.destX = self.player.position.x + CGFloat(data.acceleration.x * 200)
         }
     }
     
     func addPlayer() {
+        gameCount += 1
+
         let playerPosY = player.size.height / 2 + 20 + safeAreaInsets.bottom
         player.position = CGPoint(x: self.frame.size.width / 2, y: playerPosY)
         player.zPosition = 1
@@ -130,8 +194,8 @@ class GameScene: SKScene {
             size: player.texture!.size())
         
         player.physicsBody?.isDynamic = true
-        player.physicsBody?.categoryBitMask = playerCategory
-        player.physicsBody?.contactTestBitMask = carCategory
+        player.physicsBody?.categoryBitMask = Category.playerCategory.rawValue
+        player.physicsBody?.contactTestBitMask = Category.carCategory.rawValue
         player.physicsBody?.collisionBitMask = 0
         player.physicsBody?.usesPreciseCollisionDetection = true
         
@@ -147,44 +211,31 @@ class GameScene: SKScene {
         scoreLabel.zPosition = -1
         score = 0
         self.addChild(scoreLabel)
+        
+        scoreRatioLabel = SKLabelNode()
+        scoreRatioLabel.position = CGPoint(
+            x: frame.maxX - 20,
+            y: frame.minY + 20 + safeAreaInsets.bottom)
+        scoreRatioLabel.fontName = fontName
+        scoreRatioLabel.fontSize = 15
+        scoreRatioLabel.fontColor = UIColor.white
+        scoreRatioLabel.zPosition = -1
+        self.addChild(scoreRatioLabel)
     }
     
     @objc
     func speedUpGame() {
         if animationDuration != 2 {
-            let newValue = animationDuration - 0.5
-            animationDuration = max(newValue, 2)
+            animationDuration = max(animationDuration - 0.5, 2)
         }
         
-        if carDuration != 0.5 {
-            let newValue = carDuration - 0.5
-            carDuration = max(newValue, 0.5)
+        if addCarDuration != 1 {
+            addCarDuration = max(addCarDuration - 0.5, 1)
         }
         
-        if roadLineDuration != 0.5 {
-            let newValue = roadLineDuration - 0.1
-            roadLineDuration = max(newValue, 0.5)
+        if addRoadLineDuration != 0.5 {
+            addRoadLineDuration = max(addRoadLineDuration - 0.1, 0.5)
         }
-    }
-    
-    func setCarSequence() {
-        let key = "add_car_key"
-        removeAction(forKey: key)
-        let seq = SKAction.sequence([
-            .wait(forDuration: carDuration),
-            .run(addRandomCar)
-        ])
-        run(.repeatForever(seq), withKey: key)
-    }
-    
-    func setRoadLineSequence() {
-        let key = "add_road_line"
-        removeAction(forKey: key)
-        let seq = SKAction.sequence([
-            .wait(forDuration: roadLineDuration),
-            .run(addRoadLine)
-        ])
-        run(.repeatForever(seq), withKey: key)
     }
     
     func addRoadLine() {
@@ -193,7 +244,7 @@ class GameScene: SKScene {
             var actions = [SKAction]()
             actions.append(.moveTo(
                 y: -roadLineSize.height,
-                duration: roadLineDuration * 5))
+                duration: addRoadLineDuration * 5))
             actions.append(.removeFromParent())
             copy.run(.sequence(actions))
         }
@@ -216,10 +267,10 @@ class GameScene: SKScene {
 
             let body = SKPhysicsBody(texture: texture, size: texture.size())
             body.isDynamic = true
-            body.categoryBitMask = carCategory
-            body.contactTestBitMask = playerCategory
+            body.categoryBitMask = Category.carCategory.rawValue
+            body.contactTestBitMask = Category.playerCategory.rawValue
             body.collisionBitMask = 0
-            
+
             copy.physicsBody = body
             
             self.addChild(copy)
@@ -231,7 +282,8 @@ class GameScene: SKScene {
             actions.append(.removeFromParent())
             
             let increaseScore = SKAction.run {
-                self.score += 1
+                let point = 1 * self.scoreRatio
+                self.score += point
             }
             
             actions.append(increaseScore)
@@ -299,28 +351,11 @@ extension GameScene: SKPhysicsContactDelegate {
             sBody = contact.bodyA
         }
         
-        if (fBody.categoryBitMask & playerCategory) != 0 && (sBody.categoryBitMask & carCategory) != 0 {
+        if (fBody.categoryBitMask & Category.playerCategory.rawValue) != 0
+            && (sBody.categoryBitMask & Category.carCategory.rawValue) != 0 {
             if let car = sBody.node as? SKSpriteNode {
                 playerDidCollide(with: car)
             }
         }
-    }
-}
-
-extension SKSpriteNode {
-    func aspectFill(to size: CGSize) {
-        if texture != nil {
-            self.size = texture!.size()
-            let vRatio = size.height / self.texture!.size().height
-            let hRatio = size.width /  self.texture!.size().width
-            let ratio = hRatio > vRatio ? hRatio : vRatio
-            self.setScale(ratio)
-        }
-    }
-}
-
-extension UIColor {
-    class var dark: UIColor {
-        return .init(red: 18/255, green: 18/255, blue: 18/255, alpha: 1)
     }
 }

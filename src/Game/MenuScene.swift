@@ -17,34 +17,39 @@ class MenuScene: GameScene {
 
         let defaults = UserDefaults.standard
         
-        let score = defaults.integer(forKey: "score")
-        let scorePosY = frame.midY - 128
+        let score = defaults.integer(forKey: Key.score.rawValue)
+        var scorePosY = frame.midY - 48
         if score > 0 {
+            scorePosY -= 48
             let scoreLabel = SKLabelNode(fontNamed: fontName)
             scoreLabel.fontSize = 32
             scoreLabel.position = CGPoint(x: frame.midX, y: scorePosY)
             scoreLabel.text = "Score: \(score)"
             scoreLabel.zPosition = 999
             addChild(scoreLabel)
-            defaults.set(nil, forKey: "score")
-        }
-        
-        let bestScore = defaults.integer(forKey: "best_score")
-        if bestScore > 0 {
-            let bestScoreLabel = SKLabelNode(fontNamed: fontName)
-            bestScoreLabel.fontSize = 32
-            bestScoreLabel.position = CGPoint(x: frame.midX, y: scorePosY - 48)
-            bestScoreLabel.text = "Best: \(bestScore)"
-            bestScoreLabel.zPosition = 999
-            addChild(bestScoreLabel)
+            defaults.set(nil, forKey: Key.score.rawValue)
+            
+            let bestScore = defaults.integer(forKey: Key.bestScore.rawValue)
+            if bestScore > 0 {
+                let bestScoreLabel = SKLabelNode(fontNamed: fontName)
+                bestScoreLabel.fontSize = 32
+                bestScoreLabel.position = CGPoint(x: frame.midX, y: scorePosY - 48)
+                bestScoreLabel.text = "Best: \(bestScore)"
+                bestScoreLabel.zPosition = 999
+                addChild(bestScoreLabel)
+            }
         }
     }
+    
+    override func update(_ currentTime: TimeInterval) {}
     
     override func addPlayer() {}
     
     override func addLives() {}
     
     override func addGameScore() {}
+    
+    override func setupMotionManager() {}
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         if let touch = touches.first {

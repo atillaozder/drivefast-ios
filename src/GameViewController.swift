@@ -11,6 +11,25 @@ import SpriteKit
 import GameplayKit
 import GoogleMobileAds
 
+
+extension SKSpriteNode {
+    func aspectFill(to size: CGSize) {
+        if texture != nil {
+            self.size = texture!.size()
+            let vRatio = size.height / self.texture!.size().height
+            let hRatio = size.width /  self.texture!.size().width
+            let ratio = hRatio > vRatio ? hRatio : vRatio
+            self.setScale(ratio)
+        }
+    }
+}
+
+extension UIColor {
+    class var dark: UIColor {
+        return .init(red: 21/255, green: 21/255, blue: 21/255, alpha: 1)
+    }
+}
+
 class GameViewController: UIViewController {
     
     private var reward: GADAdReward?
@@ -131,13 +150,13 @@ extension GameViewController: SceneDelegate {
     
     func scene(_ scene: GameScene, didFinishGameWithScore score: Int) {
         let defaults = UserDefaults.standard
-        defaults.set(score, forKey: "score")
-        let best = defaults.integer(forKey: "best_score")
-        if score > best {
-            defaults.set(score, forKey: "score")
+        defaults.set(score, forKey: Key.score.rawValue)
+        let bestScore = defaults.integer(forKey: Key.bestScore.rawValue)
+        if score > bestScore {
+            defaults.set(score, forKey: Key.bestScore.rawValue)
         }
         
-        if gameCount.remainder(dividingBy: 3) == 0 {
+        if gameCount.remainder(dividingBy: 2) == 0 {
             interstitial.isReady ?
                 interstitial.present(fromRootViewController: self) :
                 interstitial.load(.init())
