@@ -34,6 +34,7 @@ enum Category: UInt32 {
 protocol SceneDelegate: class {
     func scene(_ scene: GameScene, didFinishGameWithScore score: Int)
     func scene(_ scene: GameScene, shouldPresentRewardBasedVideoAd present: Bool)
+    func scene(_ scene: GameScene, shouldPresentMenuScene present: Bool)
 }
 
 class GameScene: SKScene {
@@ -179,6 +180,8 @@ class GameScene: SKScene {
             self.action(forKey: Key.carAction.rawValue)?.speed = 0
             setupNewGameButton()
             setupPlayVideoButton()
+        } else {
+            self.sceneDelegate?.scene(self, shouldPresentMenuScene: true)
         }
     }
     
@@ -271,7 +274,9 @@ class GameScene: SKScene {
             let roadMinX = self.frame.minX + 30
             let roadMaxX = self.frame.maxX - 20
 
-            let randomDist = GKRandomDistribution(lowestValue: Int(roadMinX), highestValue: Int(roadMaxX))
+            let randomDist = GKRandomDistribution(
+                lowestValue: Int(roadMinX),
+                highestValue: Int(roadMaxX))
             copy.position.x = CGFloat(randomDist.nextInt())
 
             if let copyBody = carPhysicsBodies[texture]?.copy() as? SKPhysicsBody {

@@ -139,4 +139,8 @@ extension GameViewController: SceneDelegate {
                 interstitial.load(.init())
         }
     }
+    
+    func scene(_ scene: GameScene, shouldPresentMenuScene present: Bool) {
+        presentMenuScene()
+    }
 }
