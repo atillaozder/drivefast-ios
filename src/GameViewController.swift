@@ -22,6 +22,13 @@ extension SKSpriteNode {
             self.setScale(ratio)
         }
     }
+    
+    func aspectFill(width: CGFloat) {
+        if texture != nil {
+            let ratio = width /  texture!.size().width
+            self.setScale(ratio)
+        }
+    }
 }
 
 extension UIColor {
