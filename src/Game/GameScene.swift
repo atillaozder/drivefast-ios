@@ -48,6 +48,8 @@ class GameScene: SKScene {
     private var roadLine: SKShapeNode!
     private var roadCar: SKSpriteNode!
     
+    private lazy var gameOver: Bool = false
+    
     private var roadLineSize: CGSize {
         return .init(width: 10, height: 40)
     }
@@ -161,6 +163,7 @@ class GameScene: SKScene {
     func continueGame() {
         self.setupPlayer()
         self.setupLives(count: 1)
+        self.gameOver = false
         self.isPaused = false
 
         DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
@@ -283,7 +286,9 @@ class GameScene: SKScene {
                 duration: 3))
 
             let increaseScore = SKAction.run {
-                self.score += 1
+                if !self.gameOver {
+                    self.score += 1
+                }
             }
 
             actions.append(increaseScore)
@@ -390,6 +395,8 @@ extension GameScene: SKPhysicsContactDelegate {
         }
         
         if livesArray.isEmpty {
+            self.gameOver = true
+            
             let explosion = SKEmitterNode(fileNamed: "Explosion")!
             explosion.position = player.position
             self.addChild(explosion)
