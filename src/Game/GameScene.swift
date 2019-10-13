@@ -172,13 +172,13 @@ class GameScene: SKScene {
     }
     
     func stopGame() {
+        self.sceneDelegate?.scene(self, didFinishGameWithScore: score)
+
         if !rewardBasedVideoAdPresented {
             self.isPaused = true
             self.action(forKey: Key.carAction.rawValue)?.speed = 0
             setupNewGameButton()
             setupPlayVideoButton()
-        } else {
-            self.sceneDelegate?.scene(self, didFinishGameWithScore: score)
         }
     }
     

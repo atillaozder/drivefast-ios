@@ -138,7 +138,5 @@ extension GameViewController: SceneDelegate {
                 interstitial.present(fromRootViewController: self) :
                 interstitial.load(.init())
         }
-        
-        presentMenuScene()
     }
 }
