@@ -13,8 +13,15 @@ class MenuScene: GameScene {
         
     override func didMove(to view: SKView) {
         super.didMove(to: view)
-        addNewGameButton()
-
+        setupNewGameButton()
+        setupScores()
+    }
+        
+    override func setupGame() {
+        return
+    }
+        
+    private func setupScores() {
         let defaults = UserDefaults.standard
         
         let score = defaults.integer(forKey: Key.score.rawValue)
@@ -39,50 +46,5 @@ class MenuScene: GameScene {
                 addChild(bestScoreLabel)
             }
         }
-    }
-    
-    override func update(_ currentTime: TimeInterval) {}
-    
-    override func addPlayer() {}
-    
-    override func addLives() {}
-    
-    override func addGameScore() {}
-    
-    override func setupMotionManager() {}
-    
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        if let touch = touches.first {
-            
-            let location = touch.location(in: self)
-            let node = self.atPoint(location)
-            
-            if node.name == "new_game_button"
-                || node.name == "new_game_label" {
-                let gameScene = GameScene(size: self.size)
-                gameScene.safeAreaInsets = safeAreaInsets
-                gameScene.sceneDelegate = sceneDelegate
-                gameScene.scaleMode = .aspectFit
-                self.view?.presentScene(gameScene)
-            }
-        }
-    }
-    
-    func addNewGameButton() {
-        let btn = SKShapeNode(rectOf: .init(width: 200, height: 50), cornerRadius: 10)
-        btn.fillColor = .dark
-        btn.strokeColor = .white
-        btn.position = .init(x: frame.midX, y: frame.midY)
-        btn.name = "new_game_button"
-        btn.zPosition = 998
-        addChild(btn)
-        
-        let lbl = SKLabelNode(fontNamed: fontName)
-        lbl.fontSize = 24
-        lbl.position = .init(x: frame.midX, y: frame.midY - 8)
-        lbl.name = "new_game_label"
-        lbl.zPosition = 999
-        lbl.text = "New Game"
-        addChild(lbl)
     }
 }

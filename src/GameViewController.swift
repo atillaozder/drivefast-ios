@@ -8,34 +8,7 @@
 
 import UIKit
 import SpriteKit
-import GameplayKit
 import GoogleMobileAds
-
-
-extension SKSpriteNode {
-    func aspectFill(to size: CGSize) {
-        if texture != nil {
-            self.size = texture!.size()
-            let vRatio = size.height / self.texture!.size().height
-            let hRatio = size.width /  self.texture!.size().width
-            let ratio = hRatio > vRatio ? hRatio : vRatio
-            self.setScale(ratio)
-        }
-    }
-    
-    func aspectFill(width: CGFloat) {
-        if texture != nil {
-            let ratio = width /  texture!.size().width
-            self.setScale(ratio)
-        }
-    }
-}
-
-extension UIColor {
-    class var dark: UIColor {
-        return .init(red: 21/255, green: 21/255, blue: 21/255, alpha: 1)
-    }
-}
 
 class GameViewController: UIViewController {
     
@@ -119,9 +92,8 @@ extension GameViewController: GADRewardBasedVideoAdDelegate {
         if reward != nil {
             if let view = self.view as? SKView,
                 let gameScene = view.scene as? GameScene {
-                gameScene.isPaused = false
+                gameScene.continueGame()
             }
-
             reward = nil
         } else {
             presentMenuScene()
@@ -142,12 +114,10 @@ extension GameViewController: GADInterstitialDelegate {
 extension GameViewController: SceneDelegate {
 
     func scene(_ scene: GameScene, shouldPresentRewardBasedVideoAd present: Bool) {
-        scene.isPaused = true
         let rewardBasedVideoAd = GADRewardBasedVideoAd.sharedInstance()
 
         if rewardBasedVideoAd.isReady {
             rewardBasedVideoAd.present(fromRootViewController: self)
-            scene.rewardBasedVideoAdPresented = true
         } else {
             presentMenuScene()
             rewardBasedVideoAd
