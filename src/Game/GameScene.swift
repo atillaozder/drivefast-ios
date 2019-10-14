@@ -24,9 +24,14 @@ enum Key: String {
     case playVideo = "play_video"
     case playVideoLabel = "play_video_label"
     case carAction = "car_action"
+    case coin = "coin"
+    case coins = "coins"
+    case coinBag = "coin_bag"
+    case coinAction = "coin_action"
 }
 
 enum Category: UInt32 {
+    case coinCategory = 0x100
     case carCategory = 0x10
     case playerCategory = 0x1
 }
@@ -48,6 +53,10 @@ class GameScene: SKScene {
     private var road: SKShapeNode!
     private var roadLine: SKShapeNode!
     private var roadCar: SKSpriteNode!
+    
+    private var coin: SKSpriteNode!
+    private var coins: SKSpriteNode!
+    private var coinBag: SKSpriteNode!
     
     private lazy var gameOver: Bool = false
     
@@ -104,6 +113,8 @@ class GameScene: SKScene {
         roadCar.name = Key.car.rawValue
         roadCar.aspectFill(width: frame.width / 3)
         
+
+        
         self.backgroundColor = .dark
         self.physicsWorld.gravity = CGVector(dx: 0, dy: 0)
         self.physicsWorld.contactDelegate = self
@@ -159,6 +170,7 @@ class GameScene: SKScene {
         setupGameScore()
         setupLives(count: 3)
         setupMotionManager()
+        setupCoins()
     }
     
     func continueGame() {
@@ -234,6 +246,37 @@ class GameScene: SKScene {
             }
         }
     }
+    
+    private func setupCoins() {
+        coin = SKSpriteNode(imageNamed: Key.coin.rawValue)
+        coin.size = CGSize(width: 10, height: 10)
+        coin.position = CGPoint(x: 0, y: frame.size.height + coin.size.height)
+        coin.zPosition = 0
+        coin.name = Key.coin.rawValue
+        coin.aspectFill(width: frame.width / 3)
+        
+        coins = SKSpriteNode(imageNamed: Key.coins.rawValue)
+        coins.size = CGSize(width: 10, height: 10)
+        coins.position = CGPoint(x: 0, y: frame.size.height + coins.size.height)
+        coins.zPosition = 0
+        coins.name = Key.coins.rawValue
+        coins.aspectFill(width: frame.width / 3)
+        
+        coinBag = SKSpriteNode(imageNamed: Key.coinBag.rawValue)
+        coinBag.size = CGSize(width: 10, height: 10)
+        coinBag.position = CGPoint(x: 0, y: frame.size.height + coinBag.size.height)
+        coinBag.zPosition = 0
+        coinBag.name = Key.coinBag.rawValue
+        coinBag.aspectFill(width: frame.width / 3)
+        
+        let coinActions: [SKAction] = [
+            .wait(forDuration: 5),
+            .run(addCoin)
+        ]
+        
+        run(.repeatForever(.sequence(coinActions)),
+            withKey: Key.coinAction.rawValue)
+    }
         
     private func addRoadLine() {
         if let copy = roadLine.copy() as? SKShapeNode {
@@ -297,6 +340,59 @@ class GameScene: SKScene {
             }
 
             actions.append(increaseScore)
+            actions.append(.removeFromParent())
+            copy.run(.sequence(actions))
+        }
+    }
+    
+    private func addCoin() {
+        let random = Int.random(in: 0...10)
+        
+        var randomCoin: SKSpriteNode?
+        
+        if random >= 0 && random <= 5 {
+            if let copy = coin.copy() as? SKSpriteNode {
+                randomCoin = copy
+            }
+        }
+        
+        if random > 5 && random <= 8 {
+            if let copy = coins.copy() as? SKSpriteNode {
+                randomCoin = copy
+            }
+        }
+        
+        if random > 8 {
+            if let copy = coinBag.copy() as? SKSpriteNode {
+                randomCoin = copy
+            }
+        }
+        
+        if let copy = randomCoin {
+            let roadMinX = self.frame.minX + 30
+            let roadMaxX = self.frame.maxX - 20
+            
+            let randomDist = GKRandomDistribution(
+                lowestValue: Int(roadMinX),
+                highestValue: Int(roadMaxX))
+            
+            copy.position.x = CGFloat(randomDist.nextInt())
+            
+            let physicsBody = SKPhysicsBody(circleOfRadius: copy.size.width / 2)
+            physicsBody.isDynamic = false
+            physicsBody.categoryBitMask = Category.coinCategory.rawValue
+            physicsBody.contactTestBitMask = Category.playerCategory.rawValue
+            physicsBody.collisionBitMask = 0
+            
+            copy.physicsBody = physicsBody
+            
+            self.addChild(copy)
+
+            var actions = [SKAction]()
+            actions.append(.moveTo(
+                y: -copy.texture!.size().height / 2,
+                duration: 3))
+
             actions.append(.removeFromParent())
             copy.run(.sequence(actions))
         }
@@ -386,12 +482,19 @@ extension GameScene: SKPhysicsContactDelegate {
         if (fBody.categoryBitMask & Category.playerCategory.rawValue) != 0
             && (sBody.categoryBitMask & Category.carCategory.rawValue) != 0 {
             if let car = sBody.node as? SKSpriteNode {
-                playerDidCollide(with: car)
+                playerDidCollide(withCar: car)
+            }
+        }
+                
+        if (fBody.categoryBitMask & Category.playerCategory.rawValue) != 0
+            && (sBody.categoryBitMask & Category.coinCategory.rawValue) != 0 {
+            if let coin = sBody.node as? SKSpriteNode {
+                playerDidCollide(withCoin: coin)
             }
         }
     }
     
-    fileprivate func playerDidCollide(with car: SKSpriteNode) {
+    fileprivate func playerDidCollide(withCar car: SKSpriteNode) {
         car.removeFromParent()
         
         if let live = livesArray.last {
@@ -401,7 +504,7 @@ extension GameScene: SKPhysicsContactDelegate {
         
         if livesArray.isEmpty {
             self.gameOver = true
-            
+
             let explosion = SKEmitterNode(fileNamed: "Explosion")!
             explosion.position = player.position
             self.addChild(explosion)
@@ -413,6 +516,23 @@ extension GameScene: SKPhysicsContactDelegate {
             self.run(.wait(forDuration: 2)) {
                 explosion.removeFromParent()
                 self.stopGame()
+            }
+        }
+    }
+    
+    fileprivate func playerDidCollide(withCoin coin: SKSpriteNode) {
+        self.run(.playSoundFileNamed("coin.wav", waitForCompletion: false))
+        coin.removeFromParent()
+        if let n = coin.name {
+            switch n {
+            case Key.coin.rawValue:
+                score += 10
+            case Key.coins.rawValue:
+                score += 25
+            case Key.coinBag.rawValue:
+                score += 50
+            default:
+                break
             }
         }
     }
