@@ -44,6 +44,7 @@ extension SKShapeNode {
     static func buildButton(name: String) -> SKShapeNode {
         let btn = SKShapeNode(rectOf: .init(width: 220, height: 50), cornerRadius: 10)
         btn.fillColor = .dark
+        btn.lineWidth = 3
         btn.strokeColor = .white
         btn.name = name
         btn.zPosition = 998

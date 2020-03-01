@@ -15,7 +15,7 @@ class MenuScene: GameScene {
     
     override func didMove(to view: SKView) {
         super.didMove(to: view)
-        setupNewGameButton()
+        setupGameButton()
         setupScores()
     }
     

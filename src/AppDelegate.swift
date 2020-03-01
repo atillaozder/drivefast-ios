@@ -38,7 +38,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         GADRewardBasedVideoAd
             .sharedInstance()
             .load(.init(), withAdUnitID: AppDelegate.rewardBasedVideoAdIdentifier)
-        
+                
         return true
     }
     
