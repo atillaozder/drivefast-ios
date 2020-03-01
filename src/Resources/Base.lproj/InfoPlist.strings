@@ -1,0 +1,9 @@
+/* 
+  InfoPlist.strings
+  Retro
+
+  Created by Atilla Özder on 1.03.2020.
+  Copyright © 2020 Atilla Özder. All rights reserved.
+*/
+
+CFBundleDisplayName = "Retro 2D";

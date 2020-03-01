@@ -30,9 +30,7 @@ extension SKSpriteNode {
 }
 
 extension SKLabelNode {
-    static func createLabel(text: String,
-                            name: String,
-                            fontName: String) -> SKLabelNode {
+    static func buildLabel(text: String, name: String, fontName: String) -> SKLabelNode {
         let lbl = SKLabelNode(fontNamed: fontName)
         lbl.fontSize = 24
         lbl.name = name
@@ -43,9 +41,8 @@ extension SKLabelNode {
 }
 
 extension SKShapeNode {
-    static func createButton(name: String) -> SKShapeNode {
-        let btn = SKShapeNode(rectOf: .init(width: 220, height: 50),
-                              cornerRadius: 10)
+    static func buildButton(name: String) -> SKShapeNode {
+        let btn = SKShapeNode(rectOf: .init(width: 220, height: 50), cornerRadius: 10)
         btn.fillColor = .dark
         btn.strokeColor = .white
         btn.name = name
