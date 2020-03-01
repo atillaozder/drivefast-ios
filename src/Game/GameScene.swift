@@ -419,7 +419,7 @@ class GameScene: SKScene {
         scoreLabel.fontName = fontName
         scoreLabel.fontSize = 28
         scoreLabel.fontColor = UIColor.white
-        scoreLabel.zPosition = -1
+        scoreLabel.zPosition = 2
         score = 0
         self.addChild(scoreLabel)
     }
@@ -433,7 +433,7 @@ class GameScene: SKScene {
             let node = SKSpriteNode(texture: texture)
             node.size = size
             node.position = CGPoint(x: posX, y: posY)
-            node.zPosition = -1
+            node.zPosition = 2
             node.aspectFill(to: size)
             
             let physicsBody = SKPhysicsBody(texture: texture, size: size)
