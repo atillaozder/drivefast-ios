@@ -1,5 +1,4 @@
 # Retro - 2D Car Racing
-A 2D car racing game written in Swift 5.1 SpriteKit
 
 Retro 2D Car Racing is the ultimate top-down racing game, with many different cars. Experience thrilling top down racing in one of the best-looking 2D racing games. It is an exciting game with eye-catching graphics that can keep you entertained for hours. It is based on one of the nostalgic and old driving games that are simulated very high quality. You have to drive carefully with your car and try not to deal with other cars.
 
