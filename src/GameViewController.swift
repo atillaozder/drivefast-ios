@@ -1,6 +1,6 @@
 //
 //  GameViewController.swift
-//  Retro Car Racing
+//  Retro
 //
 //  Created by Atilla Özder on 10.10.2019.
 //  Copyright © 2019 Atilla Özder. All rights reserved.
@@ -19,12 +19,8 @@ class GameViewController: UIViewController {
         super.viewDidLayoutSubviews()
         if #available(iOS 11.0, *) {
             guard let view = self.view as? SKView else { return }
-            if let gameScene = view.scene as? GameScene {
-                gameScene.safeAreaInsets = view.safeAreaInsets
-            }
-            
-            if let menuScene = view.scene as? MenuScene {
-                menuScene.safeAreaInsets = view.safeAreaInsets
+            if let scene = view.scene as? GameScene {
+                scene.insets = view.safeAreaInsets
             }
         }
     }
@@ -33,9 +29,7 @@ class GameViewController: UIViewController {
         super.viewDidLoad()
         presentMenuScene()
         interstitial = createInterstitial()
-        DispatchQueue.main.async {
-            self.registerRemoteNotifications()
-        }
+        self.registerRemoteNotifications()
         GADRewardBasedVideoAd.sharedInstance().delegate = self
     }
     
@@ -45,7 +39,7 @@ class GameViewController: UIViewController {
             scene.sceneDelegate = self
             scene.scaleMode = .aspectFit
             if #available(iOS 11.0, *) {
-                scene.safeAreaInsets = view.safeAreaInsets
+                scene.insets = view.safeAreaInsets
             }
             view.presentScene(scene)
             view.ignoresSiblingOrder = true
@@ -126,12 +120,7 @@ extension GameViewController: SceneDelegate {
     }
     
     func scene(_ scene: GameScene, didFinishGameWithScore score: Int) {
-        let defaults = UserDefaults.standard
-        defaults.set(score, forKey: Key.score.rawValue)
-        let bestScore = defaults.integer(forKey: Key.bestScore.rawValue)
-        if score > bestScore {
-            defaults.set(score, forKey: Key.bestScore.rawValue)
-        }
+        UserDefaults.standard.setScore(score)
         
         if gameCount.remainder(dividingBy: 2) == 0 {
             interstitial.isReady ?

@@ -1,6 +1,6 @@
 //
 //  GameScene.swift
-//  Retro Car Racing
+//  Retro
 //
 //  Created by Atilla Özder on 10.10.2019.
 //  Copyright © 2019 Atilla Özder. All rights reserved.
@@ -10,34 +10,9 @@ import SpriteKit
 import GameplayKit
 import CoreMotion
 
-let fontName = "AmericanTypewriter-semibold"
-var gameCount: Double = 0
+// MARK: - Global Variables
 
-// MARK: - Key
-
-enum Key: String {
-    case addCar = "add_car"
-    case addRoadLine = "add_road_line"
-    case score = "score"
-    case bestScore = "best_score"
-    case car = "car"
-    case newGame = "new_game_button"
-    case newGameLabel = "new_game_label"
-    case playVideo = "play_video"
-    case playVideoLabel = "play_video_label"
-    case singleCoin = "single_coin"
-    case multipleCoins = "multiple_coins"
-    case coinBag = "coin_bag"
-    case addCoin = "add_coin"
-}
-
-// MARK: - Category
-
-enum Category: UInt32 {
-    case coinCategory = 0x100
-    case carCategory = 0x10
-    case playerCategory = 0x1
-}
+public var gameCount: Double = 0
 
 // MARK: - SceneDelegate
 
@@ -51,243 +26,297 @@ protocol SceneDelegate: class {
 
 class GameScene: SKScene {
     
-    weak var sceneDelegate: SceneDelegate?
-    lazy var rewardBasedVideoAdPresented: Bool = false
-    lazy var safeAreaInsets: UIEdgeInsets = .zero
+    // MARK: - Variables
+    
+    struct Cars {
+        let player = "player"
+        let car = "car"
+    }
+    
+    struct Actions {
+        let addCar = "add_car"
+    }
     
     private let motionManager = CMMotionManager()
-    private var player: SKSpriteNode!
-    private var road: SKShapeNode!
-    private var roadLine: SKShapeNode!
+    weak var sceneDelegate: SceneDelegate?
     
-    private var singleCoin: SKSpriteNode!
-    private var multipleCoins: SKSpriteNode!
-    private var coinBag: SKSpriteNode!
+    lazy var playerNode: SKSpriteNode = {
+        let node = SKSpriteNode(imageNamed: "black_viper")
+        node.aspectFill(toWidth: frame.width / 3)
+        let posY = (node.size.height / 2) + 20 + insets.bottom
+        node.position = CGPoint(x: frame.width / 2, y: posY)
+        node.zPosition = 1
+        node.name = Cars().player
+        
+        node.physicsBody = SKPhysicsBody(texture: node.texture!, size: node.size)
+        node.physicsBody?.isDynamic = true
+        node.physicsBody?.categoryBitMask = Category.player.rawValue
+        node.physicsBody?.contactTestBitMask = Category.car.rawValue
+        node.physicsBody?.collisionBitMask = 0
+        return node
+    }()
     
-    lazy var gameOver: Bool = false
+    lazy var roadNode: SKShapeNode = {
+        let roadSize: CGSize = .init(width: frame.width, height: frame.height * 2)
+        let node = SKShapeNode(rectOf: roadSize)
+        node.fillColor = UIColor(red: 33/255, green: 44/255, blue: 48/255, alpha: 1)
+        node.strokeColor = .darkGray
+        node.position = .init(x: frame.midX, y: frame.minY)
+        node.zPosition = -1
+        return node
+    }()
     
-    var coinSound: SKAction!
-    var explosionSound: SKAction!
-    var explosionNode: SKEmitterNode!
-
-    var roadLineSize: CGSize {
-        return .init(width: 10, height: 40)
-    }
+    lazy var roadLineNode: SKShapeNode = {
+        let node = SKShapeNode(rectOf: .init(width: 10, height: 40))
+        node.zPosition = -1
+        let color = UIColor(red: 250/255, green: 250/255, blue: 250/255, alpha: 1)
+        node.fillColor = color
+        node.strokeColor = color
+        return node
+    }()
     
-    private var scoreLabel: SKLabelNode!
+    lazy var scoreLabel: SKLabelNode = {
+        let lbl = SKLabelNode(text: "Score: 0")
+        lbl.position = CGPoint(x: 70, y: frame.size.height - 40 - insets.top)
+        lbl.fontName = SKViewFactory.fontName
+        lbl.fontSize = 28
+        lbl.fontColor = UIColor.white
+        lbl.zPosition = 2
+        return lbl
+    }()
+    
+    lazy var singleCoin: SKSpriteNode = {
+        return SKViewFactory().buildCoin(rect: self.frame, type: .single)
+    }()
+    
+    lazy var multipleCoins: SKSpriteNode = {
+        return SKViewFactory().buildCoin(rect: self.frame, type: .multiple)
+    }()
+    
+    lazy var coinBag: SKSpriteNode = {
+        return SKViewFactory().buildCoin(rect: self.frame, type: .bag)
+    }()
+    
     var score: Int = 0 {
         didSet {
-            if scoreLabel != nil {
-                scoreLabel.text = "Score: \(score)"
-            }
+            scoreLabel.text = "Score: \(score)"
         }
     }
+        
+    private var explosionNode: SKEmitterNode!
+    let coinSound = SKAction.playSoundFileNamed("coin.wav", waitForCompletion: false)
+    let explosionSound = SKAction.playSoundFileNamed("explosion.wav", waitForCompletion: false)
+
+    /// safe area insets of the game view controller
+    lazy var insets: UIEdgeInsets = .zero
+    lazy var videoWasPresented: Bool = false
+    lazy var gameOver: Bool = false
+
+    private var remainingLives: [SKSpriteNode] = []
+    private var cachedCars = [SKTexture: SKPhysicsBody]()
     
-    var remainingLives: [SKSpriteNode] = []
-    var bodies = [SKTexture: SKPhysicsBody]()
-    var carNames: [String] = [
-        "taxi", "ambulance", "truck", "mini_truck", "mini_van", "police", "old_car", "audi"]
-        
+    // MARK: - Game Life Cycle
+    
     override func didMove(to view: SKView) {
-        player = SKSpriteNode(imageNamed: "black_viper")
-        player.aspectFill(width: frame.width / 3)
+        super.didMove(to: view)
+        startGame()
         
-        setupGame()
-        
-        let roadSize: CGSize = .init(width: frame.width, height: frame.height * 2)
-        road = SKShapeNode(rectOf: roadSize)
-        road.fillColor = SKColor(red: 105/255, green: 105/255, blue: 105/255, alpha: 1)
-        road.strokeColor = .darkGray
-        road.position = .init(x: frame.midX, y: frame.minY)
-        road.zPosition = -1
-        self.addChild(road)
-        
-        roadLine = SKShapeNode(rectOf: roadLineSize)
-        roadLine.zPosition = -1
-        roadLine.fillColor = .lightGray
-        roadLine.strokeColor = .lightGray
-        
-        coinSound = SKAction.playSoundFileNamed("coin.wav", waitForCompletion: false)
-        explosionSound = SKAction.playSoundFileNamed("explosion.wav", waitForCompletion: false)
-        
+        self.addChild(roadNode)
         explosionNode = SKEmitterNode(fileNamed: "Explosion")!
-        explosionNode.position = player.position
+        explosionNode.position = playerNode.position
         
         self.physicsWorld.gravity = CGVector(dx: 0, dy: 0)
         self.physicsWorld.contactDelegate = self
         
-        let roadActions: [SKAction] = [
-            .wait(forDuration: 0.25),
-            .run(addRoadLine)
+        let roadLine: [SKAction] = [
+            .wait(forDuration: 0.30),
+            .run(addRoadLine, queue: .global(qos: .userInteractive))
         ]
         
-        run(.repeatForever(.sequence(roadActions)))
+        run(.repeatForever(.sequence(roadLine)))
         
         let addCar: [SKAction] = [
             .wait(forDuration: 1),
-            .run(addRandomCar)
+            .run(addRandomCar, queue: .global(qos: .userInteractive))
         ]
         
-        run(.repeatForever(.sequence(addCar)),
-            withKey: Key.addCar.rawValue)
+        run(.repeatForever(.sequence(addCar)), withKey: Actions().addCar)
     }
     
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        if let touch = touches.first {
-            
-            let location = touch.location(in: self)
-            let node = self.atPoint(location)
-            
-            if node.name == Key.newGame.rawValue
-                || node.name == Key.newGameLabel.rawValue {
-                newGameTapped()
-            } else if node.name == Key.playVideo.rawValue
-                || node.name == Key.playVideoLabel.rawValue {
-                playVideoTapped()
-            }
-        }
-    }
-    
-    func setupGame() {
+    func startGame() {
         gameCount += 1
-        setupPlayer()
-        setupGameScore()
+        addChild(playerNode)
+        
+        score = 0
+        addChild(scoreLabel)
+        
         setupLives(count: 3)
         setupMotionManager()
-        setupCoins()
+        
+        let actions: [SKAction] = [
+            .wait(forDuration: 5),
+            .run(addCoin, queue: .global(qos: .userInteractive))
+        ]
+        
+        run(.repeatForever(.sequence(actions)))
     }
     
     func continueGame() {
-        self.setupPlayer()
+        addChild(playerNode)
+        
         self.setupLives(count: 1)
         self.gameOver = false
         self.isPaused = false
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-            self.action(forKey: Key.addCar.rawValue)?.speed = 1
+            self.action(forKey: Actions().addCar)?.speed = 1
         }
     }
     
     func stopGame() {
         self.sceneDelegate?.scene(self, didFinishGameWithScore: score)
         
-        if !rewardBasedVideoAdPresented {
+        if !videoWasPresented {
             self.isPaused = true
-            self.action(forKey: Key.addCar.rawValue)?.speed = 0
-            setupGameButton()
-            setupPlayVideo()
+            self.action(forKey: Actions().addCar)?.speed = 0
+            setupNewGameButton()
+            setupPlayVideoButton()
         } else {
             self.sceneDelegate?.scene(self, shouldPresentMenuScene: true)
         }
     }
     
-    func setupGameButton() {
-        let btn = SKShapeNode.buildButton(name: Key.newGame.rawValue)
-        let posY = frame.midY
-        btn.position = .init(x: frame.midX, y: posY)
-        addChild(btn)
-        
-        let lbl = SKLabelNode.buildLabel(
-            text: "New Game",
-            name: Key.newGameLabel.rawValue,
-            fontName: fontName)
-        lbl.position = .init(x: frame.midX, y: posY - 8)
-        addChild(lbl)
+    // MARK: - Setup Variable Helpers
+    
+    private func setupLives(count: Int) {
+        let size = CGSize(width: 40, height: 50)
+        var posX = frame.maxX - (size.width / 2) - 6
+        let posY = frame.maxY - insets.top - 30
+        for _ in 0..<count {
+            let texture = SKTexture(imageNamed: "black_viper")
+            let node = SKSpriteNode(texture: texture)
+            node.size = size
+            node.position = CGPoint(x: posX, y: posY)
+            node.zPosition = 2
+            node.aspectFill(to: size)
+            
+            let body = SKPhysicsBody(texture: texture, size: size)
+            body.collisionBitMask = 0
+            node.physicsBody = body
+            
+            remainingLives.append(node)
+            addChild(node)
+            posX -= ((size.width / 2) + 6)
+        }
     }
     
-    func setupPlayVideo() {
-        let btn = SKShapeNode.buildButton(name: Key.playVideo.rawValue)
-        let posY = frame.midY - 68
-        btn.position = .init(x: frame.midX, y: posY)
-        addChild(btn)
-        
-        let lbl = SKLabelNode.buildLabel(
-            text: "Continue Game",
-            name: Key.playVideoLabel.rawValue,
-            fontName: fontName)
-        lbl.position = .init(x: frame.midX, y: posY - 8)
-        addChild(lbl)
+    private func setupMotionManager() {
+        motionManager.startAccelerometerUpdates(to: .main) { [weak self] (data, error) in
+            guard let strongSelf = self, let data = data else { return }
+            
+            var posX = strongSelf.playerNode.position.x + CGFloat(data.acceleration.x * 20)
+            let roadMinX = strongSelf.frame.minX + 30
+            let roadMaxX = strongSelf.frame.maxX - 20
+            
+            if posX < roadMinX { posX = roadMinX }
+            if posX > roadMaxX { posX = roadMaxX }
+            
+            strongSelf.playerNode.run(.moveTo(x: posX, duration: 0))
+        }
     }
     
-    func newGameTapped() {
-        let gameScene = GameScene(size: self.size)
-        gameScene.safeAreaInsets = safeAreaInsets
-        gameScene.sceneDelegate = sceneDelegate
-        gameScene.scaleMode = .aspectFit
-        self.view?.presentScene(gameScene)
+    func setupNewGameButton() {
+        let (button, label) = SKViewFactory().buildNewGameButton(rect: frame)
+        addChild(button)
+        addChild(label)
     }
     
-    func playVideoTapped() {
-        self.rewardBasedVideoAdPresented = true
+    private func setupPlayVideoButton() {
+        let (button, label) = SKViewFactory().buildPlayVideoButton(rect: frame)
+        addChild(button)
+        addChild(label)
+    }
+    
+    // MARK: - User Interaction Helpers
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        if let touch = touches.first {
+            let location = touch.location(in: self)
+            
+            if let nodeName = self.atPoint(location).name {
+                let factory = SKViewFactory()
+                switch nodeName {
+                case factory.ngLabelKey, factory.ngBtnKey:
+                    didTapNewGame()
+                case factory.pvLabelKey, factory.pvBtnKey:
+                    playVideo()
+                default:
+                    break
+                }
+            }
+        }
+    }
+    
+    private func didTapNewGame() {
+        let scene = GameScene(size: self.size)
+        scene.insets = insets
+        scene.sceneDelegate = sceneDelegate
+        scene.scaleMode = .aspectFit
+        self.view?.presentScene(scene)
+    }
+    
+    private func playVideo() {
+        self.videoWasPresented = true
         self.sceneDelegate?.scene(self, shouldPresentRewardBasedVideoAd: true)
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-            let nodes: [Key] = [.newGame, .newGameLabel, .playVideo, .playVideoLabel]
-            nodes.forEach { self.childNode(withName: $0.rawValue)?.removeFromParent() }
+            SKViewFactory().childNodeNames().forEach { (name) in
+                self.childNode(withName: name)?.removeFromParent()
+            }
             
-            self.enumerateChildNodes(withName: Key.car.rawValue) { (node, _) in
+            self.enumerateChildNodes(withName: Cars().car) { (node, ptr) in
                 node.removeFromParent()
             }
         }
     }
     
-    private func setupCoins() {
+    // MARK: - RepeatForever Actions
+
+    private func addRoadLine() {
+        let size: CGSize = .init(width: 10, height: 40)
+        let posY: CGFloat = self.frame.maxY + size.height
         
-        func buildCoin(withKey key: Key) -> SKSpriteNode {
-            let texture = SKTexture(imageNamed: key.rawValue)
-            let node = SKSpriteNode(texture: texture)
-            node.size = CGSize(width: 10, height: 10)
-            node.position = CGPoint(x: 0, y: frame.size.height + node.size.height)
-            node.zPosition = 0
-            node.name = key.rawValue
-            node.aspectFill(width: frame.width)
-            return node
+        var actions = [SKAction]()
+        actions.append(.moveTo(
+            y: -size.height,
+            duration: 2))
+        actions.append(.removeFromParent())
+        
+        if let leftLine = self.roadLineNode.copy() as? SKShapeNode {
+            let posX = self.roadNode.frame.minX + self.playerNode.size.width
+            leftLine.position = .init(x: posX, y: posY)
+            
+            DispatchQueue.main.async {
+                self.addChild(leftLine)
+                leftLine.run(.sequence(actions))
+            }
+            
+            if let rightLine = leftLine.copy() as? SKShapeNode {
+                rightLine.position.x = self.roadNode.frame.maxX - self.playerNode.size.width
+                
+                DispatchQueue.main.async {
+                    self.addChild(rightLine)
+                    rightLine.run(.sequence(actions))
+                }
+            }
         }
-        
-        singleCoin = buildCoin(withKey: .singleCoin)
-        multipleCoins = buildCoin(withKey: .multipleCoins)
-        coinBag = buildCoin(withKey: .coinBag)
-        
-        let actions: [SKAction] = [
-            .wait(forDuration: 5),
-            .run(addCoin)
-        ]
-        
-        run(.repeatForever(.sequence(actions)),
-            withKey: Key.addCoin.rawValue)
     }
     
-    private func addRoadLine() {
-        if let copy = roadLine.copy() as? SKShapeNode {
-            let posX = road.frame.minX + player.size.width
-            copy.position = .init(x: posX, y: frame.maxY + roadLineSize.height)
-            
-            addChild(copy)
-            var actions = [SKAction]()
-            actions.append(.moveTo(
-                y: -roadLineSize.height,
-                duration: 2))
-            actions.append(.removeFromParent())
-            copy.run(.sequence(actions))
-        }
+    private func addRandomCar() {        
+        var cars = ["taxi", "ambulance", "truck", "mini_truck", "mini_van", "police", "old_car", "audi"]
+        cars.shuffle()
         
-        if let copy = roadLine.copy() as? SKShapeNode {
-            let posX = road.frame.maxX - player.size.width
-            copy.position = .init(x: posX, y: frame.maxY + roadLineSize.height)
-            
-            addChild(copy)
-            var actions = [SKAction]()
-            actions.append(.moveTo(
-                y: -roadLineSize.height,
-                duration: 2))
-            actions.append(.removeFromParent())
-            copy.run(.sequence(actions))
-        }
-    }
-
-    private func addRandomCar() {
-        self.carNames = GKRandomSource.sharedRandom().arrayByShufflingObjects(in: carNames) as! [String]
-        let texture = SKTexture(imageNamed: self.carNames[0])
+        let texture = SKTexture(imageNamed: cars[0])
         texture.size()
 
         let roadMinX = self.frame.minX + 30
@@ -296,21 +325,21 @@ class GameScene: SKScene {
         
         let car = SKSpriteNode(texture: texture)
         car.position = CGPoint(x: CGFloat(randomDist.nextInt()), y: frame.size.height + car.size.height)
-        car.name = Key.car.rawValue
+        car.name = Cars().car
         car.zPosition = 1
-        car.aspectFill(width: frame.width / 3)
+        car.aspectFill(toWidth: frame.width / 3)
 
         // set physics body of the car
         func buildPhysicsBody(texture: SKTexture) -> SKPhysicsBody {
             let body = SKPhysicsBody(texture: texture, alphaThreshold: 0.1, size: car.size)
             body.isDynamic = false
-            body.categoryBitMask = Category.carCategory.rawValue
-            body.contactTestBitMask = Category.playerCategory.rawValue
+            body.categoryBitMask = Category.car.rawValue
+            body.contactTestBitMask = Category.player.rawValue
             body.collisionBitMask = 0
             return body
         }
     
-        if let body = bodies[texture] {
+        if let body = cachedCars[texture] {
             car.physicsBody = (body.copy() as! SKPhysicsBody)
         } else {
             car.physicsBody = buildPhysicsBody(texture: texture)
@@ -320,7 +349,7 @@ class GameScene: SKScene {
                     car.physicsBody = buildPhysicsBody(texture: rTexture)
                     
                     if car.physicsBody != nil {
-                        bodies[texture] = car.physicsBody!
+                        cachedCars[texture] = car.physicsBody!
                     } else {
                         // Physics body is empty, if game is active dont add car to screen
                         if !remainingLives.isEmpty {
@@ -329,12 +358,10 @@ class GameScene: SKScene {
                     }
                 }
             } else {
-                bodies[texture] = car.physicsBody!
+                cachedCars[texture] = car.physicsBody!
             }
         }
         
-        self.addChild(car)
-
         var actions = [SKAction]()
         actions.append(.moveTo(
             y: -car.size.height / 2,
@@ -348,7 +375,11 @@ class GameScene: SKScene {
 
         actions.append(increaseScore)
         actions.append(.removeFromParent())
-        car.run(.sequence(actions))
+        
+        DispatchQueue.main.async {
+            self.addChild(car)
+            car.run(.sequence(actions))
+        }
     }
     
     private func addCoin() {
@@ -356,11 +387,11 @@ class GameScene: SKScene {
         var randomCoin: SKSpriteNode?
         
         if random >= 0 && random <= 5 {
-            randomCoin = singleCoin.copy() as? SKSpriteNode
+            randomCoin = self.singleCoin.copy() as? SKSpriteNode
         } else if random > 5 && random <= 8 {
-            randomCoin = multipleCoins.copy() as? SKSpriteNode
+            randomCoin = self.multipleCoins.copy() as? SKSpriteNode
         } else {
-            randomCoin = coinBag.copy() as? SKSpriteNode
+            randomCoin = self.coinBag.copy() as? SKSpriteNode
         }
         
         if let coin = randomCoin {
@@ -373,15 +404,13 @@ class GameScene: SKScene {
             
             coin.position.x = CGFloat(randomDist.nextInt())
             
-            let physicsBody = SKPhysicsBody(circleOfRadius: coin.size.width / 2)
-            physicsBody.isDynamic = false
-            physicsBody.categoryBitMask = Category.coinCategory.rawValue
-            physicsBody.contactTestBitMask = Category.playerCategory.rawValue
-            physicsBody.collisionBitMask = 0
+            let body = SKPhysicsBody(circleOfRadius: coin.size.width / 2)
+            body.isDynamic = false
+            body.categoryBitMask = Category.coin.rawValue
+            body.contactTestBitMask = Category.player.rawValue
+            body.collisionBitMask = 0
             
-            coin.physicsBody = physicsBody
-            
-            self.addChild(coin)
+            coin.physicsBody = body
             
             var actions = [SKAction]()
             actions.append(.moveTo(
@@ -389,70 +418,11 @@ class GameScene: SKScene {
                 duration: 3))
             
             actions.append(.removeFromParent())
-            coin.run(.sequence(actions))
-        }
-    }
-    
-    private func setupPlayer() {
-        let playerPosY = player.size.height / 2 + 20 + safeAreaInsets.bottom
-        player.position = CGPoint(x: frame.width / 2, y: playerPosY)
-        player.zPosition = 1
-        player.name = "player"
-        
-        player.physicsBody = SKPhysicsBody(texture: player.texture!, size: player.size)
-        player.physicsBody?.isDynamic = true
-        player.physicsBody?.categoryBitMask = Category.playerCategory.rawValue
-        player.physicsBody?.contactTestBitMask = Category.carCategory.rawValue
-        player.physicsBody?.collisionBitMask = 0
-        
-        self.addChild(player)
-    }
-    
-    private func setupGameScore() {
-        scoreLabel = SKLabelNode(text: "Score: 0")
-        scoreLabel.position = CGPoint(x: 70, y: frame.size.height - 40 - safeAreaInsets.top)
-        scoreLabel.fontName = fontName
-        scoreLabel.fontSize = 28
-        scoreLabel.fontColor = UIColor.white
-        scoreLabel.zPosition = 2
-        score = 0
-        self.addChild(scoreLabel)
-    }
-    
-    private func setupLives(count: Int) {
-        let size = CGSize(width: 40, height: 50)
-        var posX = frame.maxX - 6 - (size.width / 2)
-        let posY = frame.maxY - 30 - safeAreaInsets.top
-        for _ in 0..<count {
-            let texture = SKTexture(imageNamed: "black_viper")
-            let node = SKSpriteNode(texture: texture)
-            node.size = size
-            node.position = CGPoint(x: posX, y: posY)
-            node.zPosition = 2
-            node.aspectFill(to: size)
             
-            let physicsBody = SKPhysicsBody(texture: texture, size: size)
-            physicsBody.collisionBitMask = 0
-            node.physicsBody = physicsBody
-            
-            remainingLives.append(node)
-            addChild(node)
-            posX -= ((size.width / 2) + 6)
-        }
-    }
-    
-    private func setupMotionManager() {
-        motionManager.startAccelerometerUpdates(to: .main) { [weak self] (data, error) in
-            guard let strongSelf = self, let data = data else { return }
-            
-            var posX = strongSelf.player.position.x + CGFloat(data.acceleration.x * 20)
-            let roadMinX = strongSelf.frame.minX + 30
-            let roadMaxX = strongSelf.frame.maxX - 20
-            
-            if posX < roadMinX { posX = roadMinX }
-            if posX > roadMaxX { posX = roadMaxX }
-            
-            strongSelf.player.run(.moveTo(x: posX, duration: 0))
+            DispatchQueue.main.async {
+                self.addChild(coin)
+                coin.run(.sequence(actions))
+            }
         }
     }
 }
@@ -472,15 +442,15 @@ extension GameScene: SKPhysicsContactDelegate {
             sBody = contact.bodyA
         }
         
-        if (fBody.categoryBitMask & Category.playerCategory.rawValue) != 0
-            && (sBody.categoryBitMask & Category.carCategory.rawValue) != 0 {
+        if (fBody.categoryBitMask & Category.player.rawValue) != 0
+            && (sBody.categoryBitMask & Category.car.rawValue) != 0 {
             if let car = sBody.node as? SKSpriteNode {
                 playerDidCollide(withCar: car)
             }
         }
         
-        if (fBody.categoryBitMask & Category.playerCategory.rawValue) != 0
-            && (sBody.categoryBitMask & Category.coinCategory.rawValue) != 0 {
+        if (fBody.categoryBitMask & Category.player.rawValue) != 0
+            && (sBody.categoryBitMask & Category.coin.rawValue) != 0 {
             if let coin = sBody.node as? SKSpriteNode {
                 playerDidCollide(withCoin: coin)
             }
@@ -496,37 +466,32 @@ extension GameScene: SKPhysicsContactDelegate {
         }
         
         if remainingLives.isEmpty {
-            self.gameOver = true
-            
-            let explosionNode = self.explosionNode.copy() as! SKEmitterNode
-            self.addChild(explosionNode)
-            
-            self.run(explosionSound)
-            player.removeFromParent()
-            car.removeFromParent()
-            
-            self.run(.wait(forDuration: 2)) { [weak self] in
-                guard let strongSelf = self else { return }
-                strongSelf.explosionNode.removeFromParent()
-                strongSelf.stopGame()
-            }
+            endGame()
+        }
+    }
+    
+    fileprivate func endGame() {
+        self.gameOver = true
+        
+        let explosion = self.explosionNode.copy() as! SKEmitterNode
+        self.addChild(explosion)
+        
+        self.run(explosionSound)
+        playerNode.removeFromParent()
+        
+        self.run(.wait(forDuration: 2)) { [weak self] in
+            guard let strongSelf = self else { return }
+            explosion.removeFromParent()
+            strongSelf.stopGame()
         }
     }
     
     fileprivate func playerDidCollide(withCoin coin: SKSpriteNode) {
         self.run(coinSound)
         coin.removeFromParent()
-        if let key = coin.name {
-            switch key {
-            case Key.singleCoin.rawValue:
-                score += 10
-            case Key.multipleCoins.rawValue:
-                score += 25
-            case Key.coinBag.rawValue:
-                score += 50
-            default:
-                break
-            }
+        
+        if let c = Coin(rawValue: coin.name!) {
+            score += c.value
         }
     }
 }

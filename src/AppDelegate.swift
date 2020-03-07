@@ -1,6 +1,6 @@
 //
 //  AppDelegate.swift
-//  Retro Car Racing
+//  Retro
 //
 //  Created by Atilla Özder on 10.10.2019.
 //  Copyright © 2019 Atilla Özder. All rights reserved.

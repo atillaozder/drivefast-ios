@@ -1,6 +1,6 @@
 //
 //  MenuScene.swift
-//  CarRacing
+//  Retro
 //
 //  Created by Atilla Özder on 11.10.2019.
 //  Copyright © 2019 Atilla Özder. All rights reserved.
@@ -15,41 +15,42 @@ class MenuScene: GameScene {
     
     override func didMove(to view: SKView) {
         super.didMove(to: view)
-        setupGameButton()
+        setupNewGameButton()
         setupScores()
     }
     
-    override func setupGame() {
+    override func startGame() {
         return
     }
     
     private func setupScores() {
-        let score = UserDefaults.standard.integer(forKey: Key.score.rawValue)
+        
+        func buildLabel() -> SKLabelNode {
+            let lbl = SKLabelNode(fontNamed: SKViewFactory.fontName)
+            lbl.fontSize = 32
+            lbl.position = CGPoint(x: frame.midX, y: 0)
+            lbl.zPosition = 999
+            return lbl
+        }
+        
+        let score = UserDefaults.standard.getScore()
         
         if score > 0 {
-            let posY = frame.midY - 48 - 48
-            let scoreLabel = buildMenuLabel()
+            let posY = frame.midY - 96
+            let scoreLabel = buildLabel()
             scoreLabel.position.y = posY
             scoreLabel.text = "Score: \(score)"
             addChild(scoreLabel)
             
-            UserDefaults.standard.set(nil, forKey: Key.score.rawValue)
+            UserDefaults.standard.setScore(nil)
             
-            let bestScore = UserDefaults.standard.integer(forKey: Key.bestScore.rawValue)
+            let bestScore = UserDefaults.standard.getBestScore()
             if bestScore > 0 {
-                let bScoreLabel = buildMenuLabel()
-                bScoreLabel.position.y = posY - 48
-                bScoreLabel.text = "Best: \(bestScore)"
-                addChild(bScoreLabel)
+                let bestScoreLabel = buildLabel()
+                bestScoreLabel.position.y = posY - 48
+                bestScoreLabel.text = "Best: \(bestScore)"
+                addChild(bestScoreLabel)
             }
         }
-    }
-    
-    private func buildMenuLabel() -> SKLabelNode {
-        let menuLabel = SKLabelNode(fontNamed: fontName)
-        menuLabel.fontSize = 32
-        menuLabel.position = CGPoint(x: frame.midX, y: 0)
-        menuLabel.zPosition = 999
-        return menuLabel
     }
 }
