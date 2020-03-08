@@ -13,4 +13,5 @@ Features:
 - Visual stunning 2D graphics
 - Weather effects
 
-<img src="resources/retro.gif" alt="" width="300" height="532">
+
+<img src="resources/gameplay.gif" alt="" width="300" height="532">
