@@ -27,9 +27,9 @@ class GameViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        presentMenuScene()
-        interstitial = createInterstitial()
+        view.backgroundColor = UIColor.roadColor
         self.registerRemoteNotifications()
+        interstitial = createInterstitial()
         GADRewardBasedVideoAd.sharedInstance().delegate = self
     }
     
@@ -56,9 +56,12 @@ class GameViewController: UIViewController {
     private func registerRemoteNotifications() {
         let options: UNAuthorizationOptions = [.alert, .badge, .sound]
         UNUserNotificationCenter.current()
-            .requestAuthorization(options: options) { (_, _) in
+            .requestAuthorization(options: options) { [weak self] (_, _) in
+                guard let strongSelf = self else { return }
+
                 DispatchQueue.main.async {
                     UIApplication.shared.registerForRemoteNotifications()
+                    strongSelf.presentMenuScene()
                 }
         }
     }

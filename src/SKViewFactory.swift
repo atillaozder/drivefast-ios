@@ -60,7 +60,7 @@ struct SKViewFactory {
     }
     
     func buildNewGameButton(rect: CGRect) -> (button: SKShapeNode, label: SKLabelNode) {
-        let btn = buildButton(name: ngBtnKey)
+        let btn = buildButton(name: ngBtnKey, color: UIColor(red: 249, green: 220, blue: 92))
         btn.position = .init(x: rect.midX, y: rect.midY)
                 
         let lbl = buildLabel(text: "New Game", name: ngLabelKey)
@@ -70,20 +70,20 @@ struct SKViewFactory {
     }
     
     func buildPlayVideoButton(rect: CGRect) -> (button: SKShapeNode, label: SKLabelNode) {
-        let btn = buildButton(name: pvBtnKey)
+        let btn = buildButton(name: pvBtnKey, color: .systemTeal)
         btn.position = .init(x: rect.midX, y: rect.midY - 68)
                 
-        let lbl = buildLabel(text: "Continue Game", name: pvLabelKey)
+        let lbl = buildLabel(text: "Continue Racing", name: pvLabelKey)
         lbl.position = .init(x: rect.midX, y: btn.position.y - 8)
         lbl.isUserInteractionEnabled = false
         return (btn, lbl)
     }
         
-    func buildButton(name: String) -> SKShapeNode {
+    func buildButton(name: String, color: UIColor) -> SKShapeNode {
         let btn = SKShapeNode(rectOf: .init(width: 220, height: 50), cornerRadius: 10)
-        btn.fillColor = .dark
-        btn.lineWidth = 3
-        btn.strokeColor = .white
+        btn.fillColor = color
+        btn.lineWidth = 4
+        btn.strokeColor = color.darker()
         btn.name = name
         btn.zPosition = 998
         return btn
@@ -96,7 +96,7 @@ struct SKViewFactory {
         node.position = CGPoint(x: 0, y: rect.size.height + node.size.height)
         node.zPosition = 0
         node.name = type.rawValue
-        node.aspectFill(toWidth: rect.width)
+        node.setScale(to: rect.width)
         return node
     }
 }
@@ -127,7 +127,7 @@ extension UserDefaults {
 
 // MARK: - SKSpriteNode
 extension SKSpriteNode {
-    func aspectFill(to size: CGSize) {
+    func scaleAspectFill(to size: CGSize) {
         if texture != nil {
             self.size = texture!.size()
             let vRatio = size.height / self.texture!.size().height
@@ -137,17 +137,51 @@ extension SKSpriteNode {
         }
     }
     
-    func aspectFill(toWidth width: CGFloat) {
+    func setScale(to value: CGFloat) {
         if texture != nil {
-            let ratio = width /  texture!.size().width
-            self.setScale(ratio)
+            self.setScale((value / texture!.size().width))
         }
     }
 }
 
 // MARK: - UIColor
 extension UIColor {
-    class var dark: UIColor {
-        return .init(red: 21/255, green: 21/255, blue: 21/255, alpha: 1)
+    
+    convenience init(red: Int, green: Int, blue: Int) {
+        self.init(
+            red: CGFloat(red) / 255,
+            green: CGFloat(green) / 255,
+            blue: CGFloat(blue) / 255,
+            alpha: 1
+        )
+    }
+    
+    class var roadColor: UIColor {
+        return .init(red: 33, green: 44, blue: 48)
+    }
+    
+    class var customBlack: UIColor {
+        return .init(red: 34, green: 34, blue: 34)
+    }
+    
+    func lighter(by percentage: CGFloat = 20) -> UIColor {
+        return self.adjust(by: abs(percentage))
+    }
+    
+    func darker(by percentage: CGFloat = 20) -> UIColor {
+        return self.adjust(by: -1 * abs(percentage))
+    }
+    
+    func adjust(by percentage: CGFloat = 30.0) -> UIColor {
+        var red: CGFloat = 0, green: CGFloat = 0, blue: CGFloat = 0, alpha: CGFloat = 0
+        if self.getRed(&red, green: &green, blue: &blue, alpha: &alpha) {
+            return UIColor(red: min(red + percentage/100, 1.0),
+                           green: min(green + percentage/100, 1.0),
+                           blue: min(blue + percentage/100, 1.0),
+                           alpha: alpha)
+        } else {
+            return self
+        }
     }
 }
+

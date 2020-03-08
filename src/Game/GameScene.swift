@@ -41,8 +41,8 @@ class GameScene: SKScene {
     weak var sceneDelegate: SceneDelegate?
     
     lazy var playerNode: SKSpriteNode = {
-        let node = SKSpriteNode(imageNamed: "black_viper")
-        node.aspectFill(toWidth: frame.width / 3)
+        let node = SKSpriteNode(imageNamed: "car1")
+        node.setScale(to: frame.width / 3)
         let posY = (node.size.height / 2) + 20 + insets.bottom
         node.position = CGPoint(x: frame.width / 2, y: posY)
         node.zPosition = 1
@@ -59,7 +59,7 @@ class GameScene: SKScene {
     lazy var roadNode: SKShapeNode = {
         let roadSize: CGSize = .init(width: frame.width, height: frame.height * 2)
         let node = SKShapeNode(rectOf: roadSize)
-        node.fillColor = UIColor(red: 33/255, green: 44/255, blue: 48/255, alpha: 1)
+        node.fillColor = .roadColor
         node.strokeColor = .darkGray
         node.position = .init(x: frame.midX, y: frame.minY)
         node.zPosition = -1
@@ -67,9 +67,9 @@ class GameScene: SKScene {
     }()
     
     lazy var roadLineNode: SKShapeNode = {
-        let node = SKShapeNode(rectOf: .init(width: 10, height: 40))
+        let node = SKShapeNode(rectOf: .init(width: 8, height: 50))
         node.zPosition = -1
-        let color = UIColor(red: 250/255, green: 250/255, blue: 250/255, alpha: 1)
+        let color = UIColor(red: 250, green: 250, blue: 250)
         node.fillColor = color
         node.strokeColor = color
         return node
@@ -193,12 +193,12 @@ class GameScene: SKScene {
         var posX = frame.maxX - (size.width / 2) - 6
         let posY = frame.maxY - insets.top - 30
         for _ in 0..<count {
-            let texture = SKTexture(imageNamed: "black_viper")
+            let texture = SKTexture(imageNamed: "car1")
             let node = SKSpriteNode(texture: texture)
             node.size = size
             node.position = CGPoint(x: posX, y: posY)
             node.zPosition = 2
-            node.aspectFill(to: size)
+            node.scaleAspectFill(to: size)
             
             let body = SKPhysicsBody(texture: texture, size: size)
             body.collisionBitMask = 0
@@ -283,7 +283,7 @@ class GameScene: SKScene {
     // MARK: - RepeatForever Actions
 
     private func addRoadLine() {
-        let size: CGSize = .init(width: 10, height: 40)
+        let size: CGSize = .init(width: 8, height: 50)
         let posY: CGFloat = self.frame.maxY + size.height
         
         var actions = [SKAction]()
@@ -313,7 +313,7 @@ class GameScene: SKScene {
     }
     
     private func addRandomCar() {        
-        var cars = ["taxi", "ambulance", "truck", "mini_truck", "mini_van", "police", "old_car", "audi"]
+        var cars = ["car2", "car3", "car4", "car5", "car6", "car7", "car8", "car9"]
         cars.shuffle()
         
         let texture = SKTexture(imageNamed: cars[0])
@@ -327,8 +327,8 @@ class GameScene: SKScene {
         car.position = CGPoint(x: CGFloat(randomDist.nextInt()), y: frame.size.height + car.size.height)
         car.name = Cars().car
         car.zPosition = 1
-        car.aspectFill(toWidth: frame.width / 3)
-
+        car.setScale(to: frame.width / 3)
+        
         // set physics body of the car
         func buildPhysicsBody(texture: SKTexture) -> SKPhysicsBody {
             let body = SKPhysicsBody(texture: texture, alphaThreshold: 0.1, size: car.size)

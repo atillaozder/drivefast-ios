@@ -33,24 +33,22 @@ class MenuScene: GameScene {
             return lbl
         }
         
+        var posY = frame.midY - 96
         let score = UserDefaults.standard.getScore()
-        
         if score > 0 {
-            let posY = frame.midY - 96
             let scoreLabel = buildLabel()
             scoreLabel.position.y = posY
             scoreLabel.text = "Score: \(score)"
             addChild(scoreLabel)
-            
-            UserDefaults.standard.setScore(nil)
-            
-            let bestScore = UserDefaults.standard.getBestScore()
-            if bestScore > 0 {
-                let bestScoreLabel = buildLabel()
-                bestScoreLabel.position.y = posY - 48
-                bestScoreLabel.text = "Best: \(bestScore)"
-                addChild(bestScoreLabel)
-            }
+            posY -= 48
+        }
+        
+        let bestScore = UserDefaults.standard.getBestScore()
+        if bestScore > 0 {
+            let bestScoreLabel = buildLabel()
+            bestScoreLabel.position.y = posY
+            bestScoreLabel.text = "Best: \(bestScore)"
+            addChild(bestScoreLabel)
         }
     }
 }
