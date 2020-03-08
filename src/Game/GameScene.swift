@@ -103,7 +103,10 @@ class GameScene: SKScene {
         }
     }
         
-    private var explosionNode: SKEmitterNode!
+    let explosionNode: SKEmitterNode = {
+        return SKEmitterNode(fileNamed: "Explosion")!
+    }()
+    
     let coinSound = SKAction.playSoundFileNamed("coin.wav", waitForCompletion: false)
     let explosionSound = SKAction.playSoundFileNamed("explosion.wav", waitForCompletion: false)
 
@@ -122,8 +125,6 @@ class GameScene: SKScene {
         startGame()
         
         self.addChild(roadNode)
-        explosionNode = SKEmitterNode(fileNamed: "Explosion")!
-        explosionNode.position = playerNode.position
         
         self.physicsWorld.gravity = CGVector(dx: 0, dy: 0)
         self.physicsWorld.contactDelegate = self
@@ -474,6 +475,7 @@ extension GameScene: SKPhysicsContactDelegate {
         self.gameOver = true
         
         let explosion = self.explosionNode.copy() as! SKEmitterNode
+        explosion.position = playerNode.position
         self.addChild(explosion)
         
         self.run(explosionSound)
