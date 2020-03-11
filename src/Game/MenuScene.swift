@@ -15,14 +15,11 @@ class MenuScene: GameScene {
     
     override func didMove(to view: SKView) {
         super.didMove(to: view)
+        let _ = playerNode.texture?.size()
         setupNewGameButton()
         setupScores()
     }
-    
-    override func startGame() {
-        return
-    }
-    
+        
     private func setupScores() {
         
         func buildLabel() -> SKLabelNode {
@@ -33,7 +30,7 @@ class MenuScene: GameScene {
             return lbl
         }
         
-        var posY = frame.midY - 96
+        var posY = frame.midY - 48
         let score = UserDefaults.standard.getScore()
         if score > 0 {
             let scoreLabel = buildLabel()
@@ -50,5 +47,13 @@ class MenuScene: GameScene {
             bestScoreLabel.text = "Best: \(bestScore)"
             addChild(bestScoreLabel)
         }
+    }
+    
+    override func startGame() {
+        return
+    }
+    
+    override func handleContact(_ contact: SKPhysicsContact) {
+        return
     }
 }

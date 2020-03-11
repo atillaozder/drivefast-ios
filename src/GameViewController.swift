@@ -14,7 +14,11 @@ class GameViewController: UIViewController {
     
     private var reward: GADAdReward?
     private var interstitial: GADInterstitial!
-
+    
+    override func loadView() {
+        view = SKView(frame: UIScreen.main.bounds)
+    }
+    
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         if #available(iOS 11.0, *) {
@@ -27,22 +31,23 @@ class GameViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = UIColor.roadColor
+        view.backgroundColor = .roadColor
         self.registerRemoteNotifications()
         interstitial = createInterstitial()
         GADRewardBasedVideoAd.sharedInstance().delegate = self
     }
     
     private func presentMenuScene() {
-        if let view = self.view as! SKView? {
+        if let view = self.view as? SKView {
             let scene = MenuScene(size: view.frame.size)
+            scene.backgroundColor = UIColor.roadColor
             scene.sceneDelegate = self
             scene.scaleMode = .aspectFit
             if #available(iOS 11.0, *) {
                 scene.insets = view.safeAreaInsets
             }
-            view.presentScene(scene)
             view.ignoresSiblingOrder = true
+            view.presentScene(scene)
         }
     }
 

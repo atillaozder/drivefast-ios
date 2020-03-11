@@ -61,7 +61,7 @@ struct SKViewFactory {
     
     func buildNewGameButton(rect: CGRect) -> (button: SKShapeNode, label: SKLabelNode) {
         let btn = buildButton(name: ngBtnKey, color: UIColor(red: 249, green: 220, blue: 92))
-        btn.position = .init(x: rect.midX, y: rect.midY)
+        btn.position = .init(x: rect.midX, y: rect.midY + 25)
                 
         let lbl = buildLabel(text: "New Game", name: ngLabelKey)
         lbl.position = .init(x: rect.midX, y: btn.position.y - 8)
@@ -71,7 +71,7 @@ struct SKViewFactory {
     
     func buildPlayVideoButton(rect: CGRect) -> (button: SKShapeNode, label: SKLabelNode) {
         let btn = buildButton(name: pvBtnKey, color: .systemTeal)
-        btn.position = .init(x: rect.midX, y: rect.midY - 68)
+        btn.position = .init(x: rect.midX, y: rect.midY - 25 - 24)
                 
         let lbl = buildLabel(text: "Continue Racing", name: pvLabelKey)
         lbl.position = .init(x: rect.midX, y: btn.position.y - 8)
@@ -96,7 +96,8 @@ struct SKViewFactory {
         node.position = CGPoint(x: 0, y: rect.size.height + node.size.height)
         node.zPosition = 0
         node.name = type.rawValue
-        node.setScale(to: rect.width)
+        let ratio = UIDevice.current.isPad ? rect.width / 3 : rect.width / 1.5
+        node.setScale(to: ratio)
         return node
     }
 }
@@ -138,8 +139,8 @@ extension SKSpriteNode {
     }
     
     func setScale(to value: CGFloat) {
-        if texture != nil {
-            self.setScale((value / texture!.size().width))
+        if let texture = self.texture {
+            self.setScale((value / texture.size().width))
         }
     }
 }
@@ -185,3 +186,9 @@ extension UIColor {
     }
 }
 
+// MARK: - UIDevice
+extension UIDevice {
+    var isPad: Bool {
+        return UIDevice.current.userInterfaceIdiom == .pad
+    }
+}

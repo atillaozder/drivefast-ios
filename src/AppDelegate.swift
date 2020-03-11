@@ -38,6 +38,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         GADRewardBasedVideoAd
             .sharedInstance()
             .load(.init(), withAdUnitID: AppDelegate.rewardBasedVideoAdIdentifier)
+        
+        let window = UIWindow(frame: UIScreen.main.bounds)
+        window.backgroundColor = UIColor.roadColor
+        
+        let viewController = GameViewController()
+        viewController.modalPresentationStyle = .fullScreen
+        viewController.modalTransitionStyle = .crossDissolve
+        
+        window.rootViewController = viewController
+        window.makeKeyAndVisible()
+        self.window = window
                 
         return true
     }
