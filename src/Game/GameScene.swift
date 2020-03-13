@@ -253,6 +253,17 @@ class GameScene: SKScene {
         let tuple = SKViewFactory().buildPlayVideoButton(rect: frame)
         addChild(tuple.button)
         addChild(tuple.label)
+        
+        if #available(iOS 11.0, *) {
+            return
+        } else {
+            let lbl = tuple.label
+            let remainingTextLabel = lbl.copy() as! SKLabelNode
+            remainingTextLabel.name = SKViewFactory().iOS10pvLabelKey
+            remainingTextLabel.text = "continue racing"
+            remainingTextLabel.position = CGPoint(x: lbl.position.x, y: lbl.position.y - 28)
+            addChild(remainingTextLabel)
+        }
     }
     
     @discardableResult
@@ -282,7 +293,7 @@ class GameScene: SKScene {
                 switch nodeName {
                 case factory.ngLabelKey, factory.ngBtnKey:
                     didTapNewGame()
-                case factory.pvLabelKey, factory.pvBtnKey:
+                case factory.pvLabelKey, factory.iOS10pvLabelKey, factory.pvBtnKey:
                     playVideo()
                 default:
                     break

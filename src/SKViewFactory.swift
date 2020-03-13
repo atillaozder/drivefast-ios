@@ -43,11 +43,12 @@ struct SKViewFactory {
     let ngBtnKey = "new_game_button"
     let pvLabelKey = "play_video_label"
     let pvBtnKey = "play_video_button"
+    let iOS10pvLabelKey = "play_video_label_iOS10"
     
     static let fontName: String = "AmericanTypewriter-semibold"
     
     func childNodeNames() -> [String] {
-        return [ngLabelKey, ngBtnKey, pvLabelKey, pvBtnKey]
+        return [ngLabelKey, ngBtnKey, pvLabelKey, pvBtnKey, iOS10pvLabelKey]
     }
     
     func buildLabel(text: String, name: String) -> SKLabelNode {
@@ -70,17 +71,31 @@ struct SKViewFactory {
     }
     
     func buildPlayVideoButton(rect: CGRect) -> (button: SKShapeNode, label: SKLabelNode) {
-        let btn = buildButton(name: pvBtnKey, color: .systemTeal)
-        btn.position = .init(x: rect.midX, y: rect.midY - 25 - 24)
-                
-        let lbl = buildLabel(text: "Continue Racing", name: pvLabelKey)
-        lbl.position = .init(x: rect.midX, y: btn.position.y - 8)
+        let btn = buildButton(name: pvBtnKey, color: .systemTeal, height: 80)
+        btn.position = .init(x: rect.midX, y: rect.midY - 25 - 32)
+        
+        var text = "View this ad to"
+        if #available(iOS 11.0, *) {
+            text = "View this ad to continue racing"
+        }
+        
+        let lbl = buildLabel(text: text, name: pvLabelKey)
         lbl.isUserInteractionEnabled = false
+        
+        var lblY = btn.position.y + 8
+        if #available(iOS 11.0, *) {
+            lblY = btn.position.y - 28
+            lbl.numberOfLines = 3
+            lbl.lineBreakMode = .byWordWrapping
+            lbl.preferredMaxLayoutWidth = 220
+        }
+        
+        lbl.position = .init(x: rect.midX, y: lblY)
         return (btn, lbl)
     }
         
-    func buildButton(name: String, color: UIColor) -> SKShapeNode {
-        let btn = SKShapeNode(rectOf: .init(width: 220, height: 50), cornerRadius: 10)
+    func buildButton(name: String, color: UIColor, height: CGFloat = 50) -> SKShapeNode {
+        let btn = SKShapeNode(rectOf: .init(width: 220, height: height), cornerRadius: 10)
         btn.fillColor = color
         btn.lineWidth = 4
         btn.strokeColor = color.darker()
