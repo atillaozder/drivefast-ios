@@ -24,27 +24,27 @@ class MenuScene: GameScene {
         
         func buildLabel() -> SKLabelNode {
             let lbl = SKLabelNode(fontNamed: SKViewFactory.fontName)
-            lbl.fontSize = 32
+            lbl.fontSize = 24
             lbl.position = CGPoint(x: frame.midX, y: 0)
             lbl.zPosition = 999
             return lbl
         }
         
-        var posY = frame.midY - 48
+        var posY = frame.midY - 36
         let score = UserDefaults.standard.getScore()
         if score > 0 {
             let scoreLabel = buildLabel()
             scoreLabel.position.y = posY
-            scoreLabel.text = "Score: \(score)"
+            scoreLabel.text = MainStrings.score.localized + ": \(score)"
             addChild(scoreLabel)
-            posY -= 48
+            posY -= 36
         }
         
         let bestScore = UserDefaults.standard.getBestScore()
         if bestScore > 0 {
             let bestScoreLabel = buildLabel()
             bestScoreLabel.position.y = posY
-            bestScoreLabel.text = "Best: \(bestScore)"
+            bestScoreLabel.text = MainStrings.best.localized + ": \(bestScore)"
             addChild(bestScoreLabel)
         }
     }

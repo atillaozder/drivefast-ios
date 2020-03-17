@@ -10,6 +10,19 @@ import SpriteKit
 import GameplayKit
 import UIKit
 
+// MARK: - MainStrings
+enum MainStrings: String {
+    case score = "score"
+    case best = "bestScore"
+    case viewThisAdPt1 = "viewThisAdPt1"
+    case viewThisAdPt2 = "viewThisAdPt2"
+    case newGame = "newGame"
+    
+    var localized: String {
+        return NSLocalizedString(self.rawValue, comment: "")
+    }
+}
+
 // MARK: - Coin
 enum Coin: String {
     case single = "single_coin"
@@ -64,38 +77,65 @@ struct SKViewFactory {
         let btn = buildButton(name: ngBtnKey, color: UIColor(red: 249, green: 220, blue: 92))
         btn.position = .init(x: rect.midX, y: rect.midY + 25)
                 
-        let lbl = buildLabel(text: "New Game", name: ngLabelKey)
+        let lbl = buildLabel(text: MainStrings.newGame.localized, name: ngLabelKey)
         lbl.position = .init(x: rect.midX, y: btn.position.y - 8)
         lbl.isUserInteractionEnabled = false
         return (btn, lbl)
     }
     
     func buildPlayVideoButton(rect: CGRect) -> (button: SKShapeNode, label: SKLabelNode) {
-        let btn = buildButton(name: pvBtnKey, color: .systemTeal, height: 80)
+        let btnHeight: CGFloat = 80
+        let btn = buildButton(name: pvBtnKey, color: .systemTeal, height: btnHeight)
         btn.position = .init(x: rect.midX, y: rect.midY - 25 - 32)
         
-        var text = "View this ad to"
+        var text = MainStrings.viewThisAdPt1.localized
         if #available(iOS 11.0, *) {
-            text = "View this ad to continue racing"
+            text = MainStrings.viewThisAdPt1.localized + " " + MainStrings.viewThisAdPt2.localized
         }
-        
+                
         let lbl = buildLabel(text: text, name: pvLabelKey)
         lbl.isUserInteractionEnabled = false
-        
+        lbl.horizontalAlignmentMode = .center
         var lblY = btn.position.y + 8
+
+        let preferredMaxLayoutWidth: CGFloat = 204
         if #available(iOS 11.0, *) {
-            lblY = btn.position.y - 28
             lbl.numberOfLines = 3
             lbl.lineBreakMode = .byWordWrapping
-            lbl.preferredMaxLayoutWidth = 220
+            lbl.preferredMaxLayoutWidth = preferredMaxLayoutWidth
+            lblY -= 36
         }
         
+        let labelFrame = lbl.calculateAccumulatedFrame()
+        if labelFrame.width > preferredMaxLayoutWidth || labelFrame.height > btnHeight {
+            lbl.fontSize = 20
+            if #available(iOS 11.0, *) {
+                lblY -= 6
+            }
+        }
+        
+        if #available(iOS 11.0, *) {
+            let attrText = NSMutableAttributedString(string: text)
+            let paragraphStyle = NSMutableParagraphStyle()
+            paragraphStyle.alignment = .center
+            
+            let font = UIFont(name: lbl.fontName!, size: lbl.fontSize) ?? UIFont.systemFont(ofSize: lbl.fontSize)
+            
+            attrText.addAttributes([
+                .foregroundColor : UIColor.white,
+                .font : font,
+                .paragraphStyle: paragraphStyle
+            ], range: NSRange(location: 0, length: text.count))
+            
+            lbl.attributedText = attrText
+        }
+
         lbl.position = .init(x: rect.midX, y: lblY)
         return (btn, lbl)
     }
         
     func buildButton(name: String, color: UIColor, height: CGFloat = 50) -> SKShapeNode {
-        let btn = SKShapeNode(rectOf: .init(width: 220, height: height), cornerRadius: 10)
+        let btn = SKShapeNode(rectOf: .init(width: 260, height: height), cornerRadius: 10)
         btn.fillColor = color
         btn.lineWidth = 4
         btn.strokeColor = color.darker()

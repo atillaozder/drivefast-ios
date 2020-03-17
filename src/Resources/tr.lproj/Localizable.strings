@@ -1,0 +1,13 @@
+/* 
+  Localizable.strings
+  Retro
+
+  Created by Atilla Özder on 17.03.2020.
+  Copyright © 2020 Atilla Özder. All rights reserved.
+*/
+
+"score" = "Skor";
+"bestScore" = "En iyi";
+"newGame" = "Yeni Oyun";
+"viewThisAdPt1" = "Yarışa devam edebilmek";
+"viewThisAdPt2" = "için bu reklamı izle";

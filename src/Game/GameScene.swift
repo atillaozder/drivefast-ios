@@ -89,14 +89,14 @@ class GameScene: SKScene {
     lazy var roadLineNode: SKShapeNode = {
         let node = SKShapeNode(rectOf: .init(width: 8, height: 50))
         node.zPosition = -1
-        let color = UIColor(red: 250, green: 250, blue: 250)
+        let color = UIColor(red: 240, green: 240, blue: 240)
         node.fillColor = color
         node.strokeColor = color
         return node
     }()
     
     lazy var scoreLabel: SKLabelNode = {
-        let lbl = SKLabelNode(text: "Score: 0")
+        let lbl = SKLabelNode(text: MainStrings.score.localized + ": 0")
         lbl.fontName = SKViewFactory.fontName
         lbl.fontSize = UIDevice.current.isPad ? 36 : 28
         lbl.fontColor = UIColor.white
@@ -120,7 +120,7 @@ class GameScene: SKScene {
     
     var score: Int = 0 {
         didSet {
-            scoreLabel.text = "Score: \(score)"
+            scoreLabel.text = MainStrings.score.localized + ": \(score)"
         }
     }
         
@@ -149,17 +149,19 @@ class GameScene: SKScene {
         self.physicsWorld.gravity = CGVector(dx: 0, dy: 0)
         self.physicsWorld.contactDelegate = self
 
-        let roadLine: [SKAction] = [
-            .wait(forDuration: 0.30),
-            .run(addRoadLine, queue: .global(qos: .userInteractive))
-        ]
-        run(.repeatForever(.sequence(roadLine)))
-
-        let addCar: [SKAction] = [
-            .wait(forDuration: 1),
-            .run(addRandomCar, queue: .global(qos: .userInteractive))
-        ]
-        run(.repeatForever(.sequence(addCar)), withKey: Actions().addCar)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            let addRoadLineSq: SKAction = .sequence([
+                .wait(forDuration: 0.1),
+                .run(self.addRoadLine, queue: .global(qos: .userInteractive))
+            ])
+            self.run(.repeatForever(addRoadLineSq))
+            
+            let addCarSq: SKAction = .sequence([
+                .wait(forDuration: 1),
+                .run(self.addRandomCar, queue: .global(qos: .userInteractive))
+            ])
+            self.run(.repeatForever(addCarSq), withKey: Actions().addCar)
+        }
     }
     
     func startGame() {
@@ -172,12 +174,12 @@ class GameScene: SKScene {
         setupLives(count: 3)
         setupMotionManager()
 
-        let actions: [SKAction] = [
+        let addCoinSq: SKAction = .sequence([
             .wait(forDuration: 5),
             .run(addCoin, queue: .global(qos: .userInteractive))
-        ]
+        ])
 
-        run(.repeatForever(.sequence(actions)))
+        run(.repeatForever(addCoinSq))
     }
     
     func continueGame() {
@@ -260,7 +262,7 @@ class GameScene: SKScene {
             let lbl = tuple.label
             let remainingTextLabel = lbl.copy() as! SKLabelNode
             remainingTextLabel.name = SKViewFactory().iOS10pvLabelKey
-            remainingTextLabel.text = "continue racing"
+            remainingTextLabel.text = MainStrings.viewThisAdPt2.localized
             remainingTextLabel.position = CGPoint(x: lbl.position.x, y: lbl.position.y - 28)
             addChild(remainingTextLabel)
         }
@@ -339,7 +341,7 @@ class GameScene: SKScene {
         var actions = [SKAction]()
         actions.append(.moveTo(
             y: -size.height,
-            duration: 2))
+            duration: UIDevice.current.userInterfaceIdiom == .pad ? 1 : 0.5))
         actions.append(.removeFromParent())
         
         var posX = self.roadNode.frame.minX
@@ -347,8 +349,9 @@ class GameScene: SKScene {
             if let line = self.roadLineNode.copy() as? SKShapeNode {
                 posX += (frame.width / scaleRatio)
                 line.position = .init(x: posX, y: posY)
-                DispatchQueue.main.async {
-                    self.addChild(line)
+                DispatchQueue.main.async { [weak self] in
+                    guard let strongSelf = self else { return }
+                    strongSelf.addChild(line)
                     line.run(.sequence(actions))
                 }
             }
@@ -363,12 +366,17 @@ class GameScene: SKScene {
         let texture = SKTexture(imageNamed: carName)
         let _ = texture.size()
         
-        let roadMinX = self.frame.minX + 30
-        let roadMaxX = self.frame.maxX - 30
-        let randomDist = GKRandomDistribution(lowestValue: Int(roadMinX), highestValue: Int(roadMaxX))
+        let roadMinX = Int(self.frame.minX + 30)
+        let roadMaxX = Int(self.frame.maxX - 30)
+        
+        var randomPos: Int = Int.random(in: roadMinX..<roadMaxX)
+        if #available(iOS 9.0, *) {
+            let randomDist = GKRandomDistribution(lowestValue: roadMinX, highestValue: roadMaxX)
+            randomPos = randomDist.nextInt()
+        }
         
         let car = SKSpriteNode(texture: texture)
-        car.position = CGPoint(x: CGFloat(randomDist.nextInt()), y: frame.maxY + car.size.height)
+        car.position = CGPoint(x: CGFloat(randomPos), y: frame.maxY + car.size.height)
         car.name = Cars().car
         car.zPosition = 1
                     
@@ -426,14 +434,16 @@ class GameScene: SKScene {
         }
         
         if let coin = randomCoin {
-            let roadMinX = self.frame.minX + 30
-            let roadMaxX = self.frame.maxX - 20
+            let roadMinX = Int(self.frame.minX + 30)
+            let roadMaxX = Int(self.frame.maxX - 20)
             
-            let randomDist = GKRandomDistribution(
-                lowestValue: Int(roadMinX),
-                highestValue: Int(roadMaxX))
+            var randomPos: Int = Int.random(in: roadMinX..<roadMaxX)
+            if #available(iOS 9.0, *) {
+                let randomDist = GKRandomDistribution(lowestValue: roadMinX, highestValue: roadMaxX)
+                randomPos = randomDist.nextInt()
+            }
             
-            coin.position.x = CGFloat(randomDist.nextInt())
+            coin.position.x = CGFloat(randomPos)
             
             let body = SKPhysicsBody(circleOfRadius: coin.size.width / 2)
             body.isDynamic = false
