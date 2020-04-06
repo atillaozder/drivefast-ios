@@ -11,11 +11,9 @@ import GameplayKit
 import CoreMotion
 
 // MARK: - Global Variables
-
 public var gameCount: Double = 0
 
 // MARK: - SceneDelegate
-
 protocol SceneDelegate: class {
     func scene(_ scene: GameScene, didFinishGameWithScore score: Int)
     func scene(_ scene: GameScene, shouldPresentRewardBasedVideoAd present: Bool)
@@ -27,14 +25,14 @@ protocol SceneDelegate: class {
 class GameScene: SKScene {
     
     // MARK: - Variables
-    
-    struct Cars {
-        let player = "player"
-        let car = "car"
+    enum Cars: String {
+        case player = "player"
+        case car = "car"
     }
     
-    struct Actions {
-        let addCar = "add_car"
+    enum Actions: String {
+        case addCar = "add_car"
+        case movePlayer = "move_player"
     }
     
     private let motionManager = CMMotionManager()
@@ -53,21 +51,14 @@ class GameScene: SKScene {
         let posY = (car.size.height / 2) + 20 + insets.bottom
         car.position = CGPoint(x: frame.width / 2, y: posY)
         car.zPosition = 1
-        car.name = Cars().player
+        car.name = Cars.player.rawValue
         
         if !setCarPhysicsBody(car, from: texture) {
             let shapeNode = SKShapeNode()
             shapeNode.fillTexture = SKTexture(imageNamed: carName)
             setCarPhysicsBody(car, from: shapeNode.fillTexture)
         }
-        
-//        let cgTexture = SKTexture(cgImage: texture.cgImage())
-//        setCarPhysicsBody(car, from: cgTexture)
-//        let viewTexture = view?.texture(from: car)
-//        setCarPhysicsBody(car, from: viewTexture)
-//        let atlasTexture = atlas.textureNamed(carName)
-//        setCarPhysicsBody(car, from: atlasTexture)
-        
+
         car.physicsBody?.isDynamic = true
         car.physicsBody?.categoryBitMask = Category.player.rawValue
         car.physicsBody?.contactTestBitMask = Category.car.rawValue
@@ -87,7 +78,7 @@ class GameScene: SKScene {
     }()
     
     lazy var roadLineNode: SKShapeNode = {
-        let node = SKShapeNode(rectOf: .init(width: 8, height: 50))
+        let node = SKShapeNode(rectOf: .init(width: 6, height: 30))
         node.zPosition = -1
         let color = UIColor(red: 240, green: 240, blue: 240)
         node.fillColor = color
@@ -139,8 +130,25 @@ class GameScene: SKScene {
     private var remainingLives: [SKSpriteNode] = []
     private var cachedCars = [String: SKPhysicsBody]()
     
-    // MARK: - Game Life Cycle
+    private let addRoadLineQueue: DispatchQueue = {
+        return DispatchQueue(label: "com.retro2d.ios.serial.addRoadLine",
+                             qos: .userInteractive,
+                             attributes: .concurrent)
+    }()
     
+    private let addCarQueue: DispatchQueue = {
+        return DispatchQueue(label: "com.retro2d.ios.serial.addCar",
+                             qos: .userInteractive,
+                             attributes: .concurrent)
+    }()
+    
+    private let addCoinQueue: DispatchQueue = {
+        return DispatchQueue(label: "com.retro2d.ios.serial.addCoin",
+                             qos: .userInteractive,
+                             attributes: .concurrent)
+    }()
+
+    // MARK: - Game Life Cycle
     override func didMove(to view: SKView) {
         super.didMove(to: view)
         startGame()
@@ -151,16 +159,16 @@ class GameScene: SKScene {
 
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
             let addRoadLineSq: SKAction = .sequence([
-                .wait(forDuration: 0.1),
-                .run(self.addRoadLine, queue: .global(qos: .userInteractive))
+                .wait(forDuration: 0.05),
+                .run(self.addRoadLine, queue: self.addRoadLineQueue)
             ])
             self.run(.repeatForever(addRoadLineSq))
             
             let addCarSq: SKAction = .sequence([
                 .wait(forDuration: 1),
-                .run(self.addRandomCar, queue: .global(qos: .userInteractive))
+                .run(self.addRandomCar, queue: self.addCarQueue)
             ])
-            self.run(.repeatForever(addCarSq), withKey: Actions().addCar)
+            self.run(.repeatForever(addCarSq), withKey: Actions.addCar.rawValue)
         }
     }
     
@@ -176,7 +184,7 @@ class GameScene: SKScene {
 
         let addCoinSq: SKAction = .sequence([
             .wait(forDuration: 5),
-            .run(addCoin, queue: .global(qos: .userInteractive))
+            .run(addCoin, queue: addCoinQueue)
         ])
 
         run(.repeatForever(addCoinSq))
@@ -190,7 +198,7 @@ class GameScene: SKScene {
         self.isPaused = false
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-            self.action(forKey: Actions().addCar)?.speed = 1
+            self.action(forKey: Actions.addCar.rawValue)?.speed = 1
         }
     }
     
@@ -199,7 +207,7 @@ class GameScene: SKScene {
         
         if !videoWasPresented {
             self.isPaused = true
-            self.action(forKey: Actions().addCar)?.speed = 0
+            self.action(forKey: Actions.addCar.rawValue)?.speed = 0
             setupNewGameButton()
             setupPlayVideoButton()
         } else {
@@ -230,18 +238,46 @@ class GameScene: SKScene {
         }
     }
     
+    private func getRoadFrame() -> (minX: CGFloat, maxX: CGFloat, minY: CGFloat, maxY: CGFloat) {
+        let playerNodeWidth = playerNode.texture?.size().width ?? playerNode.size.width
+        let playerNodeInnerPadding: CGFloat = 10
+        
+        let w = CGFloat(Int(playerNodeWidth / scaleRatio)) / 2
+        let h = (playerNode.size.height / 2)
+        
+        let minX = self.frame.minX + w + playerNodeInnerPadding
+        let maxX = self.frame.maxX - w
+        let minY = self.frame.minY + h
+        let maxY = self.frame.maxY - h
+        
+        return (minX: minX, maxX: maxX, minY: minY, maxY: maxY)
+    }
+        
     private func setupMotionManager() {
-        motionManager.startAccelerometerUpdates(to: .main) { [weak self] (data, error) in
+        let queue = OperationQueue.current ?? .main
+        motionManager.accelerometerUpdateInterval = 0.01
+        motionManager.startAccelerometerUpdates(to: queue) { [weak self] (data, error) in
             guard let strongSelf = self, let data = data else { return }
+
+            let player = strongSelf.playerNode
+            let position = player.position
+            var x = position.x + CGFloat(data.acceleration.x * 10)
+            var y = position.y + CGFloat(data.acceleration.y * 10)
+
+            let roadFrame = strongSelf.getRoadFrame()
+            x = max(x, roadFrame.minX)
+            x = min(x, roadFrame.maxX)
+            y = max(y, roadFrame.minY)
+            y = min(y, roadFrame.maxY)
+
+            SKView.animate(withDuration: 0) {
+                player.position = .init(x: x, y: y)
+            }
             
-            var posX = strongSelf.playerNode.position.x + CGFloat(data.acceleration.x * 20)
-            let roadMinX = strongSelf.frame.minX + 30
-            let roadMaxX = strongSelf.frame.maxX - 20
-            
-            if posX < roadMinX { posX = roadMinX }
-            if posX > roadMaxX { posX = roadMaxX }
-            
-            strongSelf.playerNode.run(.moveTo(x: posX, duration: 0))
+//            let movePlayer = Actions.movePlayer.rawValue
+//            player.removeAction(forKey: movePlayer)
+//            let moveAction = SKAction.move(to: .init(x: x, y: y), duration: 0)
+//            player.run(moveAction, withKey: movePlayer)
         }
     }
     
@@ -327,7 +363,7 @@ class GameScene: SKScene {
                 self.childNode(withName: name)?.removeFromParent()
             }
             
-            self.enumerateChildNodes(withName: Cars().car) { (node, ptr) in
+            self.enumerateChildNodes(withName: Cars.car.rawValue) { (node, ptr) in
                 node.removeFromParent()
             }
         }
@@ -377,7 +413,7 @@ class GameScene: SKScene {
         
         let car = SKSpriteNode(texture: texture)
         car.position = CGPoint(x: CGFloat(randomPos), y: frame.maxY + car.size.height)
-        car.name = Cars().car
+        car.name = Cars.car.rawValue
         car.zPosition = 1
                     
         if let body = cachedCars[carName] {
@@ -532,9 +568,10 @@ extension GameScene: SKPhysicsContactDelegate {
     
     fileprivate func playerDidCollide(withCoin coin: SKSpriteNode) {
         self.run(coinSound)
+        let name = coin.name
         coin.removeFromParent()
         
-        if let c = Coin(rawValue: coin.name!) {
+        if let id = name, let c = Coin(rawValue: id) {
             score += c.value
         }
     }

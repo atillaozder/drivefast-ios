@@ -49,7 +49,6 @@ enum Category: UInt32 {
 }
 
 // MARK: - SKViewFactory
-
 struct SKViewFactory {
 
     let ngLabelKey = "new_game_label"
@@ -96,7 +95,7 @@ struct SKViewFactory {
         let lbl = buildLabel(text: text, name: pvLabelKey)
         lbl.isUserInteractionEnabled = false
         lbl.horizontalAlignmentMode = .center
-        var lblY = btn.position.y + 8
+        var lblY = btn.position.y + 6
 
         let preferredMaxLayoutWidth: CGFloat = 204
         if #available(iOS 11.0, *) {
@@ -119,7 +118,7 @@ struct SKViewFactory {
             let paragraphStyle = NSMutableParagraphStyle()
             paragraphStyle.alignment = .center
             
-            let font = UIFont(name: lbl.fontName!, size: lbl.fontSize) ?? UIFont.systemFont(ofSize: lbl.fontSize)
+            let font = UIFont(name: lbl.fontName!, size: lbl.fontSize) ?? .systemFont(ofSize: lbl.fontSize)
             
             attrText.addAttributes([
                 .foregroundColor : UIColor.white,
