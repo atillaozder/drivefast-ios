@@ -269,15 +269,12 @@ class GameScene: SKScene {
             x = min(x, roadFrame.maxX)
             y = max(y, roadFrame.minY)
             y = min(y, roadFrame.maxY)
-
-            SKView.animate(withDuration: 0) {
-                player.position = .init(x: x, y: y)
-            }
             
 //            let movePlayer = Actions.movePlayer.rawValue
 //            player.removeAction(forKey: movePlayer)
 //            let moveAction = SKAction.move(to: .init(x: x, y: y), duration: 0)
 //            player.run(moveAction, withKey: movePlayer)
+            player.position = .init(x: x, y: y)
         }
     }
     
