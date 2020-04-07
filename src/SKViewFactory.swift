@@ -48,98 +48,62 @@ enum Category: UInt32 {
     case player = 0x1
 }
 
+// MARK: - ViewKey
+enum ViewKey: String {
+    case newGame = "new_game"
+    case advertisement = "advertisement"
+}
+
 // MARK: - SKViewFactory
 struct SKViewFactory {
 
-    let ngLabelKey = "new_game_label"
-    let ngBtnKey = "new_game_button"
-    let pvLabelKey = "play_video_label"
-    let pvBtnKey = "play_video_button"
-    let iOS10pvLabelKey = "play_video_label_iOS10"
-    
     static let fontName: String = "AmericanTypewriter-semibold"
     
-    func childNodeNames() -> [String] {
-        return [ngLabelKey, ngBtnKey, pvLabelKey, pvBtnKey, iOS10pvLabelKey]
+    private var id: String {
+        if Locale.current.identifier == "tr_TR" {
+            return "tr"
+        } else {
+            return "en"
+        }
     }
     
-    func buildLabel(text: String, name: String) -> SKLabelNode {
+    func buildScoreLabel(in rect: CGRect) -> SKLabelNode {
         let lbl = SKLabelNode(fontNamed: SKViewFactory.fontName)
-        lbl.fontSize = 24
-        lbl.name = name
+        lbl.fontSize = UIDevice.current.isPad ? 36 : 24
+        lbl.position = CGPoint(x: rect.midX, y: 0)
         lbl.zPosition = 999
-        lbl.text = text
         return lbl
     }
-    
-    func buildNewGameButton(rect: CGRect) -> (button: SKShapeNode, label: SKLabelNode) {
-        let btn = buildButton(name: ngBtnKey, color: UIColor(red: 249, green: 220, blue: 92))
+
+    func buildNewGameButton(in rect: CGRect) -> SKSpriteNode {
+        let imageName = "newgame_" + id
+        let btn = SKSpriteNode(imageNamed: imageName)
+        let size: CGSize = UIDevice.current.isPad ?
+            .init(width: 360, height: 67.5) :
+            .init(width: 240, height: 45)
+        
+        btn.aspectFit(to: size)
         btn.position = .init(x: rect.midX, y: rect.midY + 25)
-                
-        let lbl = buildLabel(text: MainStrings.newGame.localized, name: ngLabelKey)
-        lbl.position = .init(x: rect.midX, y: btn.position.y - 8)
-        lbl.isUserInteractionEnabled = false
-        return (btn, lbl)
+        btn.zPosition = 999
+        btn.name = ViewKey.newGame.rawValue
+        return btn
     }
     
-    func buildPlayVideoButton(rect: CGRect) -> (button: SKShapeNode, label: SKLabelNode) {
-        let btnHeight: CGFloat = 80
-        let btn = buildButton(name: pvBtnKey, color: .systemTeal, height: btnHeight)
-        btn.position = .init(x: rect.midX, y: rect.midY - 25 - 32)
+    func buildAdvertisementButton(in rect: CGRect) -> SKSpriteNode {
+        let imageName = "adv_" + id
+        let btn = SKSpriteNode(imageNamed: imageName)
+        let size: CGSize = UIDevice.current.isPad ?
+            .init(width: 360, height: 120) :
+            .init(width: 240, height: 80)
         
-        var text = MainStrings.viewThisAdPt1.localized
-        if #available(iOS 11.0, *) {
-            text = MainStrings.viewThisAdPt1.localized + " " + MainStrings.viewThisAdPt2.localized
-        }
-                
-        let lbl = buildLabel(text: text, name: pvLabelKey)
-        lbl.isUserInteractionEnabled = false
-        lbl.horizontalAlignmentMode = .center
-        var lblY = btn.position.y + 6
-
-        let preferredMaxLayoutWidth: CGFloat = 204
-        if #available(iOS 11.0, *) {
-            lbl.numberOfLines = 3
-            lbl.lineBreakMode = .byWordWrapping
-            lbl.preferredMaxLayoutWidth = preferredMaxLayoutWidth
-            lblY -= 36
-        }
+        btn.aspectFit(to: size)
         
-        let labelFrame = lbl.calculateAccumulatedFrame()
-        if labelFrame.width > preferredMaxLayoutWidth || labelFrame.height > btnHeight {
-            lbl.fontSize = 20
-            if #available(iOS 11.0, *) {
-                lblY -= 6
-            }
-        }
+        let originY = rect.midY - 25 - 24
+        let posY = UIDevice.current.isPad ? originY - 40 : originY
+        btn.position = .init(x: rect.midX, y: posY)
         
-        if #available(iOS 11.0, *) {
-            let attrText = NSMutableAttributedString(string: text)
-            let paragraphStyle = NSMutableParagraphStyle()
-            paragraphStyle.alignment = .center
-            
-            let font = UIFont(name: lbl.fontName!, size: lbl.fontSize) ?? .systemFont(ofSize: lbl.fontSize)
-            
-            attrText.addAttributes([
-                .foregroundColor : UIColor.white,
-                .font : font,
-                .paragraphStyle: paragraphStyle
-            ], range: NSRange(location: 0, length: text.count))
-            
-            lbl.attributedText = attrText
-        }
-
-        lbl.position = .init(x: rect.midX, y: lblY)
-        return (btn, lbl)
-    }
-        
-    func buildButton(name: String, color: UIColor, height: CGFloat = 50) -> SKShapeNode {
-        let btn = SKShapeNode(rectOf: .init(width: 260, height: height), cornerRadius: 10)
-        btn.fillColor = color
-        btn.lineWidth = 4
-        btn.strokeColor = color.darker()
-        btn.name = name
-        btn.zPosition = 998
+        btn.zPosition = 999
+        btn.name = ViewKey.advertisement.rawValue
         return btn
     }
     
@@ -182,12 +146,24 @@ extension UserDefaults {
 
 // MARK: - SKSpriteNode
 extension SKSpriteNode {
-    func scaleAspectFill(to size: CGSize) {
+    func aspectFill(to size: CGSize) {
         if texture != nil {
-            self.size = texture!.size()
-            let vRatio = size.height / self.texture!.size().height
-            let hRatio = size.width /  self.texture!.size().width
-            let ratio = hRatio > vRatio ? hRatio : vRatio
+            let textureSize = self.texture!.size()
+            self.size = textureSize
+            let vRatio = size.height / textureSize.height
+            let hRatio = size.width /  textureSize.width
+            let ratio = max(hRatio, vRatio)
+            self.setScale(ratio)
+        }
+    }
+    
+    func aspectFit(to size: CGSize) {
+        if texture != nil {
+            let textureSize = self.texture!.size()
+            self.size = textureSize
+            let vRatio = size.height / textureSize.height
+            let hRatio = size.width /  textureSize.width
+            let ratio = min(hRatio, vRatio)
             self.setScale(ratio)
         }
     }

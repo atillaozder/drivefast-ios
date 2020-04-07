@@ -21,7 +21,6 @@ protocol SceneDelegate: class {
 }
 
 // MARK: - GameScene
-
 class GameScene: SKScene {
     
     // MARK: - Variables
@@ -77,12 +76,10 @@ class GameScene: SKScene {
         return node
     }()
     
-    lazy var roadLineNode: SKShapeNode = {
-        let node = SKShapeNode(rectOf: .init(width: 6, height: 30))
+    lazy var roadLineNode: SKSpriteNode = {
+        let node = SKSpriteNode(imageNamed: "road-line")
         node.zPosition = -1
-        let color = UIColor(red: 240, green: 240, blue: 240)
-        node.fillColor = color
-        node.strokeColor = color
+        node.size = .init(width: 6, height: 30)
         return node
     }()
     
@@ -209,7 +206,9 @@ class GameScene: SKScene {
             self.isPaused = true
             self.action(forKey: Actions.addCar.rawValue)?.speed = 0
             setupNewGameButton()
-            setupPlayVideoButton()
+            
+            let btn = SKViewFactory().buildAdvertisementButton(in: frame)
+            addChild(btn)
         } else {
             self.sceneDelegate?.scene(self, shouldPresentMenuScene: true)
         }
@@ -226,7 +225,7 @@ class GameScene: SKScene {
             node.size = size
             node.position = CGPoint(x: posX, y: posY)
             node.zPosition = 2
-            node.scaleAspectFill(to: size)
+            node.aspectFill(to: size)
             
             let body = SKPhysicsBody(texture: texture, size: size)
             body.collisionBitMask = 0
@@ -279,26 +278,8 @@ class GameScene: SKScene {
     }
     
     func setupNewGameButton() {
-        let tuple = SKViewFactory().buildNewGameButton(rect: frame)
-        addChild(tuple.button)
-        addChild(tuple.label)
-    }
-    
-    private func setupPlayVideoButton() {
-        let tuple = SKViewFactory().buildPlayVideoButton(rect: frame)
-        addChild(tuple.button)
-        addChild(tuple.label)
-        
-        if #available(iOS 11.0, *) {
-            return
-        } else {
-            let lbl = tuple.label
-            let remainingTextLabel = lbl.copy() as! SKLabelNode
-            remainingTextLabel.name = SKViewFactory().iOS10pvLabelKey
-            remainingTextLabel.text = MainStrings.viewThisAdPt2.localized
-            remainingTextLabel.position = CGPoint(x: lbl.position.x, y: lbl.position.y - 28)
-            addChild(remainingTextLabel)
-        }
+        let btn = SKViewFactory().buildNewGameButton(in: frame)
+        addChild(btn)
     }
     
     @discardableResult
@@ -324,11 +305,10 @@ class GameScene: SKScene {
             let location = touch.location(in: self)
             
             if let nodeName = self.atPoint(location).name {
-                let factory = SKViewFactory()
                 switch nodeName {
-                case factory.ngLabelKey, factory.ngBtnKey:
+                case ViewKey.newGame.rawValue:
                     didTapNewGame()
-                case factory.pvLabelKey, factory.iOS10pvLabelKey, factory.pvBtnKey:
+                case ViewKey.advertisement.rawValue:
                     playVideo()
                 default:
                     break
@@ -356,10 +336,9 @@ class GameScene: SKScene {
         self.sceneDelegate?.scene(self, shouldPresentRewardBasedVideoAd: true)
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-            SKViewFactory().childNodeNames().forEach { (name) in
-                self.childNode(withName: name)?.removeFromParent()
-            }
-            
+            self.childNode(withName: ViewKey.newGame.rawValue)?.removeFromParent()
+            self.childNode(withName: ViewKey.advertisement.rawValue)?.removeFromParent()
+
             self.enumerateChildNodes(withName: Cars.car.rawValue) { (node, ptr) in
                 node.removeFromParent()
             }
@@ -379,7 +358,7 @@ class GameScene: SKScene {
         
         var posX = self.roadNode.frame.minX
         for _ in 1..<Int(scaleRatio) {
-            if let line = self.roadLineNode.copy() as? SKShapeNode {
+            if let line = self.roadLineNode.copy() as? SKSpriteNode {
                 posX += (frame.width / scaleRatio)
                 line.position = .init(x: posX, y: posY)
                 DispatchQueue.main.async { [weak self] in

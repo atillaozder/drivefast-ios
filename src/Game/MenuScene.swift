@@ -10,7 +10,6 @@ import SpriteKit
 import GameplayKit
 
 // MARK: - MenuScene
-
 class MenuScene: GameScene {
     
     override func didMove(to view: SKView) {
@@ -19,30 +18,29 @@ class MenuScene: GameScene {
         setupNewGameButton()
         setupScores()
     }
-        
+            
     private func setupScores() {
-        
-        func buildLabel() -> SKLabelNode {
-            let lbl = SKLabelNode(fontNamed: SKViewFactory.fontName)
-            lbl.fontSize = 24
-            lbl.position = CGPoint(x: frame.midX, y: 0)
-            lbl.zPosition = 999
-            return lbl
+        var posY = frame.midY - 36
+        if UIDevice.current.isPad {
+            posY -= 32
         }
         
-        var posY = frame.midY - 36
         let score = UserDefaults.standard.getScore()
         if score > 0 {
-            let scoreLabel = buildLabel()
+            let scoreLabel = SKViewFactory().buildScoreLabel(in: frame)
             scoreLabel.position.y = posY
             scoreLabel.text = MainStrings.score.localized + ": \(score)"
             addChild(scoreLabel)
             posY -= 36
+            
+            if UIDevice.current.isPad {
+                posY -= 16
+            }
         }
         
         let bestScore = UserDefaults.standard.getBestScore()
         if bestScore > 0 {
-            let bestScoreLabel = buildLabel()
+            let bestScoreLabel = SKViewFactory().buildScoreLabel(in: frame)
             bestScoreLabel.position.y = posY
             bestScoreLabel.text = MainStrings.best.localized + ": \(bestScore)"
             addChild(bestScoreLabel)
