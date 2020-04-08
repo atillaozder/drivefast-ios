@@ -22,7 +22,7 @@ class MenuScene: GameScene {
     private func setupScores() {
         var posY = frame.midY - 36
         if UIDevice.current.isPad {
-            posY -= 32
+            posY -= 24
         }
         
         let score = UserDefaults.standard.getScore()

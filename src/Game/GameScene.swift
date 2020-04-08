@@ -206,9 +206,7 @@ class GameScene: SKScene {
             self.isPaused = true
             self.action(forKey: Actions.addCar.rawValue)?.speed = 0
             setupNewGameButton()
-            
-            let btn = SKViewFactory().buildAdvertisementButton(in: frame)
-            addChild(btn)
+            setupAdvertisementButton()
         } else {
             self.sceneDelegate?.scene(self, shouldPresentMenuScene: true)
         }
@@ -279,6 +277,11 @@ class GameScene: SKScene {
     
     func setupNewGameButton() {
         let btn = SKViewFactory().buildNewGameButton(in: frame)
+        addChild(btn)
+    }
+    
+    func setupAdvertisementButton() {
+        let btn = SKViewFactory().buildAdvertisementButton(in: frame)
         addChild(btn)
     }
     

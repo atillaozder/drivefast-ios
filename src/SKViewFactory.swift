@@ -60,11 +60,7 @@ struct SKViewFactory {
     static let fontName: String = "AmericanTypewriter-semibold"
     
     private var id: String {
-        if Locale.current.identifier == "tr_TR" {
-            return "tr"
-        } else {
-            return "en"
-        }
+        return Locale.current.identifier == "tr_TR" ? "tr" : "en"
     }
     
     func buildScoreLabel(in rect: CGRect) -> SKLabelNode {
@@ -79,11 +75,11 @@ struct SKViewFactory {
         let imageName = "newgame_" + id
         let btn = SKSpriteNode(imageNamed: imageName)
         let size: CGSize = UIDevice.current.isPad ?
-            .init(width: 360, height: 67.5) :
-            .init(width: 240, height: 45)
+            .init(width: 300, height: 75) :
+            .init(width: 200, height: 50)
         
         btn.aspectFit(to: size)
-        btn.position = .init(x: rect.midX, y: rect.midY + 25)
+        btn.position = .init(x: rect.midX, y: rect.midY + (size.height / 2))
         btn.zPosition = 999
         btn.name = ViewKey.newGame.rawValue
         return btn
@@ -93,13 +89,13 @@ struct SKViewFactory {
         let imageName = "adv_" + id
         let btn = SKSpriteNode(imageNamed: imageName)
         let size: CGSize = UIDevice.current.isPad ?
-            .init(width: 360, height: 120) :
-            .init(width: 240, height: 80)
+            .init(width: 300, height: 120) :
+            .init(width: 200, height: 80)
         
         btn.aspectFit(to: size)
         
-        let originY = rect.midY - 25 - 24
-        let posY = UIDevice.current.isPad ? originY - 40 : originY
+        let midY = rect.midY - 25 - 32
+        let posY = UIDevice.current.isPad ? midY - 24 : midY
         btn.position = .init(x: rect.midX, y: posY)
         
         btn.zPosition = 999
