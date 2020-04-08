@@ -48,7 +48,7 @@ class GameScene: SKScene {
         
         let car = SKSpriteNode(texture: texture)
         let posY = (car.size.height / 2) + 20 + insets.bottom
-        car.position = CGPoint(x: frame.width / 2, y: posY)
+        car.position = CGPoint(x: (frame.width / 2) + 5, y: posY)
         car.zPosition = 1
         car.name = Cars.player.rawValue
         
@@ -394,7 +394,7 @@ class GameScene: SKScene {
         car.position = CGPoint(x: CGFloat(randomPos), y: frame.maxY + car.size.height)
         car.name = Cars.car.rawValue
         car.zPosition = 1
-                    
+
         if let body = cachedCars[carName] {
             car.physicsBody = (body.copy() as! SKPhysicsBody)
         } else {
@@ -415,7 +415,7 @@ class GameScene: SKScene {
         }
         
         car.setScale(to: frame.width / scaleRatio)
-        
+
         var actions = [SKAction]()
         actions.append(.moveTo(
             y: -car.size.height / 2,

@@ -60,7 +60,7 @@ struct SKViewFactory {
     static let fontName: String = "AmericanTypewriter-semibold"
     
     private var id: String {
-        return Locale.current.identifier == "tr_TR" ? "tr" : "en"
+        return Locale.current.identifier.contains("tr") ? "tr" : "en"
     }
     
     func buildScoreLabel(in rect: CGRect) -> SKLabelNode {
