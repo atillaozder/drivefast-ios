@@ -9,33 +9,43 @@
 import UIKit
 import SpriteKit
 
-// MARK: - SKScene
-extension SKScene {
-    var scaleRatio: CGFloat {
-        return UIDevice.current.isPad ? 6 : 4
-    }
-}
-
 // MARK: - UserDefaults
 extension UserDefaults {
+    
+    var score: Int {
+       return integer(forKey: "score")
+    }
+    
+    var bestScore: Int {
+        return integer(forKey: "best_score")
+    }
+    
+    var session: Double {
+        return double(forKey: "session")
+    }
+    
+    var isSoundOn: Bool {
+        return integer(forKey: "sound_preference") == 0
+    }
     
     func setScore(_ score: Int) {
         set(score, forKey: "score")
         setBestScore(score)
     }
     
-    func getScore() -> Int {
-        return integer(forKey: "score")
-    }
-    
     func setBestScore(_ score: Int) {
-        if score > getBestScore() {
+        if score > bestScore {
             set(score, forKey: "best_score")
         }
     }
     
-    func getBestScore() -> Int {
-        return integer(forKey: "best_score")
+    func setSession(_ newValue: Double? = nil) {
+        let value = newValue ?? (session + 1.0)
+        set(value, forKey: "session")
+    }
+        
+    func setSound(_ newValue: Bool) {
+        set(!newValue, forKey: "sound_preference")
     }
 }
 
@@ -83,6 +93,10 @@ extension UIColor {
         )
     }
     
+    class var menuButton: UIColor {
+        return UIColor(red: 86, green: 169, blue: 215)
+    }
+    
     class var roadColor: UIColor {
         return .init(red: 33, green: 44, blue: 48)
     }
@@ -119,11 +133,78 @@ extension UIDevice {
     }
 }
 
+// MARK: - FontNameRepresentable
+protocol FontNameRepresentable {
+    var fontName: String { get }
+}
+
+enum AmericanTypeWriter: String, FontNameRepresentable {
+    case bold = "-Bold"
+    case semibold = "-Semibold"
+    case condensed = "-Condensed"
+    case condensedBold = "-CondensedBold"
+    case light = "-Light"
+    case regular = ""
+    
+    var fontName: String {
+        return "AmericanTypewriter\(rawValue)"
+    }
+}
+
 // MARK: - UIFont
 extension UIFont {
-    static let fontName: String = "AmericanTypewriter-semibold"
+    static func buildFont(name: String, size: CGFloat) -> UIFont {
+        guard let font = UIFont(name: name, size: size) else {
+            return .boldSystemFont(ofSize: size)
+        }
+        
+        if #available(iOS 11.0, *) {
+            return UIFontMetrics.default.scaledFont(for: font)
+        }
+        
+        return font
+    }
     
-    static func defaultFont(ofSize size: CGFloat) -> UIFont {
-        return UIFont(name: fontName, size: size) ?? .systemFont(ofSize: size)
+    static func buildFont(
+        _ font: FontNameRepresentable = AmericanTypeWriter.bold,
+        withSize size: CGFloat? = nil) -> UIFont {
+        let defaultSize: CGFloat = UIDevice.current.isPad ? 30 : 24
+        let wrapped: CGFloat = size == nil ? defaultSize : size!
+        return buildFont(name: font.fontName, size: wrapped)
+    }
+}
+
+// MARK: - UIView
+extension UIView {
+    static let soundButtonID: Int = 1000
+    
+    func addTapGesture(target: Any?, action: Selector) {
+        let tapGesture = UITapGestureRecognizer(target: target, action: action)
+        self.isUserInteractionEnabled = true
+        self.addGestureRecognizer(tapGesture)
+    }
+    
+    func scale(_ factor: CGFloat = 0.9, withDuration duration: TimeInterval = 0.1) {
+        UIView.animate(withDuration: duration, animations: {
+            self.transform = .init(scaleX: factor, y: factor)
+        }) { (finished) in
+            UIView.animate(withDuration: duration) {
+                self.transform = .identity
+            }
+        }
+    }
+}
+
+// MARK: - CGSize
+extension CGSize {
+    static func initialize(_ constant: CGFloat) -> CGSize {
+        return .init(width: constant, height: constant)
+    }
+}
+
+// MARK: - UIEdgeInsets
+extension UIEdgeInsets {
+    static func initialize(_ constant: CGFloat) -> UIEdgeInsets {
+        return .init(top: constant, left: constant, bottom: constant, right: constant)
     }
 }

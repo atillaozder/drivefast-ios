@@ -10,11 +10,31 @@ import UIKit
 import SpriteKit
 
 // MARK: - Sound
-struct Sound {
-    let coinFlip = SKAction.playSoundFileNamed("coin.wav", waitForCompletion: false)
+enum Sound {
+    case coin, crash, horns, brake
+}
+
+// MARK: - SoundManager
+struct SoundManager {
+    let coin = SKAction.playSoundFileNamed("coin.wav", waitForCompletion: false)
     let crash = SKAction.playSoundFileNamed("crash.wav", waitForCompletion: false)
     let horns = SKAction.playSoundFileNamed("horns.mp3", waitForCompletion: false)
     let brake = SKAction.playSoundFileNamed("brake.wav", waitForCompletion: false)
+    
+    func playSound(_ sound: Sound, in scene: SKScene) {
+        if UserDefaults.standard.isSoundOn {
+            switch sound {
+            case .coin:
+                scene.run(coin)
+            case .crash:
+                scene.run(crash)
+            case .horns:
+                scene.run(horns)
+            case .brake:
+                scene.run(brake)
+            }
+        }
+    }
 }
 
 // MARK: - RoadBoundingBox
@@ -50,12 +70,67 @@ enum Category: UInt32 {
 
 // MARK: - MainStrings
 enum MainStrings: String {
-    case score = "score"
-    case best = "bestScore"
-    case newGame = "newGame"
+    case scoreTitle = "scoreTitle"
+    case bestScoreTitle = "bestScoreTitle"
+    case newGameTitle = "newGameTitle"
     case advButtonTitle = "advButtonTitle"
+    case settingsTitle = "settingsTitle"
+    case achievementsTitle = "achievementsTitle"
+    case backToMenuTitle = "backToMenuTitle"
+    case rateTitle = "rateTitle"
+    case supportTitle = "supportTitle"
+    case privacyTitle = "privacyTitle"
+    case moreAppTitle = "moreAppTitle"
+    case shareTitle = "shareTitle"
     
     var localized: String {
         return NSLocalizedString(self.rawValue, comment: "")
+    }
+}
+
+// MARK: - AdvHelper
+struct AdvHelper {
+    static var interstitialIdentifier: String {
+        #if DEBUG
+        return "ca-app-pub-3940256099942544/4411468910"
+        #else
+        return "ca-app-pub-3176546388613754/6987129300"
+        #endif
+    }
+    
+    static var rewardBasedVideoAdIdentifier: String {
+        #if DEBUG
+        return "ca-app-pub-3940256099942544/1712485313"
+        #else
+        return "ca-app-pub-3176546388613754/7634389777"
+        #endif
+    }
+}
+
+// MARK: - URLNavigator
+class URLNavigator {
+    
+    static let shared = URLNavigator()
+    
+    private init() {}
+    
+    @discardableResult
+    func open(_ url: URL) -> Bool {
+        let application = UIApplication.shared
+        guard application.canOpenURL(url) else { return false }
+        
+        if #available(iOS 10.0, *) {
+            application.open(url, options: [:], completionHandler: nil)
+        } else {
+            application.openURL(url)
+        }
+        
+        return true
+    }
+    
+    @discardableResult
+    func open(_ urlString: String) -> Bool {
+        guard let url = URL(string: urlString) else { return false }
+        return open(url)
     }
 }

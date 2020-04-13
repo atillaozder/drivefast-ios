@@ -6,7 +6,15 @@
   Copyright © 2020 Atilla Özder. All rights reserved.
 */
 
-"score" = "Skor";
-"bestScore" = "En iyi";
-"newGame" = "Yeni Oyun";
-"advButtonTitle" = "Yarışa devam edebilmek için bu reklamı izle";
+"scoreTitle" = "Skor";
+"bestScoreTitle" = "En iyi";
+"newGameTitle" = "Yeni Oyun";
+"advButtonTitle" = "Yarışa devam edebilmek için bir reklam izle";
+"settingsTitle" = "Ayarlar";
+"achievementsTitle" = "Başarılar";
+"backToMenuTitle" = "Menüye Geri Dön";
+"rateTitle" = "Bu Uygulamaya Puan Ver";
+"supportTitle" = "Destek";
+"moreAppTitle" = "Diğer Uygulamalar";
+"privacyTitle" = "Gizlilik Sözleşmesi";
+"shareTitle" = "Bu Uygulamayı Paylaş";

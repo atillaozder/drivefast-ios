@@ -12,10 +12,12 @@ import CoreMotion
 
 // MARK: - Global Variables
 public var gameCount: Double = 0
+public let scaleRatio: CGFloat = UIDevice.current.isPad ? 6 : 4
 
+// MARK: - GameState
 enum GameState: Int {
     case menu
-    case advertisementMenu
+    case advMenu
 }
 
 // MARK: - SceneDelegate
@@ -26,30 +28,28 @@ protocol SceneDelegate: class {
 
 // MARK: - GameScene
 class GameScene: SKScene {
-    
+        
     // MARK: - Properties
     private let motionManager = CMMotionManager()
-    let sound = Sound()
-
+    let soundManager = SoundManager()
     weak var sceneDelegate: SceneDelegate?
     
     lazy var playerNode: SKSpriteNode = {
-        let carName = "car1"
+        let carName = "player"
         let texture = SKTexture(imageNamed: carName)
         let _ = texture.size()
         
         let car = SKSpriteNode(texture: texture)
-        let posY = (car.size.height / 2) + 20 + insets.bottom
-        car.position = CGPoint(x: (frame.width / 2) + 5, y: posY)
         car.zPosition = 1
         car.name = Cars.player.rawValue
+        
         setCarPhysicsBody(car, from: texture)
-
         car.physicsBody?.isDynamic = true
         car.physicsBody?.categoryBitMask = Category.player.rawValue
         car.physicsBody?.contactTestBitMask = Category.car.rawValue
-        car.setScale(to: frame.width / (scaleRatio - 1))
-
+        
+        let ratio = UIDevice.current.isPad ? scaleRatio + 5.5 : scaleRatio + 2.5
+        car.setScale(to: frame.width / ratio)
         return car
     }()
     
@@ -71,8 +71,8 @@ class GameScene: SKScene {
     }()
     
     lazy var scoreLabel: SKLabelNode = {
-        let lbl = SKLabelNode(text: MainStrings.score.localized + ": 0")
-        lbl.fontName = UIFont.fontName
+        let lbl = SKLabelNode(text: MainStrings.scoreTitle.localized + ": 0")
+        lbl.fontName = "AmericanTypeWriter" + AmericanTypeWriter.semibold.rawValue
         lbl.fontSize = UIDevice.current.isPad ? 36 : 28
         lbl.fontColor = UIColor.white
         lbl.zPosition = 2
@@ -97,7 +97,6 @@ class GameScene: SKScene {
             if diff >= 10 {
                 // it means a coin has taken
                 let division = (newScore / divisor).rounded(.down)
-                print(divisor * division)
                 if score < (divisor * division) && newScore > (divisor * division) {
                     self.setGameDifficulty()
                 }
@@ -107,7 +106,7 @@ class GameScene: SKScene {
                 }
             }
         } didSet {
-            scoreLabel.text = MainStrings.score.localized + ": \(Int(score))"
+            scoreLabel.text = MainStrings.scoreTitle.localized + ": \(Int(score))"
         }
     }
         
@@ -117,18 +116,25 @@ class GameScene: SKScene {
     lazy var gameOver: Bool = false
 
     var remainingLives: [SKSpriteNode] = []
-    var cachedCars = [String: SKPhysicsBody]()
+    var cachedCars = [Car: SKPhysicsBody]()
+    
+    private lazy var cars: [Car] = {
+        var cars = [Car]()
+        for idx in 1...20 { cars.append(.init(index: idx)) }
+        return cars
+    }()
     
     /// game difficulty algorithm properties
     private var appearanceDuration: TimeInterval = 3
     private var waitingDuration: TimeInterval = 1
-    private var appearanceDurationThreshold: TimeInterval = 1.5
-    private var waitingDurationThreshold: TimeInterval = 0.5
-    
+    private var appearanceThreshold: TimeInterval = 1.5
+    private var waitingThreshold: TimeInterval = 0.5
+
     // MARK: - Game Life Cycle
     override func didMove(to view: SKView) {
         super.didMove(to: view)
-        startGame()
+        self.backgroundColor = .roadColor
+        initiateGame()
         
         self.addChild(roadNode)
         self.physicsWorld.gravity = CGVector(dx: 0, dy: 0)
@@ -166,10 +172,10 @@ class GameScene: SKScene {
     }
     
     func setGameDifficulty() {
-        if appearanceDuration > appearanceDurationThreshold
-            || waitingDuration > waitingDurationThreshold {
-            appearanceDuration = max(appearanceDurationThreshold, appearanceDuration - 0.5)
-            waitingDuration = max(waitingDurationThreshold, waitingDuration - 0.1)
+        if appearanceDuration > appearanceThreshold ||
+            waitingDuration > waitingThreshold {
+            appearanceDuration = max(appearanceThreshold, appearanceDuration - 0.5)
+            waitingDuration = max(waitingThreshold, waitingDuration - 0.1)
             initiateCarSequence()
         }
     }
@@ -183,10 +189,10 @@ class GameScene: SKScene {
     
     private func movePlayerToMiddle() {
         let road = getRoadBounds()
-        playerNode.position = .init(x: road.midX, y: road.minY)
+        playerNode.position = .init(x: road.midX, y: road.minY + 10)
     }
     
-    func startGame() {
+    func initiateGame() {
         gameCount += 1
         movePlayerToMiddle()
         addChild(playerNode)
@@ -215,20 +221,13 @@ class GameScene: SKScene {
         
         self.setupLives(count: 1)
         self.gameOver = false
-        self.isPaused = false
-        if let addCarSeq = self.action(forKey: Actions.addCar.rawValue) {
-            addCarSeq.speed = 1
-        }
+        self.pauseGame(false)
     }
     
     fileprivate func stopGame() {
         if !gotReward {
-            self.isPaused = true
-            if let addCarSeq = self.action(forKey: Actions.addCar.rawValue) {
-                addCarSeq.speed = 0
-            }
-            
-            self.sceneDelegate?.scene(self, didSetGameState: .advertisementMenu)
+            self.pauseGame(true)
+            self.sceneDelegate?.scene(self, didSetGameState: .advMenu)
         } else {
             self.clearGame()
             self.sceneDelegate?.scene(self, didSetGameState: .menu)
@@ -242,15 +241,21 @@ class GameScene: SKScene {
         explosion.position = playerNode.position
         self.addChild(explosion)
         
-        self.run(sound.crash)
+        soundManager.playSound(.crash, in: self)
         playerNode.removeFromParent()
-        
         self.sceneDelegate?.scene(self, didFinishGameWithScore: score)
 
         self.run(.wait(forDuration: 1)) { [weak self] in
             guard let strongSelf = self else { return }
             explosion.removeFromParent()
             strongSelf.stopGame()
+        }
+    }
+    
+    func pauseGame(_ isPaused: Bool) {
+        self.isPaused = isPaused
+        if let addCarSeq = self.action(forKey: Actions.addCar.rawValue) {
+            addCarSeq.speed = isPaused ? 0 : 1
         }
     }
     
@@ -281,18 +286,18 @@ class GameScene: SKScene {
     // MARK: - View Initialization
     private func setupLives(count: Int) {
         let size = UIDevice.current.isPad ?
-            CGSize(width: 80, height: 100) :
-            CGSize(width: 50, height: 62.5)
+            CGSize(width: 60, height: 90) :
+            CGSize(width: 30, height: 60)
         
         var posX = frame.maxX - (size.width / 2) - 6
         let posY = frame.maxY - insets.top - (size.height / 2) - 16
         for _ in 0..<count {
-            let texture = SKTexture(imageNamed: "car1")
+            let texture = SKTexture(imageNamed: "player")
             let node = SKSpriteNode(texture: texture)
             node.size = size
             node.position = CGPoint(x: posX, y: posY)
             node.zPosition = 2
-            node.aspectFill(to: size)
+            node.aspectFit(to: size)
             
             let body = SKPhysicsBody(texture: texture, size: size)
             body.collisionBitMask = 0
@@ -300,18 +305,15 @@ class GameScene: SKScene {
             
             remainingLives.append(node)
             addChild(node)
-            posX -= ((size.width / 2) + 6)
+            posX -= ((size.width / 2) + 20)
         }
     }
         
     private func getRoadBounds() -> RoadBoundingBox {
-        let playerNodeWidth = playerNode.texture?.size().width ?? playerNode.size.width
-        let playerNodeInnerPadding: CGFloat = 10
+        let w = playerNode.size.width / 2
+        let h = playerNode.size.height / 2
         
-        let w = CGFloat(Int(playerNodeWidth / scaleRatio)) / 2
-        let h = (playerNode.size.height / 2)
-        
-        let minX = self.frame.minX + w + playerNodeInnerPadding
+        let minX = self.frame.minX + w
         let maxX = self.frame.maxX - w
         let minY = self.frame.minY + h
         let maxY = self.frame.maxY - h
@@ -384,11 +386,10 @@ class GameScene: SKScene {
     }
     
     private func addRandomCar() {
-        var cars = ["car2", "car3", "car4", "car5", "car6", "car7", "car8", "car9"]
         cars.shuffle()
+        let car = cars[0]
         
-        let carName = cars[0]
-        let texture = SKTexture(imageNamed: carName)
+        let texture = SKTexture(imageNamed: car.imageName)
         let _ = texture.size()
         
         let roadMinX = Int(self.frame.minX + 30)
@@ -396,22 +397,24 @@ class GameScene: SKScene {
         
         var randomPos: Int = Int.random(in: roadMinX..<roadMaxX)
         if #available(iOS 9.0, *) {
-            let randomDist = GKRandomDistribution(lowestValue: roadMinX, highestValue: roadMaxX)
+            let randomDist = GKRandomDistribution(
+                lowestValue: roadMinX, highestValue: roadMaxX)
             randomPos = randomDist.nextInt()
         }
         
-        let car = SKSpriteNode(texture: texture)
-        car.position = CGPoint(x: CGFloat(randomPos), y: frame.maxY + car.size.height)
-        car.name = Cars.car.rawValue
-        car.zPosition = 1
+        let carNode = SKSpriteNode(texture: texture)
+        carNode.position = CGPoint(
+            x: CGFloat(randomPos), y: frame.maxY + carNode.size.height)
+        carNode.name = Cars.car.rawValue
+        carNode.zPosition = 1
 
-        if let body = cachedCars[carName] {
-            car.physicsBody = (body.copy() as! SKPhysicsBody)
+        if let body = cachedCars[car] {
+            carNode.physicsBody = (body.copy() as! SKPhysicsBody)
         } else {
-            setCarPhysicsBody(car, from: texture)
+            setCarPhysicsBody(carNode, from: texture)
             
-            if car.physicsBody != nil {
-                cachedCars[carName] = car.physicsBody
+            if carNode.physicsBody != nil {
+                cachedCars[car] = carNode.physicsBody
             } else {
                 // Physics body is empty, if game is active dont add car to screen
                 if !remainingLives.isEmpty {
@@ -419,12 +422,12 @@ class GameScene: SKScene {
                 }
             }
         }
-        
-        car.setScale(to: frame.width / (scaleRatio - 1))
+
+        carNode.setScale(to: frame.width / car.ratio)
 
         var actions = [SKAction]()
         actions.append(.moveTo(
-            y: -car.size.height / 2,
+            y: -carNode.size.height / 2,
             duration: appearanceDuration))
 
         let increaseScore = SKAction.run {
@@ -437,8 +440,8 @@ class GameScene: SKScene {
         actions.append(.removeFromParent())
         
         DispatchQueue.main.async {
-            self.addChild(car)
-            car.run(.sequence(actions))
+            self.addChild(carNode)
+            carNode.run(.sequence(actions))
         }
     }
     

@@ -6,7 +6,15 @@
   Copyright © 2020 Atilla Özder. All rights reserved.
 */
 
-"score" = "Score";
-"bestScore" = "Best";
-"newGame" = "New Game";
+"scoreTitle" = "Score";
+"bestScoreTitle" = "Best";
+"newGameTitle" = "New Game";
 "advButtonTitle" = "View this ad to continue racing";
+"settingsTitle" = "Settings";
+"achievementsTitle" = "Achievements";
+"backToMenuTitle" = "Go Back to Menu";
+"rateTitle" = "Rate";
+"supportTitle" = "Support";
+"moreAppTitle" = "More App";
+"privacyTitle" = "Privacy Policy";
+"shareTitle" = "Share";

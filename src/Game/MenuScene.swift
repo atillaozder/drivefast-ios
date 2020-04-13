@@ -17,7 +17,7 @@ class MenuScene: GameScene {
         let _ = playerNode.texture?.size()
     }
             
-    override func startGame() {
+    override func initiateGame() {
         return
     }
     
