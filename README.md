@@ -19,9 +19,11 @@ Features:
 
 ## Appearance
 
-![alt text](https://github.com/atillaozder/retro-ios/blob/master/resources/screenshots/ipx/ipx1.png | width=300)
-![alt text](https://github.com/atillaozder/retro-ios/blob/master/resources/screenshots/ipx/ipx3.png | width=300)
-![alt text](https://github.com/atillaozder/retro-ios/blob/master/resources/screenshots/ipx/ipx5.png | width=300)
+<p>
+  <img src="https://github.com/atillaozder/retro-ios/blob/master/resources/screenshots/ipx/ipx1.png" alt="gameplay_1" width="250">
+  <img src="https://github.com/atillaozder/retro-ios/blob/master/resources/screenshots/ipx/ipx3.png" alt="gameplay_2" width="250">
+  <img src="https://github.com/atillaozder/retro-ios/blob/master/resources/screenshots/ipx/ipx5.png" alt="gameplay_3" width="250">
+</p>
 
 ## License
 
