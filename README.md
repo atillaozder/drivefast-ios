@@ -19,9 +19,9 @@ Features:
 
 ## Appearance
 
-<img src="resources/ipx/ipx1" alt="" width="300" height="500">
-<img src="resources/ipx/ipx2" alt="" width="300" height="500">
-<img src="resources/ipx/ipx5" alt="" width="300" height="500">
+![alt text](https://github.com/atillaozder/retro-ios/blob/master/resources/screenshots/ipx/ipx1.png)
+![alt text](https://github.com/atillaozder/retro-ios/blob/master/resources/screenshots/ipx/ipx3.png)
+![alt text](https://github.com/atillaozder/retro-ios/blob/master/resources/screenshots/ipx/ipx5.png)
 
 ## License
 
