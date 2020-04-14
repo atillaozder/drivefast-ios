@@ -138,13 +138,20 @@ class GameScene: SKScene {
         self.addChild(roadNode)
         self.physicsWorld.gravity = CGVector(dx: 0, dy: 0)
         self.physicsWorld.contactDelegate = self
+        
+        if UIDevice.current.isPad {
+            addFlatRoadLine()
+        }
 
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-            let addRoadLineSq: SKAction = .sequence([
-                .wait(forDuration: 0.05),
-                .run(self.addRoadLine, queue: .global())
-            ])
-            self.run(.repeatForever(addRoadLineSq))
+            if !UIDevice.current.isPad {
+                let addRoadLineSq: SKAction = .sequence([
+                    .wait(forDuration: 0.05),
+                    .run(self.addRoadLine, queue: .global())
+                ])
+                self.run(.repeatForever(addRoadLineSq))
+            }
+            
             self.initiateCarSequence()
         }
     }
@@ -284,6 +291,22 @@ class GameScene: SKScene {
             posX += ((size.width / 2) + leftPadding)
         }
     }
+    
+    private func addFlatRoadLine() {
+        var posX = self.roadNode.frame.minX
+        
+        for _ in 1..<Int(scaleRatio) {
+            let lineNode = self.roadLineNode.copy() as! SKSpriteNode
+            lineNode.size.height = self.frame.height * 2
+            
+            posX += (frame.width / scaleRatio)
+            lineNode.position = .init(x: posX, y: self.frame.maxY)
+            
+            DispatchQueue.main.async {
+                self.addChild(lineNode)
+            }
+        }
+    }
         
     private func stopMotionManager() {
         if motionManager.isAccelerometerActive {
@@ -329,81 +352,92 @@ class GameScene: SKScene {
     }
         
     // MARK: - RepeatForever Actions
-    
     private func addRoadLine() {
-        let size: CGSize = .init(width: 8, height: 50)
-        let posY: CGFloat = self.frame.maxY + size.height
+        let height = roadLineNode.size.height + 20
+        let posY: CGFloat = self.frame.maxY + height
         
         var actions = [SKAction]()
-        actions.append(.moveTo(
-            y: -size.height,
-            duration: UIDevice.current.userInterfaceIdiom == .pad ? 1 : 0.5))
+        actions.append(.moveTo(y: -height, duration: 0.5))
         actions.append(.removeFromParent())
         
         var posX = self.roadNode.frame.minX
         for _ in 1..<Int(scaleRatio) {
-            if let line = self.roadLineNode.copy() as? SKSpriteNode {
-                posX += (frame.width / scaleRatio)
-                line.position = .init(x: posX, y: posY)
-                DispatchQueue.main.async { [weak self] in
-                    guard let strongSelf = self else { return }
-                    strongSelf.addChild(line)
-                    line.run(.sequence(actions))
-                }
+            let lineNode = self.roadLineNode.copy() as! SKSpriteNode
+
+            posX += (frame.width / scaleRatio)
+            lineNode.position = .init(x: posX, y: posY)
+            
+            DispatchQueue.main.async {
+                self.addChild(lineNode)
+                lineNode.run(.sequence(actions))
             }
         }
     }
     
     private func addRandomCar() {
-        cars.shuffle()
-        let car = cars[0]
-        
-        let texture = SKTexture(imageNamed: car.imageName)
-        let roadMinX = Int(self.frame.minX + 30)
-        let roadMaxX = Int(self.frame.maxX - 30)
-        
-        let randomDist = GKRandomDistribution(
-            lowestValue: roadMinX, highestValue: roadMaxX)
-        
-        let carNode = SKSpriteNode(texture: texture)
-
-        carNode.name = Cars.car.rawValue
-        carNode.zPosition = 1
-
-        if let body = cachedCars[car] {
-            carNode.physicsBody = (body.copy() as! SKPhysicsBody)
-        } else {
-            setCarPhysicsBody(carNode, from: texture)
+        let addCarClosure: () -> Void = { [weak self] in
+            guard let `self` = self else { return }
             
-            if carNode.physicsBody != nil {
-                cachedCars[car] = carNode.physicsBody
+            self.cars.shuffle()
+            let car = self.cars[0]
+            
+            let texture = SKTexture(imageNamed: car.imageName)
+            let roadMinX = Int(self.frame.minX + 30)
+            let roadMaxX = Int(self.frame.maxX - 30)
+            
+            let randomDist = GKRandomDistribution(
+                lowestValue: roadMinX, highestValue: roadMaxX)
+            
+            let carNode = SKSpriteNode(texture: texture)
+
+            carNode.name = Cars.car.rawValue
+            carNode.zPosition = 1
+
+            if let body = self.cachedCars[car] {
+                carNode.physicsBody = (body.copy() as! SKPhysicsBody)
             } else {
-                // Physics body is empty, if game is active dont add car to screen
-                if !remainingLives.isEmpty {
-                    return
+                self.setCarPhysicsBody(carNode, from: texture)
+                
+                if carNode.physicsBody != nil {
+                    self.cachedCars[car] = carNode.physicsBody
+                } else {
+                    #if DEBUG
+                    // Debug mode is on, continue
+                    #else
+                    // Physics body is empty, if game is active dont add car to screen
+                    if !remainingLives.isEmpty {
+                        return
+                    }
+                    #endif
                 }
             }
-        }
+            
+            carNode.setScale(to: self.frame.width / car.ratio)
+            carNode.position = CGPoint(
+                x: CGFloat(randomDist.nextInt()), y: self.frame.maxY + carNode.size.height)
+            
+            var actions = [SKAction]()
+            actions.append(
+                .moveTo(y: -carNode.size.height / 2, duration: self.appearanceDuration))
 
-        carNode.setScale(to: frame.width / car.ratio)
-        carNode.position = CGPoint(
-            x: CGFloat(randomDist.nextInt()), y: frame.maxY + carNode.size.height)
+            let increaseScore = SKAction.run { [unowned self] in
+                if !self.gameOver {
+                    self.score += 1
+                }
+            }
 
-        var actions = [SKAction]()
-        actions.append(.moveTo(y: -carNode.size.height / 2, duration: appearanceDuration))
-
-        let increaseScore = SKAction.run { [unowned self] in
-            if !self.gameOver {
-                self.score += 1
+            actions.append(increaseScore)
+            actions.append(.removeFromParent())
+            
+            DispatchQueue.main.async {
+                self.addChild(carNode)
+                carNode.run(.sequence(actions))
             }
         }
-
-        actions.append(increaseScore)
-        actions.append(.removeFromParent())
         
-        DispatchQueue.main.async {
-            self.addChild(carNode)
-            carNode.run(.sequence(actions))
+        addCarClosure()
+        if UIDevice.current.isPad {
+            addCarClosure()
         }
     }
     
