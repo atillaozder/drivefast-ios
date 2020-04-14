@@ -1,5 +1,5 @@
 //
-//  AchievementsView.swift
+//  AchievementsMenu.swift
 //  Retro
 //
 //  Created by Atilla Özder on 13.04.2020.
@@ -8,7 +8,9 @@
 
 import UIKit
 
-class AchievementsView: View {
+class AchievementsMenu: Menu {
+    
+    weak var delegate: MenuDelegate?
     
     override func setup() {
         let scoreText = MainStrings.scoreTitle.localized + ": \(UserDefaults.standard.score)"
@@ -24,9 +26,16 @@ class AchievementsView: View {
         labels.alignment = .fill
         
         stackView.addArrangedSubview(labels)
+        
+        backButton.addTarget(self, action: #selector(didTapBack(_:)), for: .touchUpInside)
         stackView.addArrangedSubview(backButton)
         self.isHidden = true
         super.setup()
+    }
+    
+    @objc
+    func didTapBack(_ sender: UIButton) {
+        delegate?.menu(self, didUpdateGameState: .home)
     }
     
     private func buildLabel(withText text: String) -> UILabel {

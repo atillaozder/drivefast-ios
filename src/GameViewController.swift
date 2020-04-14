@@ -10,22 +10,87 @@ import UIKit
 import SpriteKit
 import GoogleMobileAds
 
+// MARK: - GameState
+enum GameState: Int {
+    case playing = 0
+    case advertisement = 1
+    case advPresenting = 2
+    case paused = 3
+    case home
+    case settings
+    case achievements
+    case continued
+}
+
 // MARK: - GameViewController
 class GameViewController: UIViewController {
     
     // MARK: - Properties
-    
-    private var reward: GADAdReward?
-    private var interstitial: GADInterstitial!
-    
     var skView: SKView {
         return self.view as! SKView
     }
     
-    private lazy var menuView = MenuView(frame: view.frame)
-    private lazy var advView = AdvView(frame: view.frame)
-    private lazy var settingsView = SettingsView(frame: view.frame)
-    private lazy var achievementsView = AchievementsView(frame: view.frame)
+    var gameScene: GameScene {
+        return skView.scene as? GameScene ?? .init()
+    }
+    
+    private var previousGameState: GameState = .playing
+    
+    var gameState: GameState = .home {
+        didSet {
+            let menus = [homeMenu, advertisementMenu, settingsMenu, achievementsMenu, playingMenu, pauseMenu]
+            menus.forEach { (menu) in
+                menu.isHidden = true
+            }
+            
+            let shouldPresentNewMenu = previousGameState.rawValue < 4 && gameState == .home
+            
+            if shouldPresentNewMenu {
+                homeMenu.isHidden = false
+                presentMenuScene()
+            } else {
+                switch gameState {
+                case .home:
+                    homeMenu.isHidden = false
+                case .advertisement:
+                    playingMenu.isHidden = false
+                    advertisementMenu.isHidden = false
+                case .achievements:
+                    achievementsMenu.isHidden = false
+                case .settings:
+                    settingsMenu.isHidden = false
+                case .playing:
+                    presentGameScene()
+                case .advPresenting:
+                    playingMenu.isHidden = false
+                    presentAdvertisement()
+                case .paused:
+                    gameScene.pauseGame(true)
+                    playingMenu.isHidden = false
+                    pauseMenu.isHidden = false
+                case .continued:
+                    gameScene.pauseGame(false)
+                    playingMenu.isHidden = false
+                }
+            }
+            
+            previousGameState = gameState
+        }
+    }
+    
+    private lazy var homeMenu = HomeMenu()
+    private lazy var advertisementMenu = AdvertisementMenu()
+    private lazy var settingsMenu = SettingsMenu()
+    private lazy var achievementsMenu = AchievementsMenu()
+    private lazy var playingMenu = PlayingMenu()
+    private lazy var pauseMenu = PauseMenu()
+    
+    private var reward: GADAdReward?
+    private var interstitial: GADInterstitial! {
+        didSet {
+            self.interstitial.delegate = self
+        }
+    }
     
     override var prefersStatusBarHidden: Bool {
         return true
@@ -40,59 +105,48 @@ class GameViewController: UIViewController {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         if #available(iOS 11.0, *) {
-            if let scene = skView.scene as? GameScene {
-                scene.insets = view.safeAreaInsets
-            }
+            gameScene.insets = view.safeAreaInsets
         }
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        let scene = SKScene(size: skView.frame.size)
-        scene.backgroundColor = .roadColor
-        scene.scaleMode = .aspectFit
-        skView.presentScene(scene)
-        
+        self.presentEmptyScene()
         self.registerRemoteNotifications()
-        self.setupMenuView()
-        self.presentMenu()
+        self.setupMenus()
+        gameState = .home
 
-        self.interstitial = createInterstitial()
+        self.interstitial = AdvHelper.buildInterstitial()
         GADRewardBasedVideoAd.sharedInstance().delegate = self
         
         checkSession()
-        setupObservers()
-    }
-    
-    // MARK: - Tap Handling
-    @objc
-    func didTapBack(_ sender: UIButton) {
-        sender.scale()
-        hideAllMenus(except: menuView)
     }
     
     // MARK: - Private Helper Methods
-    private func setupMenuView() {
-        self.view.addSubview(menuView)
-        menuView.pinEdgesToSuperview()
-        menuView.delegate = self
+    private func setupMenus() {
+        self.view.addSubview(playingMenu)
+        playingMenu.pinEdgesToSuperview()
+        playingMenu.delegate = self
         
-        self.view.addSubview(advView)
-        advView.pinEdgesToSuperview()
-        advView.delegate = self
-        advView.backButton.addTarget(
-            self, action: #selector(didTapBack(_:)), for: .touchUpInside)
+        self.view.addSubview(pauseMenu)
+        pauseMenu.pinEdgesToSuperview()
+        pauseMenu.delegate = self
         
-        self.view.addSubview(achievementsView)
-        achievementsView.pinEdgesToSuperview()
-        achievementsView.backButton.addTarget(
-            self, action: #selector(didTapBack(_:)), for: .touchUpInside)
+        self.view.addSubview(advertisementMenu)
+        advertisementMenu.pinEdgesToSuperview()
+        advertisementMenu.delegate = self
         
-        self.view.addSubview(settingsView)
-        settingsView.pinEdgesToSuperview()
-        settingsView.delegate = self
-        settingsView.backButton.addTarget(
-            self, action: #selector(didTapBack(_:)), for: .touchUpInside)
+        self.view.addSubview(achievementsMenu)
+        achievementsMenu.pinEdgesToSuperview()
+        achievementsMenu.delegate = self
+        
+        self.view.addSubview(settingsMenu)
+        settingsMenu.pinEdgesToSuperview()
+        settingsMenu.delegate = self
+        
+        self.view.addSubview(homeMenu)
+        homeMenu.pinEdgesToSuperview()
+        homeMenu.delegate = self
     }
     
     private func checkSession() {
@@ -109,31 +163,14 @@ class GameViewController: UIViewController {
         }
     }
     
-    private func setupObservers() {
-        NotificationCenter.default.addObserver(self, selector: #selector(willResignActive), name: UIApplication.willResignActiveNotification, object: nil)
-        
-        NotificationCenter.default.addObserver(self, selector: #selector(didBecomeActive), name: UIApplication.willEnterForegroundNotification, object: nil)
+    private func presentEmptyScene() {
+        let scene = SKScene(size: skView.frame.size)
+        scene.backgroundColor = .roadColor
+        scene.scaleMode = .aspectFit
+        skView.presentScene(scene)
     }
     
-    @objc
-    private func willResignActive() {
-        #warning("willResignActive")
-    }
-    
-    @objc
-    private func didBecomeActive() {
-        #warning("didBecomeActive")
-    }
-    
-    private func hideAllMenus(except: UIView? = nil) {
-        [menuView, advView, settingsView, achievementsView].forEach { (menu) in
-            menu.isHidden = menu != except
-        }
-    }
-    
-    private func presentMenu() {
-        hideAllMenus(except: menuView)
-        
+    private func presentMenuScene() {
         let scene = MenuScene(size: skView.frame.size)
         scene.sceneDelegate = self
         scene.scaleMode = .aspectFit
@@ -145,19 +182,54 @@ class GameViewController: UIViewController {
         skView.presentScene(scene)
     }
     
-    private func createInterstitial() -> GADInterstitial {
-        let interstitial = GADInterstitial(adUnitID: AdvHelper.interstitialIdentifier)
-        interstitial.delegate = self
-        interstitial.load(.init())
-        return interstitial
+    private func presentGameScene() {
+        let scene = GameScene(size: skView.frame.size)
+        scene.scaleMode = .aspectFit
+        scene.sceneDelegate = self
+
+        if let menuScene = skView.scene as? MenuScene {
+            scene.insets = menuScene.insets
+            scene.cachedCars = menuScene.cachedCars
+            scene.playerNode = menuScene.playerNode
+        } else {
+            if #available(iOS 11.0, *) {
+                scene.insets = skView.safeAreaInsets
+            }
+        }
+        
+        skView.ignoresSiblingOrder = true
+        skView.presentScene(scene)
+        playingMenu.setScore(0)
+        playingMenu.isHidden = false
     }
     
-    private func rate() {
+    private func presentAdvertisement() {
+        let shared = GADRewardBasedVideoAd.sharedInstance()
+        if shared.isReady {
+            gameScene.willPresentRewardBasedVideoAd()
+            shared.present(fromRootViewController: self)
+        } else {
+            gameState = .home
+            AdvHelper.loadRewardBasedVideoAdv()
+        }
+    }
+    
+    private func rateTapped() {
         if #available(iOS 10.3, *) {
             SKStoreReviewController.requestReview()
         } else {
             let urlString = "https://itunes.apple.com/app/id\(1483121139)?action=write-review"
             URLNavigator.shared.open(urlString)
+        }
+    }
+    
+    private func shareTapped() {
+        if let url = URL(string: "https://apps.apple.com/app/id\(1483121139)") {
+            let viewController = UIActivityViewController(
+                activityItems: [url], applicationActivities: nil)
+            viewController.popoverPresentationController?.sourceView = self.view
+            viewController.popoverPresentationController?.sourceRect = .zero
+            self.present(viewController, animated: true, completion: nil)
         }
     }
     
@@ -186,12 +258,10 @@ extension GameViewController: GADRewardBasedVideoAdDelegate {
     
     func rewardBasedVideoAdDidClose(_ rewardBasedVideoAd: GADRewardBasedVideoAd) {
         if reward != nil {
-            if let scene = skView.scene as? GameScene {
-                scene.continueGame()
-            }
+            gameScene.didGetReward()
             reward = nil
         } else {
-            presentMenu()
+            gameState = .home
         }
         
         GADRewardBasedVideoAd
@@ -202,11 +272,15 @@ extension GameViewController: GADRewardBasedVideoAdDelegate {
 
 extension GameViewController: GADInterstitialDelegate {
     func interstitialDidDismissScreen(_ ad: GADInterstitial) {
-        interstitial = createInterstitial()
+        self.interstitial = AdvHelper.buildInterstitial()
     }
 }
 
 extension GameViewController: SceneDelegate {
+    func scene(_ scene: GameScene, didUpdateScore score: Double) {
+        playingMenu.setScore(score)
+    }
+    
     func scene(_ scene: GameScene, didFinishGameWithScore score: Double) {
         UserDefaults.standard.setScore(Int(score))
         
@@ -217,56 +291,24 @@ extension GameViewController: SceneDelegate {
         }
     }
     
-    func scene(_ scene: GameScene, didSetGameState state: GameState) {
-        switch state {
-        case .menu:
-            presentMenu()
-        case .advMenu:
-            hideAllMenus(except: advView)
-        }
+    func scene(_ scene: GameScene, didUpdateGameState state: GameState) {
+        gameState = state
     }
 }
 
-// MARK: - MenuViewDelegate
-extension GameViewController: MenuViewDelegate {
-    func menuView(_ menuView: MenuView, didTapMenuButton button: MenuButton) {
-        switch button {
-        case .newGame:
-            hideAllMenus()
-            if let scene = skView.scene as? GameScene {
-                scene.presentNewGame()
-            }
-        case .settings:
-            hideAllMenus(except: settingsView)
-        case .achievements:
-            hideAllMenus(except: achievementsView)
-        }
+// MARK: - MenuDelegate
+extension GameViewController: MenuDelegate {
+    func menu(_ menu: Menu, didUpdateGameState gameState: GameState) {
+        self.gameState = gameState
     }
 }
 
-// MARK: - AdvViewDelegate
-extension GameViewController: AdvViewDelegate {
-    func advViewDidTapAdvertisement(_ advView: AdvView) {
-        let rewardBasedVideoAd = GADRewardBasedVideoAd.sharedInstance()
-        if rewardBasedVideoAd.isReady {
-            if let scene = skView.scene as? GameScene {
-                scene.willPresentRewardBasedVideoAd()
-            }
-            rewardBasedVideoAd.present(fromRootViewController: self)
-        } else {
-            presentMenu()
-            rewardBasedVideoAd
-                .load(.init(), withAdUnitID: AdvHelper.rewardBasedVideoAdIdentifier)
-        }
-    }
-}
-
-// MARK: - SettingsViewDelegate
-extension GameViewController: SettingsViewDelegate {
-    func settingsView(_ settingsView: SettingsView, didTapSettingButton button: SettingButton) {
-        switch button {
+// MARK: - SettingsMenuDelegate
+extension GameViewController: SettingsMenuDelegate {
+    func settingsMenu(_ settingsMenu: SettingsMenu, didSelectOption option: SettingsMenuOption) {
+        switch option {
         case .rate:
-            rate()
+            rateTapped()
         case .moreApp:
             let urlString = "itms-apps://itunes.apple.com/developer/atilla-ozder/id1440770128?mt=8"
             URLNavigator.shared.open(urlString)
@@ -274,16 +316,12 @@ extension GameViewController: SettingsViewDelegate {
             let urlString = "http://www.atillaozder.com/privacy-policy"
             URLNavigator.shared.open(urlString)
         case .share:
-            if let url = URL(string: "https://apps.apple.com/app/id\(1483121139)") {
-                let viewController = UIActivityViewController(
-                    activityItems: [url], applicationActivities: nil)
-                viewController.popoverPresentationController?.sourceView = self.view
-                viewController.popoverPresentationController?.sourceRect = .zero
-                self.present(viewController, animated: true, completion: nil)
-            }
+            shareTapped()
         case .support:
             let urlString = "http://www.atillaozder.com"
             URLNavigator.shared.open(urlString)
+        case .back:
+            gameState = .home
         }
     }
 }

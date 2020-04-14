@@ -36,8 +36,9 @@ class NoSymbolButton: UIButton {
     }
     
     override func draw(_ layer: CALayer, in ctx: CGContext) {
-        super.draw(layer, in: ctx)
         if noSymbolDrawable {
+            guard self.shapeLayer == nil else { return }
+            
             let shapeLayer = CAShapeLayer()
             let lineWidth: CGFloat = UIDevice.current.isPad ? 8 : 4
             
@@ -55,6 +56,7 @@ class NoSymbolButton: UIButton {
         } else {
             guard let sublayer = self.shapeLayer else { return }
             sublayer.removeFromSuperlayer()
+            self.shapeLayer = nil
         }
     }
 }

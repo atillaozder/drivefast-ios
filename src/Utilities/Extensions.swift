@@ -94,7 +94,7 @@ extension UIColor {
     }
     
     class var menuButton: UIColor {
-        return UIColor(red: 86, green: 169, blue: 215)
+        return UIColor(red: 17, green: 52, blue: 68)
     }
     
     class var roadColor: UIColor {

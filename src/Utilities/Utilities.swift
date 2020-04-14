@@ -8,9 +8,10 @@
 
 import UIKit
 import SpriteKit
+import GoogleMobileAds
 
-// MARK: - Sound
-enum Sound {
+// MARK: - Effect
+enum Effect {
     case coin, crash, horns, brake
 }
 
@@ -19,11 +20,11 @@ struct SoundManager {
     let coin = SKAction.playSoundFileNamed("coin.wav", waitForCompletion: false)
     let crash = SKAction.playSoundFileNamed("crash.wav", waitForCompletion: false)
     let horns = SKAction.playSoundFileNamed("horns.mp3", waitForCompletion: false)
-    let brake = SKAction.playSoundFileNamed("brake.wav", waitForCompletion: false)
+//    let brake = SKAction.playSoundFileNamed("brake.wav", waitForCompletion: false)
     
-    func playSound(_ sound: Sound, in scene: SKScene) {
+    func playEffect(_ effect: Effect, in scene: SKScene) {
         if UserDefaults.standard.isSoundOn {
-            switch sound {
+            switch effect {
             case .coin:
                 scene.run(coin)
             case .crash:
@@ -31,7 +32,8 @@ struct SoundManager {
             case .horns:
                 scene.run(horns)
             case .brake:
-                scene.run(brake)
+                break
+//                scene.run(brake)
             }
         }
     }
@@ -82,6 +84,7 @@ enum MainStrings: String {
     case privacyTitle = "privacyTitle"
     case moreAppTitle = "moreAppTitle"
     case shareTitle = "shareTitle"
+    case continueTitle = "continueTitle"
     
     var localized: String {
         return NSLocalizedString(self.rawValue, comment: "")
@@ -104,6 +107,17 @@ struct AdvHelper {
         #else
         return "ca-app-pub-3176546388613754/7634389777"
         #endif
+    }
+    
+    static func buildInterstitial() -> GADInterstitial {
+        let interstitial = GADInterstitial(adUnitID: AdvHelper.interstitialIdentifier)
+        interstitial.load(.init())
+        return interstitial
+    }
+    
+    static func loadRewardBasedVideoAdv() {
+        GADRewardBasedVideoAd.sharedInstance().load(
+            .init(), withAdUnitID: AdvHelper.rewardBasedVideoAdIdentifier)
     }
 }
 

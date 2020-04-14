@@ -8,13 +8,14 @@
 
 "scoreTitle" = "Skor";
 "bestScoreTitle" = "En iyi";
-"newGameTitle" = "Yeni Oyun";
+"newGameTitle" = "Oyna";
 "advButtonTitle" = "Yarışa devam edebilmek için bir reklam izle";
 "settingsTitle" = "Ayarlar";
 "achievementsTitle" = "Başarılar";
 "backToMenuTitle" = "Menüye Geri Dön";
-"rateTitle" = "Bu Uygulamaya Puan Ver";
+"rateTitle" = "Puan Ver";
 "supportTitle" = "Destek";
 "moreAppTitle" = "Diğer Uygulamalar";
 "privacyTitle" = "Gizlilik Sözleşmesi";
-"shareTitle" = "Bu Uygulamayı Paylaş";
+"shareTitle" = "Paylaş";
+"continueTitle" = "Devam Et";

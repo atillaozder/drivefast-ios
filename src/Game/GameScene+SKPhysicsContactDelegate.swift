@@ -39,7 +39,7 @@ extension GameScene: SKPhysicsContactDelegate {
     
     fileprivate func playerDidCollide(withCar car: SKSpriteNode) {
         if remainingLives.count > 1 {
-            soundManager.playSound(.horns, in: self)
+            soundManager.playEffect(.horns, in: self)
         }
         
         car.removeFromParent()
@@ -55,7 +55,7 @@ extension GameScene: SKPhysicsContactDelegate {
     }
         
     fileprivate func playerDidCollide(withCoin coin: Coin) {
-        soundManager.playSound(.coin, in: self)
+        soundManager.playEffect(.coin, in: self)
         coin.removeFromParent()
         score += coin.value
     }

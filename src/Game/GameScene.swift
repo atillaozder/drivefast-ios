@@ -14,16 +14,11 @@ import CoreMotion
 public var gameCount: Double = 0
 public let scaleRatio: CGFloat = UIDevice.current.isPad ? 6 : 4
 
-// MARK: - GameState
-enum GameState: Int {
-    case menu
-    case advMenu
-}
-
 // MARK: - SceneDelegate
 protocol SceneDelegate: class {
+    func scene(_ scene: GameScene, didUpdateScore score: Double)
     func scene(_ scene: GameScene, didFinishGameWithScore score: Double)
-    func scene(_ scene: GameScene, didSetGameState state: GameState)
+    func scene(_ scene: GameScene, didUpdateGameState state: GameState)
 }
 
 // MARK: - GameScene
@@ -70,19 +65,6 @@ class GameScene: SKScene {
         return node
     }()
     
-    lazy var scoreLabel: SKLabelNode = {
-        let lbl = SKLabelNode(text: MainStrings.scoreTitle.localized + ": 0")
-        lbl.fontName = "AmericanTypeWriter" + AmericanTypeWriter.semibold.rawValue
-        lbl.fontSize = UIDevice.current.isPad ? 36 : 28
-        lbl.fontColor = UIColor.white
-        lbl.zPosition = 2
-        let y = frame.size.height - 40 - insets.top
-        lbl.position = UIDevice.current.isPad ?
-            CGPoint(x: 90, y: y - 12) :
-            CGPoint(x: 70, y: y)
-        return lbl
-    }()
-    
     let explosionNode = SKEmitterNode(fileNamed: "Explosion")!
     lazy var singleCoin = Coin(frame: frame, type: .single)
     lazy var multipleCoins = Coin(frame: frame, type: .multiple)
@@ -106,7 +88,7 @@ class GameScene: SKScene {
                 }
             }
         } didSet {
-            scoreLabel.text = MainStrings.scoreTitle.localized + ": \(Int(score))"
+            sceneDelegate?.scene(self, didUpdateScore: score)
         }
     }
         
@@ -131,6 +113,11 @@ class GameScene: SKScene {
     private var waitingThreshold: TimeInterval = 0.5
 
     // MARK: - Game Life Cycle
+    override func willMove(from view: SKView) {
+        super.willMove(from: view)
+        clearGame()
+    }
+    
     override func didMove(to view: SKView) {
         super.didMove(to: view)
         self.backgroundColor = .roadColor
@@ -171,7 +158,7 @@ class GameScene: SKScene {
         self.run(repeatableAction, withKey: Actions.addCar.rawValue)
     }
     
-    func setGameDifficulty() {
+    private func setGameDifficulty() {
         if appearanceDuration > appearanceThreshold ||
             waitingDuration > waitingThreshold {
             appearanceDuration = max(appearanceThreshold, appearanceDuration - 0.5)
@@ -181,7 +168,7 @@ class GameScene: SKScene {
     }
     
     private func clearGame() {
-        motionManager.stopAccelerometerUpdates()
+        stopMotionManager()
         self.removeAllActions()
         self.removeAllChildren()
         movePlayerToMiddle()
@@ -189,19 +176,16 @@ class GameScene: SKScene {
     
     private func movePlayerToMiddle() {
         let road = getRoadBounds()
-        playerNode.position = .init(x: road.midX, y: road.minY + 10)
+        playerNode.position = .init(x: self.frame.midX, y: road.minY + 10)
     }
     
     func initiateGame() {
         gameCount += 1
         movePlayerToMiddle()
         addChild(playerNode)
-
-        score = 0
-        addChild(scoreLabel)
-
+        
         setupLives(count: 3)
-        setupMotionManager()
+        startMotionManager()
         
         let queue = DispatchQueue(label: "com.retro2d.ios.serial.addCoin",
                                   qos: .userInteractive,
@@ -214,23 +198,13 @@ class GameScene: SKScene {
 
         run(.repeatForever(addCoinSq))
     }
-    
-    func continueGame() {
-        movePlayerToMiddle()
-        addChild(playerNode)
         
-        self.setupLives(count: 1)
-        self.gameOver = false
-        self.pauseGame(false)
-    }
-    
     fileprivate func stopGame() {
         if !gotReward {
             self.pauseGame(true)
-            self.sceneDelegate?.scene(self, didSetGameState: .advMenu)
+            self.sceneDelegate?.scene(self, didUpdateGameState: .advertisement)
         } else {
-            self.clearGame()
-            self.sceneDelegate?.scene(self, didSetGameState: .menu)
+            self.sceneDelegate?.scene(self, didUpdateGameState: .home)
         }
     }
     
@@ -241,7 +215,7 @@ class GameScene: SKScene {
         explosion.position = playerNode.position
         self.addChild(explosion)
         
-        soundManager.playSound(.crash, in: self)
+        soundManager.playEffect(.crash, in: self)
         playerNode.removeFromParent()
         self.sceneDelegate?.scene(self, didFinishGameWithScore: score)
 
@@ -254,9 +228,19 @@ class GameScene: SKScene {
     
     func pauseGame(_ isPaused: Bool) {
         self.isPaused = isPaused
+        isPaused ? stopMotionManager() : startMotionManager()
         if let addCarSeq = self.action(forKey: Actions.addCar.rawValue) {
             addCarSeq.speed = isPaused ? 0 : 1
         }
+    }
+    
+    func didGetReward() {
+        movePlayerToMiddle()
+        addChild(playerNode)
+        
+        self.setupLives(count: 1)
+        self.gameOver = false
+        self.pauseGame(false)
     }
     
     func willPresentRewardBasedVideoAd() {
@@ -268,31 +252,19 @@ class GameScene: SKScene {
         }
     }
     
-    func presentNewGame() {
-        self.clearGame()
-        let scene = GameScene(size: self.size)
-        scene.insets = insets
-        scene.cachedCars = cachedCars
-        scene.sceneDelegate = sceneDelegate
-
-        if playerNode.physicsBody != nil {
-            scene.playerNode = playerNode
-        }
-        
-        scene.scaleMode = .aspectFit
-        self.view?.presentScene(scene)
-    }
-    
     // MARK: - View Initialization
     private func setupLives(count: Int) {
-        let size = UIDevice.current.isPad ?
-            CGSize(width: 60, height: 90) :
-            CGSize(width: 30, height: 60)
+        let size: CGSize = UIDevice.current.isPad ? .initialize(30) : .initialize(15)
+
+        let padding: CGFloat = UIDevice.current.isPad ? 16 : 8
+        let leftPadding = padding + 4
+        let topPadding = UIDevice.current.isPad ? padding + 8 : padding + 4
         
-        var posX = frame.maxX - (size.width / 2) - 6
-        let posY = frame.maxY - insets.top - (size.height / 2) - 16
+        var posX = frame.minX + insets.left + (size.width / 2) + leftPadding
+        let posY = frame.maxY - insets.top - (size.height / 2) - topPadding - PlayingMenu.scoreHeight
+        
         for _ in 0..<count {
-            let texture = SKTexture(imageNamed: "player")
+            let texture = SKTexture(imageNamed: "heart")
             let node = SKSpriteNode(texture: texture)
             node.size = size
             node.position = CGPoint(x: posX, y: posY)
@@ -305,7 +277,7 @@ class GameScene: SKScene {
             
             remainingLives.append(node)
             addChild(node)
-            posX -= ((size.width / 2) + 20)
+            posX += ((size.width / 2) + leftPadding)
         }
     }
         
@@ -315,13 +287,19 @@ class GameScene: SKScene {
         
         let minX = self.frame.minX + w
         let maxX = self.frame.maxX - w
-        let minY = self.frame.minY + h
+        let minY = self.frame.minY + h + 10
         let maxY = self.frame.maxY - h
         
         return .init(minY: minY, minX: minX, maxY: maxY, maxX: maxX)
     }
+    
+    private func stopMotionManager() {
+        if motionManager.isAccelerometerActive {
+            motionManager.stopAccelerometerUpdates()
+        }
+    }
         
-    private func setupMotionManager() {
+    private func startMotionManager() {
         let queue = OperationQueue.current ?? .main
         motionManager.accelerometerUpdateInterval = 0.01
         motionManager.startAccelerometerUpdates(to: queue) { [weak self] (data, error) in

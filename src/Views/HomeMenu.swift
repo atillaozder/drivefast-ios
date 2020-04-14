@@ -1,5 +1,5 @@
 //
-//  MenuView.swift
+//  HomeMenu.swift
 //  Retro
 //
 //  Created by Atilla Özder on 9.04.2020.
@@ -8,17 +8,9 @@
 
 import UIKit
 
-enum MenuButton {
-    case newGame, settings, achievements
-}
-
-protocol MenuViewDelegate: AnyObject {
-    func menuView(_ menuView: MenuView, didTapMenuButton button: MenuButton)
-}
-
-class MenuView: View {
+class HomeMenu: Menu {
     
-    weak var delegate: MenuViewDelegate?
+    weak var delegate: MenuDelegate?
  
     override func setup() {
         setupSoundButton()
@@ -106,20 +98,17 @@ class MenuView: View {
         
     @objc
     func didTapNewGame(_ sender: UIButton) {
-        sender.scale()
-        delegate?.menuView(self, didTapMenuButton: .newGame)
+        delegate?.menu(self, didUpdateGameState: .playing)
     }
     
     @objc
     func didTapSettings(_ sender: UIButton) {
-        sender.scale()
-        delegate?.menuView(self, didTapMenuButton: .settings)
+        delegate?.menu(self, didUpdateGameState: .settings)
     }
     
     @objc
     func didTapAchievements(_ sender: UIButton) {
-        sender.scale()
-        delegate?.menuView(self, didTapMenuButton: .achievements)
+        delegate?.menu(self, didUpdateGameState: .achievements)
     }
 }
 
