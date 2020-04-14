@@ -65,7 +65,7 @@ class GameScene: SKScene {
         return node
     }()
     
-    let explosionNode = SKEmitterNode(fileNamed: "Explosion")!
+    private var explosionNode: SKEmitterNode!
     lazy var singleCoin = Coin(frame: frame, type: .single)
     lazy var multipleCoins = Coin(frame: frame, type: .multiple)
     lazy var coinBag = Coin(frame: frame, type: .bag)
@@ -100,6 +100,18 @@ class GameScene: SKScene {
     var remainingLives: [SKSpriteNode] = []
     var cachedCars = [Car: SKPhysicsBody]()
     
+    private lazy var roadBoundingBox: RoadBoundingBox = {
+        let w = playerNode.size.width / 2
+        let h = playerNode.size.height / 2
+        
+        let minX = self.frame.minX + w
+        let maxX = self.frame.maxX - w
+        let minY = self.frame.minY + h + 10
+        let maxY = self.frame.maxY - h
+        
+        return .init(minY: minY, minX: minX, maxY: maxY, maxX: maxX)
+    }()
+    
     private lazy var cars: [Car] = {
         var cars = [Car]()
         for idx in 1...20 { cars.append(.init(index: idx)) }
@@ -122,40 +134,33 @@ class GameScene: SKScene {
         super.didMove(to: view)
         self.backgroundColor = .roadColor
         initiateGame()
-        
+                
         self.addChild(roadNode)
         self.physicsWorld.gravity = CGVector(dx: 0, dy: 0)
         self.physicsWorld.contactDelegate = self
 
-        let addRoadLineQueue = DispatchQueue(label: "com.retro2d.ios.serial.addRoadLine",
-                                             qos: .userInteractive,
-                                             attributes: .concurrent)
-        
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
             let addRoadLineSq: SKAction = .sequence([
                 .wait(forDuration: 0.05),
-                .run(self.addRoadLine, queue: addRoadLineQueue)
+                .run(self.addRoadLine, queue: .global())
             ])
             self.run(.repeatForever(addRoadLineSq))
-            
             self.initiateCarSequence()
         }
     }
     
     private func initiateCarSequence() {
         self.removeAction(forKey: Actions.addCar.rawValue)
-
-        let addCarQueue = DispatchQueue(label: "com.retro2d.ios.serial.addCar",
-                                        qos: .userInteractive,
-                                        attributes: .concurrent)
+        let addCarQueue = DispatchQueue(
+            label: "com.retro2d.ios.concurrent.addCar", qos: .default, attributes: .concurrent)
         
         let addCarSq: SKAction = .sequence([
             .wait(forDuration: waitingDuration),
             .run(self.addRandomCar, queue: addCarQueue)
         ])
         
-        let repeatableAction: SKAction = .repeatForever(addCarSq)
-        self.run(repeatableAction, withKey: Actions.addCar.rawValue)
+        let action: SKAction = .repeatForever(addCarSq)
+        self.run(action, withKey: Actions.addCar.rawValue)
     }
     
     private func setGameDifficulty() {
@@ -174,9 +179,8 @@ class GameScene: SKScene {
         movePlayerToMiddle()
     }
     
-    private func movePlayerToMiddle() {
-        let road = getRoadBounds()
-        playerNode.position = .init(x: self.frame.midX, y: road.minY + 10)
+    func movePlayerToMiddle() {
+        playerNode.position = .init(x: self.frame.midX, y: roadBoundingBox.minY + 10)
     }
     
     func initiateGame() {
@@ -187,13 +191,13 @@ class GameScene: SKScene {
         setupLives(count: 3)
         startMotionManager()
         
-        let queue = DispatchQueue(label: "com.retro2d.ios.serial.addCoin",
-                                  qos: .userInteractive,
-                                  attributes: .concurrent)
-
+        DispatchQueue.global().async {
+            self.explosionNode = SKEmitterNode(fileNamed: "Explosion")!
+        }
+        
         let addCoinSq: SKAction = .sequence([
             .wait(forDuration: 5),
-            .run(addCoin, queue: queue)
+            .run(addCoin, queue: .init(label: "com.retro2d.ios.serial.addCoin"))
         ])
 
         run(.repeatForever(addCoinSq))
@@ -281,18 +285,6 @@ class GameScene: SKScene {
         }
     }
         
-    private func getRoadBounds() -> RoadBoundingBox {
-        let w = playerNode.size.width / 2
-        let h = playerNode.size.height / 2
-        
-        let minX = self.frame.minX + w
-        let maxX = self.frame.maxX - w
-        let minY = self.frame.minY + h + 10
-        let maxY = self.frame.maxY - h
-        
-        return .init(minY: minY, minX: minX, maxY: maxY, maxX: maxX)
-    }
-    
     private func stopMotionManager() {
         if motionManager.isAccelerometerActive {
             motionManager.stopAccelerometerUpdates()
@@ -300,9 +292,8 @@ class GameScene: SKScene {
     }
         
     private func startMotionManager() {
-        let queue = OperationQueue.current ?? .main
         motionManager.accelerometerUpdateInterval = 0.01
-        motionManager.startAccelerometerUpdates(to: queue) { [weak self] (data, error) in
+        motionManager.startAccelerometerUpdates(to: .init()) { [weak self] (data, error) in
             guard let strongSelf = self, let data = data else { return }
 
             let player = strongSelf.playerNode
@@ -310,7 +301,7 @@ class GameScene: SKScene {
             var x = position.x + CGFloat(data.acceleration.x * 10)
             var y = position.y + CGFloat(data.acceleration.y * 10)
 
-            let road = strongSelf.getRoadBounds()
+            let road = strongSelf.roadBoundingBox
             x = max(x, road.minX)
             x = min(x, road.maxX)
             y = max(y, road.minY)
@@ -368,21 +359,14 @@ class GameScene: SKScene {
         let car = cars[0]
         
         let texture = SKTexture(imageNamed: car.imageName)
-        let _ = texture.size()
-        
         let roadMinX = Int(self.frame.minX + 30)
         let roadMaxX = Int(self.frame.maxX - 30)
         
-        var randomPos: Int = Int.random(in: roadMinX..<roadMaxX)
-        if #available(iOS 9.0, *) {
-            let randomDist = GKRandomDistribution(
-                lowestValue: roadMinX, highestValue: roadMaxX)
-            randomPos = randomDist.nextInt()
-        }
+        let randomDist = GKRandomDistribution(
+            lowestValue: roadMinX, highestValue: roadMaxX)
         
         let carNode = SKSpriteNode(texture: texture)
-        carNode.position = CGPoint(
-            x: CGFloat(randomPos), y: frame.maxY + carNode.size.height)
+
         carNode.name = Cars.car.rawValue
         carNode.zPosition = 1
 
@@ -402,13 +386,13 @@ class GameScene: SKScene {
         }
 
         carNode.setScale(to: frame.width / car.ratio)
+        carNode.position = CGPoint(
+            x: CGFloat(randomDist.nextInt()), y: frame.maxY + carNode.size.height)
 
         var actions = [SKAction]()
-        actions.append(.moveTo(
-            y: -carNode.size.height / 2,
-            duration: appearanceDuration))
+        actions.append(.moveTo(y: -carNode.size.height / 2, duration: appearanceDuration))
 
-        let increaseScore = SKAction.run {
+        let increaseScore = SKAction.run { [unowned self] in
             if !self.gameOver {
                 self.score += 1
             }
@@ -439,16 +423,10 @@ class GameScene: SKScene {
         }
         
         let roadMinX = Int(self.frame.minX + 30)
-        let roadMaxX = Int(self.frame.maxX - 20)
+        let roadMaxX = Int(self.frame.maxX - 30)
         
-        var randomPos: Int = Int.random(in: roadMinX..<roadMaxX)
-        if #available(iOS 9.0, *) {
-            let randomDist = GKRandomDistribution(
-                lowestValue: roadMinX, highestValue: roadMaxX)
-            randomPos = randomDist.nextInt()
-        }
-        
-        coin.position.x = CGFloat(randomPos)
+        let randomDist = GKRandomDistribution(lowestValue: roadMinX, highestValue: roadMaxX)
+        coin.position.x = CGFloat(randomDist.nextInt())
         
         let body = SKPhysicsBody(circleOfRadius: coin.size.width / 2)
         body.isDynamic = false
@@ -458,10 +436,7 @@ class GameScene: SKScene {
         coin.physicsBody = body
         
         var actions = [SKAction]()
-        actions.append(.moveTo(
-            y: -coin.size.height / 2,
-            duration: 3))
-        
+        actions.append(.moveTo(y: -coin.size.height / 2, duration: 3))
         actions.append(.removeFromParent())
         
         DispatchQueue.main.async {

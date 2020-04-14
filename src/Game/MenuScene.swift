@@ -14,7 +14,9 @@ class MenuScene: GameScene {
     
     override func didMove(to view: SKView) {
         super.didMove(to: view)
-        let _ = playerNode.texture?.size()
+        DispatchQueue.global().async {
+            self.movePlayerToMiddle()
+        }
     }
             
     override func initiateGame() {
