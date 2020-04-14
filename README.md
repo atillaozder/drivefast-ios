@@ -19,7 +19,9 @@ Features:
 
 ## Appearance
 
-<img src="resources/gameplay.gif" alt="" width="300" height="532">
+<img src="resources/ipx/ipx1" alt="" width="300" height="500">
+<img src="resources/ipx/ipx2" alt="" width="300" height="500">
+<img src="resources/ipx/ipx5" alt="" width="300" height="500">
 
 ## License
 
