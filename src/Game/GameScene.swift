@@ -405,7 +405,7 @@ class GameScene: SKScene {
                     // Debug mode is on, continue
                     #else
                     // Physics body is empty, if game is active dont add car to screen
-                    if !remainingLives.isEmpty {
+                    if !self.remainingLives.isEmpty {
                         return
                     }
                     #endif
