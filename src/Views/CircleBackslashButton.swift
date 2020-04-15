@@ -1,5 +1,5 @@
 //
-//  NoSymbolButton.swift
+//  CircleBackslashButton.swift
 //  Retro
 //
 //  Created by Atilla Özder on 13.04.2020.
@@ -8,11 +8,11 @@
 
 import UIKit
 
-class NoSymbolButton: UIButton {
+class CircleBackslashButton: UIButton {
 
     private var shapeLayer: CAShapeLayer?
     
-    var noSymbolDrawable: Bool = false {
+    var backslashDrawable: Bool = false {
         didSet {
             layer.setNeedsDisplay()
         }
@@ -36,7 +36,7 @@ class NoSymbolButton: UIButton {
     }
     
     override func draw(_ layer: CALayer, in ctx: CGContext) {
-        if noSymbolDrawable {
+        if backslashDrawable {
             guard self.shapeLayer == nil else { return }
             
             let shapeLayer = CAShapeLayer()
@@ -58,5 +58,43 @@ class NoSymbolButton: UIButton {
             sublayer.removeFromSuperlayer()
             self.shapeLayer = nil
         }
+    }
+    
+    func buildContainer(withSize size: CGSize) -> UIView {
+        let constant = size.height
+        let container = UIView()
+        container.backgroundColor = .menuButton
+        container.clipsToBounds = true
+        container.layer.borderWidth = 0
+        container.layer.borderColor = nil
+                
+        let bounds: CGRect = .init(origin: .zero, size: size)
+        let path = UIBezierPath(
+            roundedRect: bounds,
+            byRoundingCorners: .allCorners,
+            cornerRadii: .initialize(constant / 2)).cgPath
+        
+        if #available(iOS 11.0, *) {
+            container.layer.cornerRadius = constant / 2
+        } else {
+            let mask = CAShapeLayer()
+            mask.path = path
+            container.layer.mask = mask
+        }
+        
+        let border = CAShapeLayer()
+        border.path = path
+        border.fillColor = nil
+        border.strokeColor = UIColor.white.cgColor
+        
+        border.lineWidth = UIDevice.current.isPad ? 10 : 6
+        container.layer.addSublayer(border)
+        container.pinSize(to: size)
+
+        container.addSubview(self)
+        self.pinEdgesToUnsafeArea()
+        self.contentEdgeInsets = UIDevice.current.isPad ? .initialize(16) : .initialize(10)
+        
+        return container
     }
 }

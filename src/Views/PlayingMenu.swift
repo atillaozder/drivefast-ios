@@ -41,44 +41,13 @@ class PlayingMenu: Menu {
     }
     
     private func setupPauseButton() {
-        let btn = NoSymbolButton()
+        let btn = CircleBackslashButton()
         let image = UIImage(named: "pause")?.withRenderingMode(.alwaysTemplate)
         btn.setImage(image, for: .normal)
         btn.imageEdgeInsets = UIDevice.current.isPad ? .initialize(4) : .initialize(2)
         
-        let containerSize: CGSize = .initialize(PlayingMenu.scoreHeight)
-        
-        let container = UIView()
-        container.backgroundColor = .menuButton
-        container.clipsToBounds = true
-        container.layer.borderWidth = 0
-        container.layer.borderColor = nil
-                
-        let bounds: CGRect = .init(origin: .zero, size: containerSize)
-        let path = UIBezierPath(
-            roundedRect: bounds,
-            byRoundingCorners: .allCorners,
-            cornerRadii: .initialize(containerSize.height / 2)).cgPath
-        
-        if #available(iOS 11.0, *) {
-            container.layer.cornerRadius = containerSize.height / 2
-        } else {
-            let mask = CAShapeLayer()
-            mask.path = path
-            container.layer.mask = mask
-        }
-        
-        let border = CAShapeLayer()
-        border.path = path
-        border.fillColor = nil
-        border.strokeColor = UIColor.white.cgColor
-        
-        border.lineWidth = UIDevice.current.isPad ? 10 : 6
-        container.layer.addSublayer(border)
-        
-        container.addSubview(btn)
-        btn.pinEdgesToUnsafeArea()
-        btn.contentEdgeInsets = UIDevice.current.isPad ? .initialize(16) : .initialize(10)
+        let size: CGSize = .initialize(PlayingMenu.scoreHeight)
+        let container = btn.buildContainer(withSize: size)
         
         let tappableView = UIView()
         tappableView.addSubview(container)
@@ -86,12 +55,11 @@ class PlayingMenu: Menu {
         let padding: CGFloat = UIDevice.current.isPad ? 16 : 8
         container.pinTop(to: tappableView.topAnchor, constant: padding)
         container.pinTrailing(to: tappableView.trailingAnchor, constant: -padding)
-        container.pinSize(to: containerSize)
         
         self.addSubview(tappableView)
         tappableView.pinTop(to: safeTopAnchor)
         tappableView.pinTrailing(to: safeTrailingAnchor)
-        tappableView.pinSize(to: .initialize(containerSize.width * 1.5))
+        tappableView.pinSize(to: .initialize(size.width * 1.5))
         tappableView.addTapGesture(target: self, action: #selector(didTapPause(_:)))
     }
     
