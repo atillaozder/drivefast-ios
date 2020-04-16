@@ -28,7 +28,7 @@ class Menu: UIView {
         sv.distribution = .fill
         sv.alignment = .fill
         sv.axis = .vertical
-        sv.spacing = UIDevice.current.isPad ? 24 : 12
+        sv.spacing = UIDevice.current.isPad ? 22 : 12
         return sv
     }()
     
@@ -58,7 +58,7 @@ class Menu: UIView {
         }
         
         let btn = UIButton()
-        btn.setTitle(localizable.localized, for: .normal)
+        btn.setTitle(localizable.localized.uppercased(with: .current), for: .normal)
         btn.setTitleColor(.white, for: .normal)
         btn.titleLabel?.font = font
         btn.titleLabel?.textAlignment = .center

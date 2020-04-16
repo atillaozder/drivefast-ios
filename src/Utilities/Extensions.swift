@@ -168,9 +168,9 @@ extension UIFont {
     static func buildFont(
         _ font: FontNameRepresentable = AmericanTypeWriter.bold,
         withSize size: CGFloat? = nil) -> UIFont {
-        let defaultSize: CGFloat = UIDevice.current.isPad ? 30 : 24
-        let wrapped: CGFloat = size == nil ? defaultSize : size!
-        return buildFont(name: font.fontName, size: wrapped)
+        let defaultSize: CGFloat = UIDevice.current.isPad ? 28 : 22
+        let aSize: CGFloat = size == nil ? defaultSize : size!
+        return buildFont(name: font.fontName, size: aSize)
     }
 }
 

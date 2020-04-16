@@ -24,20 +24,47 @@ class PlayingMenu: Menu {
         btn.titleEdgeInsets = .init(top: 6, left: 10, bottom: 6, right: 10)
         return btn
     }()
+    
+    lazy var livesStackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.alignment = .fill
+        stackView.distribution = .fillEqually
+        stackView.spacing = 4
+        stackView.axis = .horizontal
+        return stackView
+    }()
 
     override func setup() {
         setupPauseButton()
         
-        addSubview(scoreButton)
+        let scoreStack = UIStackView(arrangedSubviews: [scoreButton, livesStackView])
+        scoreStack.spacing = 6
+        scoreStack.alignment = .center
+        scoreStack.distribution = .fill
+        scoreStack.axis = .vertical
+        
+        addSubview(scoreStack)
         let constant: CGFloat = UIDevice.current.isPad ? 16 : 8
-        scoreButton.pinTop(to: safeTopAnchor, constant: constant)
-        scoreButton.pinLeading(to: safeLeadingAnchor, constant: constant)
+        scoreStack.pinTop(to: safeTopAnchor, constant: constant)
+        scoreStack.pinLeading(to: safeLeadingAnchor, constant: constant)
+        
         self.isHidden = true
     }
     
     func setScore(_ score: Double) {
         let text = MainStrings.scoreTitle.localized + ": \(Int(score))"
         scoreButton.setTitle(text, for: .normal)
+    }
+    
+    func setLifeCount(_ count: Int) {
+        let previousCount = livesStackView.arrangedSubviews.count
+        if previousCount > count {
+            guard let lifeView = livesStackView.arrangedSubviews.last else { return }
+            livesStackView.removeArrangedSubview(lifeView)
+            lifeView.removeFromSuperview()
+        } else {
+            addLives(count)
+        }
     }
     
     private func setupPauseButton() {
@@ -61,6 +88,22 @@ class PlayingMenu: Menu {
         tappableView.pinTrailing(to: safeTrailingAnchor)
         tappableView.pinSize(to: .initialize(size.width * 1.5))
         tappableView.addTapGesture(target: self, action: #selector(didTapPause(_:)))
+    }
+    
+    private func addLives(_ count: Int) {
+        livesStackView.arrangedSubviews.forEach { (lifeView) in
+            livesStackView.removeArrangedSubview(lifeView)
+            lifeView.removeFromSuperview()
+        }
+        
+        let constant: CGFloat = UIDevice.current.isPad ? 25 : 15
+        for _ in 0..<count {
+            let image = UIImage(named: "heart")
+            let imageView = UIImageView(image: image)
+            imageView.contentMode = .scaleAspectFit
+            imageView.makeSquare(constant: constant)
+            livesStackView.addArrangedSubview(imageView)
+        }
     }
     
     @objc

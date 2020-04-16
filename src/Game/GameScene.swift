@@ -17,6 +17,7 @@ public let scaleRatio: CGFloat = UIDevice.current.isPad ? 6 : 4
 // MARK: - SceneDelegate
 protocol SceneDelegate: class {
     func scene(_ scene: GameScene, didUpdateScore score: Double)
+    func scene(_ scene: GameScene, willUpdateLifeCount count: Int)
     func scene(_ scene: GameScene, didFinishGameWithScore score: Double)
     func scene(_ scene: GameScene, didUpdateGameState state: GameState)
 }
@@ -97,8 +98,15 @@ class GameScene: SKScene {
     lazy var gotReward: Bool = false
     lazy var gameOver: Bool = false
 
-    var remainingLives: [SKSpriteNode] = []
     var cachedCars = [Car: SKPhysicsBody]()
+    var lifeCount: Int = 3 {
+        willSet {
+            sceneDelegate?.scene(self, willUpdateLifeCount: newValue)
+            if newValue == 0 {
+                finishGame()
+            }
+        }
+    }
     
     private lazy var roadBoundingBox: RoadBoundingBox = {
         let w = playerNode.size.width / 2
@@ -195,7 +203,6 @@ class GameScene: SKScene {
         movePlayerToMiddle()
         addChild(playerNode)
         
-        setupLives(count: 3)
         startMotionManager()
         
         DispatchQueue.global().async {
@@ -249,7 +256,7 @@ class GameScene: SKScene {
         movePlayerToMiddle()
         addChild(playerNode)
         
-        self.setupLives(count: 1)
+        self.lifeCount = 1
         self.gameOver = false
         self.pauseGame(false)
     }
@@ -260,35 +267,6 @@ class GameScene: SKScene {
             self.enumerateChildNodes(withName: Cars.car.rawValue) { (node, ptr) in
                 node.removeFromParent()
             }
-        }
-    }
-    
-    // MARK: - View Initialization
-    private func setupLives(count: Int) {
-        let size: CGSize = UIDevice.current.isPad ? .initialize(30) : .initialize(15)
-
-        let padding: CGFloat = UIDevice.current.isPad ? 16 : 8
-        let leftPadding = padding + 4
-        let topPadding = UIDevice.current.isPad ? padding + 8 : padding + 4
-        
-        var posX = frame.minX + insets.left + (size.width / 2) + leftPadding
-        let posY = frame.maxY - insets.top - (size.height / 2) - topPadding - PlayingMenu.scoreHeight
-        
-        for _ in 0..<count {
-            let texture = SKTexture(imageNamed: "heart")
-            let node = SKSpriteNode(texture: texture)
-            node.size = size
-            node.position = CGPoint(x: posX, y: posY)
-            node.zPosition = 2
-            node.aspectFit(to: size)
-            
-            let body = SKPhysicsBody(texture: texture, size: size)
-            body.collisionBitMask = 0
-            node.physicsBody = body
-            
-            remainingLives.append(node)
-            addChild(node)
-            posX += ((size.width / 2) + leftPadding)
         }
     }
     
@@ -362,7 +340,7 @@ class GameScene: SKScene {
         
         var posX = self.roadNode.frame.minX
         for _ in 1..<Int(scaleRatio) {
-            let lineNode = self.roadLineNode.copy() as! SKSpriteNode
+            guard let lineNode = self.roadLineNode.copy() as? SKSpriteNode else { return }
 
             posX += (frame.width / scaleRatio)
             lineNode.position = .init(x: posX, y: posY)

@@ -7,15 +7,15 @@
 */
 
 "scoreTitle" = "Score";
-"bestScoreTitle" = "Best";
+"bestScoreTitle" = "Highscore";
 "newGameTitle" = "New Game";
 "advButtonTitle" = "View this ad to continue racing";
 "settingsTitle" = "Settings";
 "achievementsTitle" = "Achievements";
-"backToMenuTitle" = "Go Back to Menu";
+"backToMenuTitle" = "Main Menu";
 "rateTitle" = "Rate";
 "supportTitle" = "Support";
 "moreAppTitle" = "More App";
 "privacyTitle" = "Privacy Policy";
 "shareTitle" = "Share";
-"continueTitle" = "Continue Racing";
+"continueTitle" = "Continue";

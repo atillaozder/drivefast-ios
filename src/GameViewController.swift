@@ -200,6 +200,7 @@ class GameViewController: UIViewController {
         skView.ignoresSiblingOrder = true
         skView.presentScene(scene)
         playingMenu.setScore(0)
+        playingMenu.setLifeCount(3)
         playingMenu.isHidden = false
     }
     
@@ -279,6 +280,10 @@ extension GameViewController: GADInterstitialDelegate {
 extension GameViewController: SceneDelegate {
     func scene(_ scene: GameScene, didUpdateScore score: Double) {
         playingMenu.setScore(score)
+    }
+    
+    func scene(_ scene: GameScene, willUpdateLifeCount count: Int) {
+        playingMenu.setLifeCount(count)
     }
     
     func scene(_ scene: GameScene, didFinishGameWithScore score: Double) {

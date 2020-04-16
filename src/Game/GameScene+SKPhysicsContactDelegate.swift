@@ -38,20 +38,12 @@ extension GameScene: SKPhysicsContactDelegate {
     }
     
     fileprivate func playerDidCollide(withCar car: SKSpriteNode) {
-        if remainingLives.count > 1 {
+        if lifeCount > 1 {
             soundManager.playEffect(.horns, in: self)
         }
         
         car.removeFromParent()
-        
-        if let live = remainingLives.last {
-            live.removeFromParent()
-            remainingLives.removeLast()
-        }
-        
-        if remainingLives.isEmpty {
-            finishGame()
-        }
+        lifeCount -= 1
     }
         
     fileprivate func playerDidCollide(withCoin coin: Coin) {
