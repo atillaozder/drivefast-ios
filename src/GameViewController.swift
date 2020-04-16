@@ -65,11 +65,11 @@ class GameViewController: UIViewController {
                     playingMenu.isHidden = false
                     presentAdvertisement()
                 case .paused:
-                    gameScene.pauseGame(true)
+                    gameScene.isPaused = true
                     playingMenu.isHidden = false
                     pauseMenu.isHidden = false
                 case .continued:
-                    gameScene.pauseGame(false)
+                    gameScene.isPaused = false
                     playingMenu.isHidden = false
                 }
             }
@@ -120,6 +120,15 @@ class GameViewController: UIViewController {
         GADRewardBasedVideoAd.sharedInstance().delegate = self
         
         checkSession()
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(setStayPaused), name: .shouldStayPausedNotification, object: nil)
+    }
+    
+    @objc
+    func setStayPaused() {
+        if gameState == .paused || gameState == .advertisement {
+            gameScene.setStayPaused()
+        }
     }
     
     // MARK: - Private Helper Methods

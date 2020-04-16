@@ -22,22 +22,29 @@ extension GameScene: SKPhysicsContactDelegate {
             sBody = contact.bodyA
         }
         
+        if (fBody.categoryBitMask & Category.car.rawValue) != 0
+            && (sBody.categoryBitMask & Category.car.rawValue) != 0 {
+            if let car = fBody.node as? SKSpriteNode {
+                car.removeFromParent()
+            }
+        }
+        
         if (fBody.categoryBitMask & Category.player.rawValue) != 0
             && (sBody.categoryBitMask & Category.car.rawValue) != 0 {
             if let car = sBody.node as? SKSpriteNode {
-                playerDidCollide(withCar: car)
+                playerDidCollide(with: car)
             }
         }
         
         if (fBody.categoryBitMask & Category.player.rawValue) != 0
             && (sBody.categoryBitMask & Category.coin.rawValue) != 0 {
             if let coin = sBody.node as? Coin {
-                playerDidCollide(withCoin: coin)
+                playerDidCollide(with: coin)
             }
         }
     }
     
-    fileprivate func playerDidCollide(withCar car: SKSpriteNode) {
+    fileprivate func playerDidCollide(with car: SKSpriteNode) {
         if lifeCount > 1 {
             soundManager.playEffect(.horns, in: self)
         }
@@ -46,7 +53,7 @@ extension GameScene: SKPhysicsContactDelegate {
         lifeCount -= 1
     }
         
-    fileprivate func playerDidCollide(withCoin coin: Coin) {
+    fileprivate func playerDidCollide(with coin: Coin) {
         soundManager.playEffect(.coin, in: self)
         coin.removeFromParent()
         score += coin.value

@@ -168,7 +168,7 @@ extension UIFont {
     static func buildFont(
         _ font: FontNameRepresentable = AmericanTypeWriter.bold,
         withSize size: CGFloat? = nil) -> UIFont {
-        let defaultSize: CGFloat = UIDevice.current.isPad ? 28 : 22
+        let defaultSize: CGFloat = UIDevice.current.isPad ? 26 : 20
         let aSize: CGFloat = size == nil ? defaultSize : size!
         return buildFont(name: font.fontName, size: aSize)
     }
@@ -207,4 +207,9 @@ extension UIEdgeInsets {
     static func initialize(_ constant: CGFloat) -> UIEdgeInsets {
         return .init(top: constant, left: constant, bottom: constant, right: constant)
     }
+}
+
+// MARK: - NSNotification
+extension NSNotification.Name {
+    static let shouldStayPausedNotification = Notification.Name("shouldStayPausedNotification")
 }

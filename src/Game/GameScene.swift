@@ -26,6 +26,29 @@ protocol SceneDelegate: class {
 class GameScene: SKScene {
         
     // MARK: - Properties
+    private var stayPaused = false
+
+    override var isPaused: Bool {
+        get {
+            return super.isPaused
+        } set {
+            if (!stayPaused) {
+                super.isPaused = newValue
+                
+                newValue ? stopMotionManager() : startMotionManager()
+                if let addCarSeq = self.action(forKey: Actions.addCar.rawValue) {
+                    addCarSeq.speed = newValue ? 0 : 1
+                }
+            }
+            
+            stayPaused = false
+        }
+    }
+    
+    var gameStarted: Bool {
+        return true
+    }
+    
     private let motionManager = CMMotionManager()
     let soundManager = SoundManager()
     weak var sceneDelegate: SceneDelegate?
@@ -219,7 +242,7 @@ class GameScene: SKScene {
         
     fileprivate func stopGame() {
         if !gotReward {
-            self.pauseGame(true)
+            self.isPaused = true
             self.sceneDelegate?.scene(self, didUpdateGameState: .advertisement)
         } else {
             self.sceneDelegate?.scene(self, didUpdateGameState: .home)
@@ -244,21 +267,13 @@ class GameScene: SKScene {
         }
     }
     
-    func pauseGame(_ isPaused: Bool) {
-        self.isPaused = isPaused
-        isPaused ? stopMotionManager() : startMotionManager()
-        if let addCarSeq = self.action(forKey: Actions.addCar.rawValue) {
-            addCarSeq.speed = isPaused ? 0 : 1
-        }
-    }
-    
     func didGetReward() {
         movePlayerToMiddle()
         addChild(playerNode)
         
         self.lifeCount = 1
         self.gameOver = false
-        self.pauseGame(false)
+        self.isPaused = false
     }
     
     func willPresentRewardBasedVideoAd() {
@@ -267,6 +282,12 @@ class GameScene: SKScene {
             self.enumerateChildNodes(withName: Cars.car.rawValue) { (node, ptr) in
                 node.removeFromParent()
             }
+        }
+    }
+    
+    func setStayPaused() {
+        if (super.isPaused) {
+            self.stayPaused = true
         }
     }
     
@@ -287,12 +308,11 @@ class GameScene: SKScene {
     }
         
     private func stopMotionManager() {
-        if motionManager.isAccelerometerActive {
-            motionManager.stopAccelerometerUpdates()
-        }
+        motionManager.stopAccelerometerUpdates()
     }
         
     private func startMotionManager() {
+        stopMotionManager()
         motionManager.accelerometerUpdateInterval = 0.01
         motionManager.startAccelerometerUpdates(to: .init()) { [weak self] (data, error) in
             guard let strongSelf = self, let data = data else { return }
@@ -382,8 +402,8 @@ class GameScene: SKScene {
                     #if DEBUG
                     // Debug mode is on, continue
                     #else
-                    // Physics body is empty, if game is active dont add car to screen
-                    if !self.remainingLives.isEmpty {
+                    // Physics body is empty, if game is started dont add car to screen
+                    if self.gameStarted {
                         return
                     }
                     #endif
