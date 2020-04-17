@@ -1,4 +1,4 @@
-# ![alt text][logo] Retro 2D Car Racing
+# ![alt text][logo] Drive Fast - Retro car racing
 [logo]: https://github.com/atillaozder/retro-ios/blob/master/src/Resources/Assets.xcassets/AppIcon.appiconset/Icon-29.png "Drive Fast - Retro car racing"
 
 [![Language: Swift](https://img.shields.io/badge/language-Swift-orange.svg)](https://developer.apple.com/swift/) [![Platform: iOS](https://img.shields.io/badge/platform-iOS-000000.svg)](https://cocoapods.org/) [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
