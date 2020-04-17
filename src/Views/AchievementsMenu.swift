@@ -12,14 +12,33 @@ class AchievementsMenu: Menu {
     
     weak var delegate: MenuDelegate?
     
+    override var isHidden: Bool {
+        willSet {
+            if newValue {
+                scoreLabel.text = scoreText
+                highscoreLabel.text = highscoreText
+            }
+        }
+    }
+    
+    var scoreText: String {
+        return MainStrings.scoreTitle.localized + ": \(UserDefaults.standard.score)"
+    }
+    
+    var highscoreText: String {
+        return MainStrings.highscoreTitle.localized + ": \(UserDefaults.standard.highscore)"
+    }
+    
+    lazy var scoreLabel: UILabel = {
+        return buildLabel(withText: scoreText)
+    }()
+    
+    lazy var highscoreLabel: UILabel = {
+        return buildLabel(withText: highscoreText)
+    }()
+    
     override func setup() {
-        let scoreText = MainStrings.scoreTitle.localized + ": \(UserDefaults.standard.score)"
-        let scoreLabel = buildLabel(withText: scoreText)
-        
-        let bestText = MainStrings.bestScoreTitle.localized + ": \(UserDefaults.standard.bestScore)"
-        let bestScoreLabel = buildLabel(withText: bestText)
-        
-        let labels = UIStackView(arrangedSubviews: [scoreLabel, bestScoreLabel])
+        let labels = UIStackView(arrangedSubviews: [scoreLabel, highscoreLabel])
         labels.spacing = 0
         labels.axis = .vertical
         labels.distribution = .fillEqually

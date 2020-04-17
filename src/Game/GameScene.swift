@@ -54,15 +54,20 @@ class GameScene: SKScene {
     weak var sceneDelegate: SceneDelegate?
     
     lazy var playerNode: SKSpriteNode = {
-        let carName = "player"
-        let texture = SKTexture(imageNamed: carName)
+        let image = "player"
+        let texture = SKTexture(imageNamed: image)
         let _ = texture.size()
         
         let car = SKSpriteNode(texture: texture)
         car.zPosition = 1
         car.name = Cars.player.rawValue
+                
+        if !setCarPhysicsBody(car, from: texture) {
+            let aNode = SKShapeNode()
+            aNode.fillTexture = SKTexture(imageNamed: image)
+            setCarPhysicsBody(car, from: aNode.fillTexture) 
+        }
         
-        setCarPhysicsBody(car, from: texture)
         car.physicsBody?.isDynamic = true
         car.physicsBody?.categoryBitMask = Category.player.rawValue
         car.physicsBody?.contactTestBitMask = Category.car.rawValue
@@ -82,7 +87,7 @@ class GameScene: SKScene {
         return node
     }()
     
-    lazy var roadLineNode: SKSpriteNode = {
+    let roadLineNode: SKSpriteNode = {
         let node = SKSpriteNode(imageNamed: "road-line")
         node.zPosition = -1
         node.size = .init(width: 6, height: 30)
@@ -218,7 +223,7 @@ class GameScene: SKScene {
     }
     
     func movePlayerToMiddle() {
-        playerNode.position = .init(x: self.frame.midX, y: roadBoundingBox.minY + 10)
+        playerNode.position = .init(x: self.frame.midX, y: roadBoundingBox.minY)
     }
     
     func initiateGame() {
@@ -342,7 +347,7 @@ class GameScene: SKScene {
         let body = SKPhysicsBody(texture: texture, size: texture.size())
         body.isDynamic = false
         body.categoryBitMask = Category.car.rawValue
-        body.contactTestBitMask = Category.player.rawValue
+        body.contactTestBitMask = Category.player.rawValue | Category.car.rawValue
         body.collisionBitMask = 0
         
         car.physicsBody = body

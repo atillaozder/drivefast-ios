@@ -16,7 +16,7 @@ extension UserDefaults {
        return integer(forKey: "score")
     }
     
-    var bestScore: Int {
+    var highscore: Int {
         return integer(forKey: "best_score")
     }
     
@@ -30,11 +30,11 @@ extension UserDefaults {
     
     func setScore(_ score: Int) {
         set(score, forKey: "score")
-        setBestScore(score)
+        setHighscore(score)
     }
     
-    func setBestScore(_ score: Int) {
-        if score > bestScore {
+    func setHighscore(_ score: Int) {
+        if score > highscore {
             set(score, forKey: "best_score")
         }
     }

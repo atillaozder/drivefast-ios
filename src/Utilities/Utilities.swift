@@ -73,7 +73,7 @@ enum Category: UInt32 {
 // MARK: - MainStrings
 enum MainStrings: String {
     case scoreTitle = "scoreTitle"
-    case bestScoreTitle = "bestScoreTitle"
+    case highscoreTitle = "highscoreTitle"
     case newGameTitle = "newGameTitle"
     case advButtonTitle = "advButtonTitle"
     case settingsTitle = "settingsTitle"

@@ -7,7 +7,7 @@
 */
 
 "scoreTitle" = "Skor";
-"bestScoreTitle" = "En iyi";
+"highscoreTitle" = "En iyi";
 "newGameTitle" = "Oyna";
 "advButtonTitle" = "Yarışa devam edebilmek için bir reklam izle";
 "settingsTitle" = "Ayarlar";

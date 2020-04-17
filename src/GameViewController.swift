@@ -181,7 +181,6 @@ class GameViewController: UIViewController {
     
     private func presentMenuScene() {
         let scene = MenuScene(size: skView.frame.size)
-        scene.sceneDelegate = self
         scene.scaleMode = .aspectFit
         if #available(iOS 11.0, *) {
             scene.insets = skView.safeAreaInsets

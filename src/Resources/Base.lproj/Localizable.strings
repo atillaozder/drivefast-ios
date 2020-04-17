@@ -7,7 +7,7 @@
 */
 
 "scoreTitle" = "Score";
-"bestScoreTitle" = "Highscore";
+"highscoreTitle" = "Highscore";
 "newGameTitle" = "New Game";
 "advButtonTitle" = "View this ad to continue racing";
 "settingsTitle" = "Settings";

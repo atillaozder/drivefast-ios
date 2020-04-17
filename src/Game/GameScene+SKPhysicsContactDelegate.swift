@@ -22,22 +22,25 @@ extension GameScene: SKPhysicsContactDelegate {
             sBody = contact.bodyA
         }
         
-        if (fBody.categoryBitMask & Category.car.rawValue) != 0
-            && (sBody.categoryBitMask & Category.car.rawValue) != 0 {
+        let fCategory = fBody.categoryBitMask
+        let sCategory = sBody.categoryBitMask
+        
+        if fCategory & Category.car.rawValue != 0 &&
+            sCategory & Category.car.rawValue != 0 {
             if let car = fBody.node as? SKSpriteNode {
                 car.removeFromParent()
             }
         }
         
-        if (fBody.categoryBitMask & Category.player.rawValue) != 0
-            && (sBody.categoryBitMask & Category.car.rawValue) != 0 {
+        if fCategory & Category.player.rawValue != 0 &&
+            sCategory & Category.car.rawValue != 0 {
             if let car = sBody.node as? SKSpriteNode {
                 playerDidCollide(with: car)
             }
         }
         
-        if (fBody.categoryBitMask & Category.player.rawValue) != 0
-            && (sBody.categoryBitMask & Category.coin.rawValue) != 0 {
+        if fCategory & Category.player.rawValue != 0 &&
+            sCategory & Category.coin.rawValue != 0 {
             if let coin = sBody.node as? Coin {
                 playerDidCollide(with: coin)
             }
