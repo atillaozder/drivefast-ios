@@ -4,17 +4,18 @@
 [![Language: Swift](https://img.shields.io/badge/language-Swift-orange.svg)](https://developer.apple.com/swift/) [![Platform: iOS](https://img.shields.io/badge/platform-iOS-000000.svg)](https://cocoapods.org/) [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
 
 
-Drive Fast - Retro car racing is the ultimate top-down racing game, with many different cars. Experience thrilling top down racing in one of the best-looking 2D racing games.
+Drive Fast - Retro car racing is the ultimate top-down racing game, with many different cars. Experience thrilling top down racing in one of the best-looking 2 dimensional racing games.
 
 Racing games are among the most popular in all of mobile gaming. It was the first genre to overcome the lack of physical buttons on smartphones well enough that it made the games worth playing. Most popular racing games have tens of millions of fans. That doesn’t mean they’re the best, though. Which ones should you try? Here is one of the best racing game for iOS.
 
-Drive Fast - Retro car racing is an exciting game with eye-catching graphics that can keep you entertained for hours. Retro 2D is based on one of the nostalgic and old driving games that are simulated very high quality. You have to drive carefully with your car and try not to deal with other cars.
+Drive Fast - Retro car racing is an exciting game with eye-catching graphics that can keep you entertained for hours. Drive Fast is based on one of the nostalgic and old driving games that are simulated very high quality. You have to drive carefully with your car and try not to deal with other cars.
 
 Features:
+
 - Different car
 - Realistic car physics and sound effects
 - Fun gameplay
-- Visual stunning 2D graphics
+- Visual stunning 2 dimensional graphics
 - Weather effects
 
 ## Appearance
