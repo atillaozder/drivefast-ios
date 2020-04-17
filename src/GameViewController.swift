@@ -34,6 +34,7 @@ class GameViewController: UIViewController {
         return skView.scene as? GameScene ?? .init()
     }
     
+    private lazy var adHelper = AdHelper(rootViewController: self)
     private var previousGameState: GameState = .playing
     
     var gameState: GameState = .home {
@@ -63,7 +64,7 @@ class GameViewController: UIViewController {
                     presentGameScene()
                 case .advPresenting:
                     playingMenu.isHidden = false
-                    presentAdvertisement()
+                    adHelper.presentRewardedAd()
                 case .paused:
                     gameScene.isPaused = true
                     playingMenu.isHidden = false
@@ -84,13 +85,6 @@ class GameViewController: UIViewController {
     private lazy var achievementsMenu = AchievementsMenu()
     private lazy var playingMenu = PlayingMenu()
     private lazy var pauseMenu = PauseMenu()
-    
-    private var reward: GADAdReward?
-    private var interstitial: GADInterstitial! {
-        didSet {
-            self.interstitial.delegate = self
-        }
-    }
     
     override var prefersStatusBarHidden: Bool {
         return true
@@ -115,9 +109,7 @@ class GameViewController: UIViewController {
         self.registerRemoteNotifications()
         self.setupMenus()
         gameState = .home
-
-        self.interstitial = AdvHelper.buildInterstitial()
-        GADRewardBasedVideoAd.sharedInstance().delegate = self
+        adHelper.delegate = self
         
         checkSession()
         
@@ -212,17 +204,6 @@ class GameViewController: UIViewController {
         playingMenu.isHidden = false
     }
     
-    private func presentAdvertisement() {
-        let shared = GADRewardBasedVideoAd.sharedInstance()
-        if shared.isReady {
-            gameScene.willPresentRewardBasedVideoAd()
-            shared.present(fromRootViewController: self)
-        } else {
-            gameState = .home
-            AdvHelper.loadRewardBasedVideoAdv()
-        }
-    }
-    
     private func rateTapped() {
         if #available(iOS 10.3, *) {
             SKStoreReviewController.requestReview()
@@ -259,29 +240,21 @@ class GameViewController: UIViewController {
     }
 }
 
-extension GameViewController: GADRewardBasedVideoAdDelegate {
-    func rewardBasedVideoAd(_ rewardBasedVideoAd: GADRewardBasedVideoAd,
-                            didRewardUserWith reward: GADAdReward) {
-        self.reward = reward
+extension GameViewController: AdHelperDelegate {
+    func adHelper(_ adHelper: AdHelper, userDidEarn reward: GADAdReward?) {
+        if reward == nil {
+            gameState = .home
+        } else {
+            gameScene.didGetReward()
+        }
     }
     
-    func rewardBasedVideoAdDidClose(_ rewardBasedVideoAd: GADRewardBasedVideoAd) {
-        if reward != nil {
-            gameScene.didGetReward()
-            reward = nil
-        } else {
+    func adHelper(_ adHelper: AdHelper, willPresentRewardedAd isReady: Bool) {
+        if !isReady {
             gameState = .home
+        } else {
+            gameScene.willPresentRewardBasedVideoAd()
         }
-        
-        GADRewardBasedVideoAd
-            .sharedInstance()
-            .load(.init(), withAdUnitID: AdvHelper.rewardBasedVideoAdIdentifier)
-    }
-}
-
-extension GameViewController: GADInterstitialDelegate {
-    func interstitialDidDismissScreen(_ ad: GADInterstitial) {
-        self.interstitial = AdvHelper.buildInterstitial()
     }
 }
 
@@ -298,9 +271,7 @@ extension GameViewController: SceneDelegate {
         UserDefaults.standard.setScore(Int(score))
         
         if gameCount.remainder(dividingBy: 2) == 0 {
-            interstitial.isReady ?
-                interstitial.present(fromRootViewController: self) :
-                interstitial.load(.init())
+            adHelper.presentInterstitial()
         }
     }
     

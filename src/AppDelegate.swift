@@ -18,7 +18,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         FirebaseApp.configure()
         GADMobileAds.sharedInstance().start(completionHandler: nil)
-        AdvHelper.loadRewardBasedVideoAdv()
         
         UserDefaults.standard.setSession()
         

@@ -11,43 +11,29 @@ import SpriteKit
 // MARK: - SKPhysicsContactDelegate
 extension GameScene: SKPhysicsContactDelegate {
     func didBegin(_ contact: SKPhysicsContact) {
-        var fBody: SKPhysicsBody
-        var sBody: SKPhysicsBody
+        let isPlayer = contact.bodyA.category == .player
+        let bodyA = isPlayer ? contact.bodyA : contact.bodyB
+        let bodyB = isPlayer ? contact.bodyB : contact.bodyA
         
-        if contact.bodyA.categoryBitMask < contact.bodyB.categoryBitMask {
-            fBody = contact.bodyA
-            sBody = contact.bodyB
-        } else {
-            fBody = contact.bodyB
-            sBody = contact.bodyA
-        }
-        
-        let fCategory = fBody.categoryBitMask
-        let sCategory = sBody.categoryBitMask
-        
-        if fCategory & Category.car.rawValue != 0 &&
-            sCategory & Category.car.rawValue != 0 {
-            if let car = fBody.node as? SKSpriteNode {
-                car.removeFromParent()
-            }
-        }
-        
-        if fCategory & Category.player.rawValue != 0 &&
-            sCategory & Category.car.rawValue != 0 {
-            if let car = sBody.node as? SKSpriteNode {
+        switch (bodyA.category, bodyB.category) {
+        case (.player, .car):
+            if let car = bodyB.node {
                 playerDidCollide(with: car)
             }
-        }
-        
-        if fCategory & Category.player.rawValue != 0 &&
-            sCategory & Category.coin.rawValue != 0 {
-            if let coin = sBody.node as? Coin {
+        case (.player, .coin):
+            if let coin = bodyB.node as? Coin {
                 playerDidCollide(with: coin)
             }
+        case (.car, .car):
+            if let car = bodyA.node {
+                car.removeFromParent()
+            }
+        default:
+            break
         }
     }
     
-    fileprivate func playerDidCollide(with car: SKSpriteNode) {
+    fileprivate func playerDidCollide(with car: SKNode) {
         if lifeCount > 1 {
             soundManager.playEffect(.horns, in: self)
         }
@@ -55,10 +41,17 @@ extension GameScene: SKPhysicsContactDelegate {
         car.removeFromParent()
         lifeCount -= 1
     }
-        
+    
     fileprivate func playerDidCollide(with coin: Coin) {
         soundManager.playEffect(.coin, in: self)
         coin.removeFromParent()
         score += coin.value
+    }
+}
+
+// MARK: - SKPhysicsBody
+extension SKPhysicsBody {
+    var category: Category {
+        return Category(rawValue: categoryBitMask) ?? .none
     }
 }

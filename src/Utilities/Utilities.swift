@@ -8,7 +8,6 @@
 
 import UIKit
 import SpriteKit
-import GoogleMobileAds
 
 // MARK: - Effect
 enum Effect {
@@ -68,6 +67,7 @@ enum Category: UInt32 {
     case coin = 0x100
     case car = 0x10
     case player = 0x1
+    case none = 0x1000
 }
 
 // MARK: - MainStrings
@@ -88,36 +88,6 @@ enum MainStrings: String {
     
     var localized: String {
         return NSLocalizedString(self.rawValue, comment: "")
-    }
-}
-
-// MARK: - AdvHelper
-struct AdvHelper {
-    static var interstitialIdentifier: String {
-        #if DEBUG
-        return "ca-app-pub-3940256099942544/4411468910"
-        #else
-        return "ca-app-pub-3176546388613754/6987129300"
-        #endif
-    }
-    
-    static var rewardBasedVideoAdIdentifier: String {
-        #if DEBUG
-        return "ca-app-pub-3940256099942544/1712485313"
-        #else
-        return "ca-app-pub-3176546388613754/7634389777"
-        #endif
-    }
-    
-    static func buildInterstitial() -> GADInterstitial {
-        let interstitial = GADInterstitial(adUnitID: AdvHelper.interstitialIdentifier)
-        interstitial.load(.init())
-        return interstitial
-    }
-    
-    static func loadRewardBasedVideoAdv() {
-        GADRewardBasedVideoAd.sharedInstance().load(
-            .init(), withAdUnitID: AdvHelper.rewardBasedVideoAdIdentifier)
     }
 }
 

@@ -68,7 +68,6 @@ class GameScene: SKScene {
             setCarPhysicsBody(car, from: aNode.fillTexture) 
         }
         
-        car.physicsBody?.isDynamic = true
         car.physicsBody?.categoryBitMask = Category.player.rawValue
         car.physicsBody?.contactTestBitMask = Category.car.rawValue
         
@@ -345,7 +344,7 @@ class GameScene: SKScene {
         
         guard let texture = texture else { return false }
         let body = SKPhysicsBody(texture: texture, size: texture.size())
-        body.isDynamic = false
+        body.isDynamic = true
         body.categoryBitMask = Category.car.rawValue
         body.contactTestBitMask = Category.player.rawValue | Category.car.rawValue
         body.collisionBitMask = 0
