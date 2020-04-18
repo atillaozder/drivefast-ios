@@ -418,9 +418,9 @@ class GameScene: SKScene {
             carNode.position = CGPoint(
                 x: CGFloat(randomDist.nextInt()), y: self.frame.maxY + carNode.size.height)
             
+            let move = SKAction.moveTo(y: -carNode.size.height / 2, duration: self.appearanceDuration)
             var actions = [SKAction]()
-            actions.append(
-                .moveTo(y: -carNode.size.height / 2, duration: self.appearanceDuration))
+            actions.append(move)
 
             let increaseScore = SKAction.run { [unowned self] in
                 if !self.gameOver {
@@ -472,7 +472,7 @@ class GameScene: SKScene {
         coin.physicsBody = body
         
         var actions = [SKAction]()
-        actions.append(.moveTo(y: -coin.size.height / 2, duration: 3))
+        actions.append(.moveTo(y: -coin.size.height / 2, duration: appearanceDuration))
         actions.append(.removeFromParent())
         
         DispatchQueue.main.async {
