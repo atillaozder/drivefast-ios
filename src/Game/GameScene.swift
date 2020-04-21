@@ -54,7 +54,7 @@ class GameScene: SKScene {
     weak var sceneDelegate: SceneDelegate?
     
     lazy var playerNode: SKSpriteNode = {
-        let image = "player"
+        let image = UserDefaults.standard.player
         let texture = SKTexture(imageNamed: image)
         let _ = texture.size()
         
@@ -149,7 +149,13 @@ class GameScene: SKScene {
     
     private lazy var cars: [Car] = {
         var cars = [Car]()
-        for idx in 1...20 { cars.append(.init(index: idx)) }
+        let player = UserDefaults.standard.player
+        for idx in 0...20 {
+            let carName = "car\(idx)"
+            if carName != player {
+                cars.append(.init(index: idx))
+            }
+        }
         return cars
     }()
     

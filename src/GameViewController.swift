@@ -20,6 +20,7 @@ enum GameState: Int {
     case settings
     case achievements
     case continued
+    case garage
 }
 
 // MARK: - GameViewController
@@ -39,7 +40,7 @@ class GameViewController: UIViewController {
     
     var gameState: GameState = .home {
         didSet {
-            let menus = [homeMenu, advertisementMenu, settingsMenu, achievementsMenu, playingMenu, pauseMenu]
+            let menus = [homeMenu, advertisementMenu, settingsMenu, achievementsMenu, playingMenu, pauseMenu, garageMenu]
             menus.forEach { (menu) in
                 menu.isHidden = true
             }
@@ -72,6 +73,8 @@ class GameViewController: UIViewController {
                 case .continued:
                     gameScene.isPaused = false
                     playingMenu.isHidden = false
+                case .garage:
+                    garageMenu.isHidden = false
                 }
             }
             
@@ -85,6 +88,7 @@ class GameViewController: UIViewController {
     private lazy var achievementsMenu = AchievementsMenu()
     private lazy var playingMenu = PlayingMenu()
     private lazy var pauseMenu = PauseMenu()
+    private lazy var garageMenu = GarageMenu()
     
     override var prefersStatusBarHidden: Bool {
         return true
@@ -145,6 +149,10 @@ class GameViewController: UIViewController {
         settingsMenu.pinEdgesToSuperview()
         settingsMenu.delegate = self
         
+        self.view.addSubview(garageMenu)
+        garageMenu.pinEdgesToSuperview()
+        garageMenu.delegate = self
+        
         self.view.addSubview(homeMenu)
         homeMenu.pinEdgesToSuperview()
         homeMenu.delegate = self
@@ -190,7 +198,6 @@ class GameViewController: UIViewController {
         if let menuScene = skView.scene as? MenuScene {
             scene.insets = menuScene.insets
             scene.cachedCars = menuScene.cachedCars
-            scene.playerNode = menuScene.playerNode
         } else {
             if #available(iOS 11.0, *) {
                 scene.insets = skView.safeAreaInsets

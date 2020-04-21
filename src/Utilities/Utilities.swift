@@ -85,6 +85,8 @@ enum MainStrings: String {
     case moreAppTitle = "moreAppTitle"
     case shareTitle = "shareTitle"
     case continueTitle = "continueTitle"
+    case garageTitle = "garageTitle"
+    case chooseTitle = "chooseTitle"
     
     var localized: String {
         return NSLocalizedString(self.rawValue, comment: "")

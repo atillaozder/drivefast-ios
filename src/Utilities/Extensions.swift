@@ -44,8 +44,16 @@ extension UserDefaults {
         set(value, forKey: "session")
     }
         
-    func setSound(_ newValue: Bool) {
-        set(!newValue, forKey: "sound_preference")
+    func setSound(_ sound: Bool) {
+        set(!sound, forKey: "sound_preference")
+    }
+    
+    var player: String {
+        return string(forKey: "player") ?? "car0"
+    }
+    
+    func setPlayer(_ player: String) {
+        set(player, forKey: "player")
     }
 }
 

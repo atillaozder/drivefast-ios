@@ -23,6 +23,10 @@ class HomeMenu: Menu {
         achievementsButton.addTarget(self, action: #selector(didTapAchievements(_:)), for: .touchUpInside)
         stackView.addArrangedSubview(achievementsButton)
         
+        let garageButton = buildButton(withTitle: .garageTitle)
+        garageButton.addTarget(self, action: #selector(didTapGarage(_:)), for: .touchUpInside)
+        stackView.addArrangedSubview(garageButton)
+        
         let settingsButton = buildButton(withTitle: .settingsTitle)
         settingsButton.addTarget(self, action: #selector(didTapSettings(_:)), for: .touchUpInside)
         stackView.addArrangedSubview(settingsButton)
@@ -66,6 +70,11 @@ class HomeMenu: Menu {
     @objc
     func didTapNewGame(_ sender: UIButton) {
         delegate?.menu(self, didUpdateGameState: .playing)
+    }
+    
+    @objc
+    func didTapGarage(_ sender: UIButton) {
+        delegate?.menu(self, didUpdateGameState: .garage)
     }
     
     @objc
