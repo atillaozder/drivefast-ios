@@ -48,12 +48,12 @@ extension UserDefaults {
         set(!sound, forKey: "sound_preference")
     }
     
-    var player: String {
-        return string(forKey: "player") ?? "car0"
+    var playersCar: Car {
+        return Car(index: integer(forKey: "players_car"))
     }
     
-    func setPlayer(_ player: String) {
-        set(player, forKey: "player")
+    func setPlayersCar(_ player: Car) {
+        set(player.index, forKey: "players_car")
     }
 }
 

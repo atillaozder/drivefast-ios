@@ -10,14 +10,18 @@ import UIKit
 
 // MARK: - Car
 struct Car: Hashable {
-    private var index: Int
+    private var _index: Int
+    
+    var index: Int {
+        return _index
+    }
     
     var imageName: String {
         return "car\(index)"
     }
     
     var ratio: CGFloat {
-        var value = index > 5 ? scaleRatio + 3 : scaleRatio + 2
+        var value = index > 4 ? scaleRatio + 3 : scaleRatio + 2
         
         // truck
         if index == 20 {
@@ -28,6 +32,12 @@ struct Car: Hashable {
     }
     
     init(index: Int) {
-        self.index = index
+        self._index = index
+    }
+}
+
+extension Car: Equatable {
+    static func == (lhs: Self, rhs: Self) -> Bool {
+        return lhs._index == rhs._index
     }
 }

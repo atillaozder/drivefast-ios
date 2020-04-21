@@ -14,7 +14,7 @@ class GarageMenu: Menu {
     
     private let cellID = "cellID"
     
-    private var dataSource: [String] = [] {
+    private var dataSource: [Car] = [] {
         didSet {
             collectionView.reloadData()
         }
@@ -65,16 +65,16 @@ class GarageMenu: Menu {
         let rightArrow = arrowGenerator("right-arrow")
         rightArrow.addTapGesture(target: self, action: #selector(scrollRight))
                 
-        let cars = UIStackView()
-        cars.alignment = .center
-        cars.axis = .horizontal
-        cars.spacing = 16
-        cars.distribution = .fill
-        cars.addArrangedSubview(leftArrow)
-        cars.addArrangedSubview(collectionView)
-        cars.addArrangedSubview(rightArrow)
+        let carStack = UIStackView()
+        carStack.alignment = .center
+        carStack.axis = .horizontal
+        carStack.spacing = 16
+        carStack.distribution = .fill
+        carStack.addArrangedSubview(leftArrow)
+        carStack.addArrangedSubview(collectionView)
+        carStack.addArrangedSubview(rightArrow)
 
-        stackView.addArrangedSubview(cars)
+        stackView.addArrangedSubview(carStack)
         leftArrow.pinWidth(to: rightArrow.widthAnchor)
         leftArrow.pinHeight(to: rightArrow.heightAnchor)
         
@@ -93,14 +93,14 @@ class GarageMenu: Menu {
         stackView.addArrangedSubview(buttons)
         stackView.spacing = UIDevice.current.isPad ? 40 : 30
         
-        let player = UserDefaults.standard.player
-        var images = [String]()
+        let playersCar = UserDefaults.standard.playersCar
+        var cars = [Car]()
         for idx in 0..<20 {
-            let carName = "car\(idx)"
-            carName == player ? images.insert(carName, at: 0) : images.append(carName)
+            let aCar = Car(index: idx)
+            aCar == playersCar ? cars.insert(aCar, at: 0) : cars.append(aCar)
         }
         
-        self.dataSource = images
+        self.dataSource = cars
         self.isHidden = true
         super.setup()
     }
@@ -125,11 +125,10 @@ class GarageMenu: Menu {
     
     @objc
     func didTapChoose(_ sender: UIButton) {
-        if let indexPath = collectionView.indexPathsForVisibleItems.first {
-            let selectedCar = dataSource[indexPath.item]
-            UserDefaults.standard.setPlayer(selectedCar)
-            delegate?.menu(self, didUpdateGameState: .home)
-        }
+        guard let indexPath = collectionView.indexPathsForVisibleItems.first else { return }
+        let selectedCar = dataSource[indexPath.item]
+        UserDefaults.standard.setPlayersCar(selectedCar)
+        delegate?.menu(self, didUpdateGameState: .home)
     }
     
     @objc
@@ -183,7 +182,7 @@ class GarageCollectionCell: UICollectionViewCell {
         imageView.pinEdgesToSuperview()
     }
     
-    func configure(with car: String) {
-        imageView.image = UIImage(named: car)
+    func configure(with car: Car) {
+        imageView.image = UIImage(named: car.imageName)
     }
 }

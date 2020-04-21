@@ -34,13 +34,7 @@ class GameScene: SKScene {
         } set {
             if (!stayPaused) {
                 super.isPaused = newValue
-                
-                newValue ? stopMotionManager() : startMotionManager()
-                if let addCarSeq = self.action(forKey: Actions.addCar.rawValue) {
-                    addCarSeq.speed = newValue ? 0 : 1
-                }
             }
-            
             stayPaused = false
         }
     }
@@ -54,8 +48,9 @@ class GameScene: SKScene {
     weak var sceneDelegate: SceneDelegate?
     
     lazy var playerNode: SKSpriteNode = {
-        let image = UserDefaults.standard.player
-        let texture = SKTexture(imageNamed: image)
+        let playersCar = UserDefaults.standard.playersCar
+        
+        let texture = SKTexture(imageNamed: playersCar.imageName)
         let _ = texture.size()
         
         let car = SKSpriteNode(texture: texture)
@@ -64,15 +59,13 @@ class GameScene: SKScene {
                 
         if !setCarPhysicsBody(car, from: texture) {
             let aNode = SKShapeNode()
-            aNode.fillTexture = SKTexture(imageNamed: image)
+            aNode.fillTexture = SKTexture(imageNamed: playersCar.imageName)
             setCarPhysicsBody(car, from: aNode.fillTexture) 
         }
         
         car.physicsBody?.categoryBitMask = Category.player.rawValue
         car.physicsBody?.contactTestBitMask = Category.car.rawValue
-        
-        let ratio = UIDevice.current.isPad ? scaleRatio + 5.5 : scaleRatio + 2.5
-        car.setScale(to: frame.width / ratio)
+        car.setScale(to: frame.width / playersCar.ratio)
         return car
     }()
     
@@ -149,11 +142,11 @@ class GameScene: SKScene {
     
     private lazy var cars: [Car] = {
         var cars = [Car]()
-        let player = UserDefaults.standard.player
+        let playersCar = UserDefaults.standard.playersCar
         for idx in 0...20 {
-            let carName = "car\(idx)"
-            if carName != player {
-                cars.append(.init(index: idx))
+            let aCar = Car(index: idx)
+            if aCar != playersCar {
+                cars.append(aCar)
             }
         }
         return cars
@@ -277,6 +270,13 @@ class GameScene: SKScene {
         }
     }
     
+    func didChangePauseState() {
+        isPaused ? stopMotionManager() : startMotionManager()
+        if let addCarSeq = self.action(forKey: Actions.addCar.rawValue) {
+            addCarSeq.speed = isPaused ? 0 : 1
+        }
+    }
+    
     func didGetReward() {
         movePlayerToMiddle()
         addChild(playerNode)
@@ -326,7 +326,6 @@ class GameScene: SKScene {
         motionManager.accelerometerUpdateInterval = 0.01
         motionManager.startAccelerometerUpdates(to: .init()) { [weak self] (data, error) in
             guard let strongSelf = self, let data = data else { return }
-
             let player = strongSelf.playerNode
             let position = player.position
             var x = position.x + CGFloat(data.acceleration.x * 10)

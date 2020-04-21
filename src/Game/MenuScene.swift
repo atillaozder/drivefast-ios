@@ -15,13 +15,6 @@ class MenuScene: GameScene {
     override var gameStarted: Bool {
         return false
     }
-    
-    override func didMove(to view: SKView) {
-        super.didMove(to: view)
-        DispatchQueue.global().async {
-            self.movePlayerToMiddle()
-        }
-    }
             
     override func initiateGame() {
         return
