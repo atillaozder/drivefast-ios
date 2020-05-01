@@ -89,6 +89,10 @@ class HomeMenu: Menu {
         if let button = sender as? BackslashButton {
             button.backslashDrawable = !newValue
         }
+        
+        newValue ?
+            AudioPlayer.shared.playMusic(.race) :
+            AudioPlayer.shared.pauseMusic()
     }
         
     @objc

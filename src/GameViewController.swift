@@ -38,13 +38,16 @@ class GameViewController: UIViewController {
     private lazy var adHelper = AdHelper(rootViewController: self)
     private var previousGameState: GameState = .playing
     
+    private var menus: [UIView] {
+        return [
+            playingMenu, pauseMenu, advertisementMenu,
+            achievementsMenu, settingsMenu, garageMenu,
+            homeMenu]
+    }
+    
     var gameState: GameState = .home {
         didSet {
-            let menus = [homeMenu, advertisementMenu, settingsMenu, achievementsMenu, playingMenu, pauseMenu, garageMenu]
-            menus.forEach { (menu) in
-                menu.isHidden = true
-            }
-            
+            menus.forEach { $0.isHidden = true }
             let shouldPresentNewMenu = previousGameState.rawValue < 4 && gameState == .home
             
             if shouldPresentNewMenu {
@@ -117,6 +120,7 @@ class GameViewController: UIViewController {
         gameState = .home
         adHelper.delegate = self
         
+        AudioPlayer.shared.playMusic(.race)
         checkSession()
         
         NotificationCenter.default.addObserver(self, selector: #selector(setStayPaused), name: .shouldStayPausedNotification, object: nil)
@@ -131,33 +135,18 @@ class GameViewController: UIViewController {
     
     // MARK: - Private Helper Methods
     private func setupMenus() {
-        self.view.addSubview(playingMenu)
-        playingMenu.pinEdgesToSuperview()
-        playingMenu.delegate = self
-        
-        self.view.addSubview(pauseMenu)
-        pauseMenu.pinEdgesToSuperview()
-        pauseMenu.delegate = self
-        
-        self.view.addSubview(advertisementMenu)
-        advertisementMenu.pinEdgesToSuperview()
-        advertisementMenu.delegate = self
-        
-        self.view.addSubview(achievementsMenu)
-        achievementsMenu.pinEdgesToSuperview()
-        achievementsMenu.delegate = self
-        
-        self.view.addSubview(settingsMenu)
-        settingsMenu.pinEdgesToSuperview()
-        settingsMenu.delegate = self
-        
-        self.view.addSubview(garageMenu)
-        garageMenu.pinEdgesToSuperview()
-        garageMenu.delegate = self
-        
-        self.view.addSubview(homeMenu)
-        homeMenu.pinEdgesToSuperview()
+        menus.forEach { (menu) in
+            self.view.addSubview(menu)
+            menu.pinEdgesToSuperview()
+        }
+
         homeMenu.delegate = self
+        advertisementMenu.delegate = self
+        achievementsMenu.delegate = self
+        playingMenu.delegate = self
+        pauseMenu.delegate = self
+        settingsMenu.delegate = self
+        garageMenu.delegate = self
     }
     
     private func checkSession() {
@@ -319,8 +308,6 @@ extension GameViewController: SettingsMenuDelegate {
             URLNavigator.shared.open(urlString)
         case .back:
             gameState = .home
-        default:
-            break
         }
     }
 }
