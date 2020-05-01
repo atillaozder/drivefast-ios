@@ -278,7 +278,6 @@ extension GameViewController: SceneDelegate {
     
     func scene(_ scene: GameScene, didFinishGameWithScore score: Double) {
         UserDefaults.standard.setScore(Int(score))
-        
         if gameCount.remainder(dividingBy: 2) == 0 {
             adHelper.presentInterstitial()
         }
@@ -294,14 +293,19 @@ extension GameViewController: MenuDelegate {
     func menu(_ menu: Menu, didUpdateGameState gameState: GameState) {
         self.gameState = gameState
     }
+    
+    func menu(_ menu: Menu, didSelectOption option: MenuOption) {
+        switch option {
+        case .rate:
+            rateTapped()
+        }
+    }
 }
 
 // MARK: - SettingsMenuDelegate
 extension GameViewController: SettingsMenuDelegate {
     func settingsMenu(_ settingsMenu: SettingsMenu, didSelectOption option: SettingsMenuOption) {
         switch option {
-        case .rate:
-            rateTapped()
         case .moreApp:
             let urlString = "itms-apps://itunes.apple.com/developer/atilla-ozder/id1440770128?mt=8"
             URLNavigator.shared.open(urlString)
@@ -315,6 +319,8 @@ extension GameViewController: SettingsMenuDelegate {
             URLNavigator.shared.open(urlString)
         case .back:
             gameState = .home
+        default:
+            break
         }
     }
 }

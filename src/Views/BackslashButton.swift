@@ -1,5 +1,5 @@
 //
-//  CircleBackslashButton.swift
+//  BackslashButton.swift
 //  Retro
 //
 //  Created by Atilla Özder on 13.04.2020.
@@ -8,10 +8,10 @@
 
 import UIKit
 
-class CircleBackslashButton: UIButton {
+class BackslashButton: UIButton {
 
     private var shapeLayer: CAShapeLayer?
-    
+    var borderColor: CGColor? = UIColor.white.cgColor
     var backslashDrawable: Bool = false {
         didSet {
             layer.setNeedsDisplay()
@@ -31,6 +31,8 @@ class CircleBackslashButton: UIButton {
     private func setup() {
         self.tintAdjustmentMode = .normal
         self.isUserInteractionEnabled = false
+        self.adjustsImageWhenDisabled = false
+        self.adjustsImageWhenHighlighted = false
         self.layer.masksToBounds = true
         self.tintColor = .white
     }
@@ -40,14 +42,14 @@ class CircleBackslashButton: UIButton {
             guard self.shapeLayer == nil else { return }
             
             let shapeLayer = CAShapeLayer()
-            let lineWidth: CGFloat = UIDevice.current.isPad ? 8 : 4
+            let lineWidth: CGFloat = UIDevice.current.isPad ? 8 : 5
             
             let path = UIBezierPath()
             path.move(to: CGPoint(x: bounds.minX, y: bounds.maxY))
             path.addLine(to: CGPoint(x: bounds.maxX, y: bounds.minY))
             path.close()
 
-            shapeLayer.strokeColor = UIColor.white.cgColor
+            shapeLayer.strokeColor = borderColor
             shapeLayer.lineWidth = lineWidth
             shapeLayer.path = path.cgPath
             
@@ -60,8 +62,7 @@ class CircleBackslashButton: UIButton {
         }
     }
     
-    func buildContainer(withSize size: CGSize) -> UIView {
-        let constant = size.height
+    func buildContainer(withSize size: CGSize, cornerRadius: CGFloat) -> UIView {
         let container = UIView()
         container.backgroundColor = .menuButton
         container.clipsToBounds = true
@@ -72,10 +73,10 @@ class CircleBackslashButton: UIButton {
         let path = UIBezierPath(
             roundedRect: bounds,
             byRoundingCorners: .allCorners,
-            cornerRadii: .initialize(constant / 2)).cgPath
+            cornerRadii: .initialize(cornerRadius)).cgPath
         
         if #available(iOS 11.0, *) {
-            container.layer.cornerRadius = constant / 2
+            container.layer.cornerRadius = cornerRadius
         } else {
             let mask = CAShapeLayer()
             mask.path = path
@@ -85,7 +86,7 @@ class CircleBackslashButton: UIButton {
         let border = CAShapeLayer()
         border.path = path
         border.fillColor = nil
-        border.strokeColor = UIColor.white.cgColor
+        border.strokeColor = borderColor
         
         border.lineWidth = UIDevice.current.isPad ? 10 : 6
         container.layer.addSublayer(border)

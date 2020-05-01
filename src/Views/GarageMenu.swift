@@ -51,18 +51,18 @@ class GarageMenu: Menu {
         addSubview(collectionView)
         collectionView.pinSize(to: itemSize)
         
-        let arrowGenerator: (_ image: String) -> UIImageView = { (imageName) -> UIImageView in
+        let arrowGenerator: (_ a: Asset) -> UIImageView = { (asset) -> UIImageView in
             let imageView = UIImageView()
             imageView.contentMode = .scaleAspectFit
-            imageView.image = UIImage(named: imageName)?.withRenderingMode(.alwaysTemplate)
+            imageView.image = asset.imageRepresentation()?.withRenderingMode(.alwaysTemplate)
             imageView.tintColor = .systemGray
             return imageView
         }
 
-        let leftArrow = arrowGenerator("left-arrow")
+        let leftArrow = arrowGenerator(.leftArrow)
         leftArrow.addTapGesture(target: self, action: #selector(scrollLeft))
 
-        let rightArrow = arrowGenerator("right-arrow")
+        let rightArrow = arrowGenerator(.rightArrow)
         rightArrow.addTapGesture(target: self, action: #selector(scrollRight))
                 
         let carStack = UIStackView()

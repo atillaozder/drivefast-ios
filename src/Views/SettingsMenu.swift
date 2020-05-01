@@ -9,7 +9,7 @@
 import UIKit
 
 enum SettingsMenuOption {
-    case rate, moreApp, privacy, share, support, back
+    case moreApp, privacy, share, support, back
 }
 
 protocol SettingsMenuDelegate: AnyObject {
@@ -23,10 +23,6 @@ class SettingsMenu: Menu {
     override func setup() {
         let fontSize: CGFloat = UIDevice.current.isPad ? 28 : 18
         let font = UIFont.buildFont(withSize: fontSize)
-        
-        let rateButton = buildButton(withTitle: .rateTitle, font: font)
-        rateButton.addTarget(self, action: #selector(didTapRate(_:)), for: .touchUpInside)
-        stackView.addArrangedSubview(rateButton)
         
         let shareButton = buildButton(withTitle: .shareTitle, font: font)
         shareButton.addTarget(self, action: #selector(didTapShare(_:)), for: .touchUpInside)
@@ -79,11 +75,5 @@ class SettingsMenu: Menu {
     func didTapShare(_ sender: UIButton) {
         sender.scale()
         delegate?.settingsMenu(self, didSelectOption: .share)
-    }
-    
-    @objc
-    func didTapRate(_ sender: UIButton) {
-        sender.scale()
-        delegate?.settingsMenu(self, didSelectOption: .rate)
     }
 }

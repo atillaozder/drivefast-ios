@@ -183,9 +183,7 @@ extension UIFont {
 }
 
 // MARK: - UIView
-extension UIView {
-    static let soundButtonID: Int = 1000
-    
+extension UIView {    
     func addTapGesture(target: Any?, action: Selector) {
         let tapGesture = UITapGestureRecognizer(target: target, action: action)
         self.isUserInteractionEnabled = true
@@ -220,4 +218,19 @@ extension UIEdgeInsets {
 // MARK: - NSNotification
 extension NSNotification.Name {
     static let shouldStayPausedNotification = Notification.Name("shouldStayPausedNotification")
+}
+
+// MARK: - Asset
+enum Asset: String {
+    case music = "music"
+    case podium = "podium"
+    case star = "star"
+    case heart = "heart"
+    case pause = "pause"
+    case leftArrow = "left-arrow"
+    case rightArrow = "right-arrow"
+    
+    func imageRepresentation() -> UIImage? {
+        return UIImage(named: self.rawValue)
+    }
 }

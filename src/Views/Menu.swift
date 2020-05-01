@@ -8,12 +8,19 @@
 
 import UIKit
 
+enum MenuOption {
+    case rate
+}
+
 protocol MenuDelegate: AnyObject {
     func menu(_ menu: Menu, didUpdateGameState gameState: GameState)
+    func menu(_ menu: Menu, didSelectOption option: MenuOption)
 }
 
 class Menu: UIView {
     
+    static let defaultButtonHeight: CGFloat = 50
+
     lazy var backButton: UIButton = {
         let btn = buildButton(withTitle: .backToMenuTitle)
         let color = UIColor.systemYellow
@@ -45,16 +52,16 @@ class Menu: UIView {
     func setup() {
         addSubview(stackView)
         stackView.pinCenterOfSuperview()
-        stackView.pinWidth(to: UIDevice.current.isPad ? 250 : 220)
+        stackView.pinWidth(to: UIDevice.current.isPad ? 300 : 220)
     }
     
     func buildButton(withTitle localizable: MainStrings,
                      font: UIFont = .buildFont(),
-                     height: CGFloat = 50) -> UIButton {
+                     height: CGFloat = Menu.defaultButtonHeight) -> UIButton {
         
-        var h = height
-        if height == 50 {
-            h = UIDevice.current.isPad ? height * 1.25 : height
+        var aHeight = height
+        if height == Menu.defaultButtonHeight {
+            aHeight = UIDevice.current.isPad ? height * 1.25 : height
         }
         
         let btn = UIButton()
@@ -71,7 +78,7 @@ class Menu: UIView {
         btn.layer.borderColor = UIColor(red: 41, green: 84, blue: 108).cgColor
         btn.layer.borderWidth = UIDevice.current.isPad ? 6 : 4
         btn.layer.cornerRadius = UIDevice.current.isPad ? 16 : 12
-        btn.pinHeight(to: h)
+        btn.pinHeight(to: aHeight)
         return btn
     }
 }

@@ -68,13 +68,13 @@ class PlayingMenu: Menu {
     }
     
     private func setupPauseButton() {
-        let btn = CircleBackslashButton()
-        let image = UIImage(named: "pause")?.withRenderingMode(.alwaysTemplate)
+        let btn = BackslashButton()
+        let image = Asset.pause.imageRepresentation()?.withRenderingMode(.alwaysTemplate)
         btn.setImage(image, for: .normal)
         btn.imageEdgeInsets = UIDevice.current.isPad ? .initialize(4) : .initialize(2)
         
         let size: CGSize = .initialize(PlayingMenu.scoreHeight)
-        let container = btn.buildContainer(withSize: size)
+        let container = btn.buildContainer(withSize: size, cornerRadius: size.height / 2)
         
         let tappableView = UIView()
         tappableView.addSubview(container)
@@ -98,8 +98,7 @@ class PlayingMenu: Menu {
         
         let constant: CGFloat = UIDevice.current.isPad ? 25 : 15
         for _ in 0..<count {
-            let image = UIImage(named: "heart")
-            let imageView = UIImageView(image: image)
+            let imageView = UIImageView(image: Asset.heart.imageRepresentation())
             imageView.contentMode = .scaleAspectFit
             imageView.makeSquare(constant: constant)
             livesStackView.addArrangedSubview(imageView)

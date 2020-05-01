@@ -13,15 +13,9 @@ class HomeMenu: Menu {
     weak var delegate: MenuDelegate?
  
     override func setup() {
-        setupSoundButton()
-        
         let newGameButton = buildButton(withTitle: .newGameTitle)
         newGameButton.addTarget(self, action: #selector(didTapNewGame(_:)), for: .touchUpInside)
         stackView.addArrangedSubview(newGameButton)
-                
-        let achievementsButton = buildButton(withTitle: .achievementsTitle)
-        achievementsButton.addTarget(self, action: #selector(didTapAchievements(_:)), for: .touchUpInside)
-        stackView.addArrangedSubview(achievementsButton)
         
         let garageButton = buildButton(withTitle: .garageTitle)
         garageButton.addTarget(self, action: #selector(didTapGarage(_:)), for: .touchUpInside)
@@ -30,40 +24,70 @@ class HomeMenu: Menu {
         let settingsButton = buildButton(withTitle: .settingsTitle)
         settingsButton.addTarget(self, action: #selector(didTapSettings(_:)), for: .touchUpInside)
         stackView.addArrangedSubview(settingsButton)
+        setupRowButtons()
         
         super.setup()
     }
     
-    private func setupSoundButton() {
-        let btn = CircleBackslashButton()
-        let image = UIImage(named: "music")?.withRenderingMode(.alwaysTemplate)
-        btn.setImage(image, for: .normal)
-        btn.backslashDrawable = !UserDefaults.standard.isSoundOn
-        btn.imageEdgeInsets = UIDevice.current.isPad ? .initialize(4) : .initialize(2)
+    private func setupRowButtons() {
+        func buildRowButton(asset: Asset) -> UIButton {
+            let btn = UIButton()
+            btn.tintColor = .white
+            btn.setImage(asset.imageRepresentation()?.withRenderingMode(.alwaysTemplate), for: .normal)
+            btn.backgroundColor = UIColor.menuButton
+            btn.layer.borderColor = UIColor(red: 41, green: 84, blue: 108).cgColor
+            btn.layer.borderWidth = UIDevice.current.isPad ? 6 : 4
+            btn.layer.cornerRadius = UIDevice.current.isPad ? 16 : 12
+            btn.imageEdgeInsets = UIDevice.current.isPad ? .initialize(20) : .initialize(16)
+            btn.adjustsImageWhenHighlighted = false
+            btn.adjustsImageWhenDisabled = false
+            btn.pinHeight(to: btn.widthAnchor)
+            return btn
+        }
         
-        let constant: CGFloat = UIDevice.current.isPad ? 80 : 50
-        let size: CGSize = .initialize(constant)
-        let container = btn.buildContainer(withSize: size)
+        func buildMuteButton(from rowButton: UIButton) -> UIButton {
+            let btn = BackslashButton()
+            let image = Asset.music.imageRepresentation()?.withRenderingMode(.alwaysTemplate)
+            btn.setImage(image, for: .normal)
+            btn.contentEdgeInsets = .zero
+            btn.isUserInteractionEnabled = true
+            btn.imageEdgeInsets = rowButton.imageEdgeInsets
+            btn.backgroundColor = rowButton.backgroundColor
+            btn.layer.borderColor = rowButton.layer.borderColor
+            btn.layer.borderWidth = rowButton.layer.borderWidth
+            btn.layer.cornerRadius = rowButton.layer.cornerRadius
+            btn.borderColor = rowButton.layer.borderColor
+            btn.backslashDrawable = !UserDefaults.standard.isSoundOn
+            btn.pinHeight(to: btn.widthAnchor)
+            btn.addTarget(self, action: #selector(didTapToggleSound(_:)), for: .touchUpInside)
+            return btn
+        }
         
-        let padding: CGFloat = UIDevice.current.isPad ? 32 : 16
-        self.addSubview(container)
-        container.pinTop(to: topAnchor, constant: padding)
-        container.pinTrailing(to: trailingAnchor, constant: -padding)
-        container.addTapGesture(target: self, action: #selector(didTapMute(_:)))
-        container.tag = UIView.soundButtonID
+        let rateButton = buildRowButton(asset: .star)
+        rateButton.addTarget(self, action: #selector(didTapRate(_:)), for: .touchUpInside)
+                
+        let achievementsButton = buildRowButton(asset: .podium)
+        achievementsButton.addTarget(
+            self, action: #selector(didTapAchievements(_:)), for: .touchUpInside)
+        
+        let muteButton = buildMuteButton(from: rateButton)
+        
+        let subviews: [UIView] = [rateButton, achievementsButton, muteButton]
+        let aStackView = UIStackView(arrangedSubviews: subviews)
+        aStackView.alignment = .center
+        aStackView.distribution = .fillEqually
+        aStackView.spacing = UIDevice.current.isPad ? 20 : 12
+        aStackView.axis = .horizontal
+        stackView.addArrangedSubview(aStackView)
     }
-    
+
     @objc
-    func didTapMute(_ sender: UITapGestureRecognizer) {
-        sender.view?.scale()
+    func didTapToggleSound(_ sender: UIButton) {
+        sender.scale()
         let newValue = !UserDefaults.standard.isSoundOn
         UserDefaults.standard.setSound(newValue)
-        
-        if let container = self.viewWithTag(UIView.soundButtonID) {
-            for subview in container.subviews where subview is CircleBackslashButton {
-                let button = subview as! CircleBackslashButton
-                button.backslashDrawable = !newValue
-            }
+        if let button = sender as? BackslashButton {
+            button.backslashDrawable = !newValue
         }
     }
         
@@ -80,6 +104,12 @@ class HomeMenu: Menu {
     @objc
     func didTapSettings(_ sender: UIButton) {
         delegate?.menu(self, didUpdateGameState: .settings)
+    }
+    
+    @objc
+    func didTapRate(_ sender: UIButton) {
+        sender.scale()
+        delegate?.menu(self, didSelectOption: .rate)
     }
     
     @objc
