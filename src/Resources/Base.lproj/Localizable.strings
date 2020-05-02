@@ -1,6 +1,6 @@
 /* 
   Localizable.strings
-  Retro
+  DriveFast
 
   Created by Atilla Özder on 17.03.2020.
   Copyright © 2020 Atilla Özder. All rights reserved.
@@ -21,3 +21,4 @@
 "continueTitle" = "Continue";
 "garageTitle" = "Garage";
 "chooseTitle" = "Choose";
+"loadingTitle" = "Loading...";

@@ -1,6 +1,6 @@
 //
 //  Extensions.swift
-//  Retro
+//  DriveFast
 //
 //  Created by Atilla Özder on 9.04.2020.
 //  Copyright © 2020 Atilla Özder. All rights reserved.
@@ -47,9 +47,13 @@ extension UserDefaults {
     func setSound(_ sound: Bool) {
         set(!sound, forKey: "sound_preference")
     }
-    
-    var playersCar: Car {
-        return Car(index: integer(forKey: "players_car"))
+
+    var playerCar: Car {
+        return Car(index: playerCarNo)
+    }
+        
+    var playerCarNo: Int {
+        return integer(forKey: "players_car")
     }
     
     func setPlayersCar(_ player: Car) {
@@ -61,22 +65,20 @@ extension UserDefaults {
 // MARK: - SKSpriteNode
 extension SKSpriteNode {
     func aspectFill(to size: CGSize) {
-        if texture != nil {
-            let textureSize = self.texture!.size()
-            self.size = textureSize
-            let vRatio = size.height / textureSize.height
-            let hRatio = size.width /  textureSize.width
+        if let texture = self.texture {
+            self.size = texture.size()
+            let vRatio = size.height / texture.size().height
+            let hRatio = size.width /  texture.size().width
             let ratio = max(hRatio, vRatio)
             self.setScale(ratio)
         }
     }
     
     func aspectFit(to size: CGSize) {
-        if texture != nil {
-            let textureSize = self.texture!.size()
-            self.size = textureSize
-            let vRatio = size.height / textureSize.height
-            let hRatio = size.width /  textureSize.width
+        if let texture = self.texture {
+            self.size = texture.size()
+            let vRatio = size.height / texture.size().height
+            let hRatio = size.width /  texture.size().width
             let ratio = min(hRatio, vRatio)
             self.setScale(ratio)
         }
@@ -229,6 +231,7 @@ enum Asset: String {
     case pause = "pause"
     case leftArrow = "left-arrow"
     case rightArrow = "right-arrow"
+    case splash = "splash"
     
     func imageRepresentation() -> UIImage? {
         return UIImage(named: self.rawValue)

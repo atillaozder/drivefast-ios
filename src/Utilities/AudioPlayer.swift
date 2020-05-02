@@ -1,6 +1,6 @@
 //
 //  AudioPlayer.swift
-//  Retro
+//  DriveFast
 //
 //  Created by Atilla Özder on 1.05.2020.
 //  Copyright © 2020 Atilla Özder. All rights reserved.
@@ -18,7 +18,7 @@ final class AudioPlayer: NSObject {
     private var readyForMusic: Music = .none
 
     private lazy var queue = DispatchQueue(
-        label: "com.coloringbook.musicPlayer.serialQueue", qos: .userInitiated)
+        label: "com.atillaozder.DriveFast.AudioPlayer.serialQueue", qos: .userInitiated)
     
     var isSoundOn: Bool {
         return UserDefaults.standard.isSoundOn

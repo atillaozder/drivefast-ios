@@ -1,0 +1,606 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 51;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		4017DC9EB2B163A06EDF4BCF /* Pods_DriveFast.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 91DFDAA228B72B1CC0A1D5AD /* Pods_DriveFast.framework */; };
+		FB0728A8245DD18E00F214F4 /* SplashViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB0728A7245DD18E00F214F4 /* SplashViewController.swift */; };
+		FB0728AB245DD1F400F214F4 /* GameManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB0728AA245DD1F400F214F4 /* GameManager.swift */; };
+		FB1581CF23547B1000DD82D3 /* coin.wav in Resources */ = {isa = PBXBuildFile; fileRef = FB1581CE23547B1000DD82D3 /* coin.wav */; };
+		FB1EB12F234FC2A8009C8E24 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB1EB12E234FC2A8009C8E24 /* AppDelegate.swift */; };
+		FB1EB135234FC2A8009C8E24 /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB1EB134234FC2A8009C8E24 /* GameScene.swift */; };
+		FB1EB137234FC2A8009C8E24 /* GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB1EB136234FC2A8009C8E24 /* GameViewController.swift */; };
+		FB1EB13C234FC2A9009C8E24 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FB1EB13B234FC2A9009C8E24 /* Assets.xcassets */; };
+		FB1EB13F234FC2A9009C8E24 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FB1EB13D234FC2A9009C8E24 /* LaunchScreen.storyboard */; };
+		FB21EC85244F0318008F8C07 /* GarageMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB21EC84244F0318008F8C07 /* GarageMenu.swift */; };
+		FB732573243F49000001B9B7 /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB732572243F49000001B9B7 /* Utilities.swift */; };
+		FB732575243F492A0001B9B7 /* GameScene+SKPhysicsContactDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB732574243F492A0001B9B7 /* GameScene+SKPhysicsContactDelegate.swift */; };
+		FB732577243F4A580001B9B7 /* crash.wav in Resources */ = {isa = PBXBuildFile; fileRef = FB732576243F4A580001B9B7 /* crash.wav */; };
+		FB73257E243F4AE60001B9B7 /* brake.wav in Resources */ = {isa = PBXBuildFile; fileRef = FB73257D243F4AE60001B9B7 /* brake.wav */; };
+		FB732580243F4B990001B9B7 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB73257F243F4B990001B9B7 /* Extensions.swift */; };
+		FB732582243F4F300001B9B7 /* Coin.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB732581243F4F300001B9B7 /* Coin.swift */; };
+		FB732585243F55030001B9B7 /* horns.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = FB732584243F55030001B9B7 /* horns.mp3 */; };
+		FB732587243F60690001B9B7 /* HomeMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB732586243F60690001B9B7 /* HomeMenu.swift */; };
+		FB8C14AF2449BD1D00C1C5A1 /* AdHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB8C14AE2449BD1D00C1C5A1 /* AdHelper.swift */; };
+		FB927B8C240BAB4A00BACEA9 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = FB927B8A240BAB4A00BACEA9 /* InfoPlist.strings */; };
+		FBB70954245C4F8F00E72BC4 /* race.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = FBB70953245C4F8F00E72BC4 /* race.mp3 */; };
+		FBB70956245C517100E72BC4 /* AudioPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB70955245C517100E72BC4 /* AudioPlayer.swift */; };
+		FBD1E5512350781B006C9CAD /* Explosion.sks in Resources */ = {isa = PBXBuildFile; fileRef = FBD1E5502350781A006C9CAD /* Explosion.sks */; };
+		FBD1E55923509A21006C9CAD /* MenuScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBD1E55823509A21006C9CAD /* MenuScene.swift */; };
+		FBDB970723520F6400F9B5EE /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = FBDB970623520F6400F9B5EE /* GoogleService-Info.plist */; };
+		FBE5D3C92421245C00935A6D /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = FBE5D3C72421245C00935A6D /* Localizable.strings */; };
+		FBF9951F2445C32C00072630 /* PlayingMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBF9951E2445C32C00072630 /* PlayingMenu.swift */; };
+		FBF995212445C80C00072630 /* PauseMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBF995202445C80C00072630 /* PauseMenu.swift */; };
+		FBFF2F9024448289000109E2 /* UIView+Autolayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBFF2F8F24448289000109E2 /* UIView+Autolayout.swift */; };
+		FBFF2F92244482B6000109E2 /* Car.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBFF2F91244482B6000109E2 /* Car.swift */; };
+		FBFF2F9624449E31000109E2 /* SettingsMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBFF2F9524449E31000109E2 /* SettingsMenu.swift */; };
+		FBFF2F9824449F84000109E2 /* AchievementsMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBFF2F9724449F84000109E2 /* AchievementsMenu.swift */; };
+		FBFF2F9A24449F94000109E2 /* AdvertisementMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBFF2F9924449F94000109E2 /* AdvertisementMenu.swift */; };
+		FBFF2F9C24449FBA000109E2 /* Menu.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBFF2F9B24449FBA000109E2 /* Menu.swift */; };
+		FBFF2F9E2444A616000109E2 /* BackslashButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBFF2F9D2444A616000109E2 /* BackslashButton.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		28C868B902AEF9FE2F310012 /* Pods-DriveFast.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DriveFast.debug.xcconfig"; path = "Target Support Files/Pods-DriveFast/Pods-DriveFast.debug.xcconfig"; sourceTree = "<group>"; };
+		91DFDAA228B72B1CC0A1D5AD /* Pods_DriveFast.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_DriveFast.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		A385F1CE5F85A5CDF458F5FA /* Pods-DriveFast.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DriveFast.release.xcconfig"; path = "Target Support Files/Pods-DriveFast/Pods-DriveFast.release.xcconfig"; sourceTree = "<group>"; };
+		FB0728A7245DD18E00F214F4 /* SplashViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashViewController.swift; sourceTree = "<group>"; };
+		FB0728AA245DD1F400F214F4 /* GameManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameManager.swift; sourceTree = "<group>"; };
+		FB1581CE23547B1000DD82D3 /* coin.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = coin.wav; sourceTree = "<group>"; };
+		FB1EB12B234FC2A8009C8E24 /* DriveFast.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DriveFast.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		FB1EB12E234FC2A8009C8E24 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		FB1EB134234FC2A8009C8E24 /* GameScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameScene.swift; sourceTree = "<group>"; };
+		FB1EB136234FC2A8009C8E24 /* GameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameViewController.swift; sourceTree = "<group>"; };
+		FB1EB13B234FC2A9009C8E24 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		FB1EB13E234FC2A9009C8E24 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		FB1EB140234FC2A9009C8E24 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		FB21EC84244F0318008F8C07 /* GarageMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GarageMenu.swift; sourceTree = "<group>"; };
+		FB2C5CE2245CCAAB007A96D9 /* tr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = tr; path = tr.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
+		FB732572243F49000001B9B7 /* Utilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utilities.swift; sourceTree = "<group>"; };
+		FB732574243F492A0001B9B7 /* GameScene+SKPhysicsContactDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GameScene+SKPhysicsContactDelegate.swift"; sourceTree = "<group>"; };
+		FB732576243F4A580001B9B7 /* crash.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = crash.wav; sourceTree = "<group>"; };
+		FB73257D243F4AE60001B9B7 /* brake.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = brake.wav; sourceTree = "<group>"; };
+		FB73257F243F4B990001B9B7 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
+		FB732581243F4F300001B9B7 /* Coin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Coin.swift; sourceTree = "<group>"; };
+		FB732584243F55030001B9B7 /* horns.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = horns.mp3; sourceTree = "<group>"; };
+		FB732586243F60690001B9B7 /* HomeMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeMenu.swift; sourceTree = "<group>"; };
+		FB8C14AE2449BD1D00C1C5A1 /* AdHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdHelper.swift; sourceTree = "<group>"; };
+		FB927B8B240BAB4A00BACEA9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		FB927B8D240BABEB00BACEA9 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		FB9CF85C234FC7DF00AD965C /* DriveFast.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = DriveFast.entitlements; sourceTree = "<group>"; };
+		FBB70953245C4F8F00E72BC4 /* race.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = race.mp3; sourceTree = "<group>"; };
+		FBB70955245C517100E72BC4 /* AudioPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioPlayer.swift; sourceTree = "<group>"; };
+		FBD1E5502350781A006C9CAD /* Explosion.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = Explosion.sks; sourceTree = "<group>"; };
+		FBD1E55823509A21006C9CAD /* MenuScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuScene.swift; sourceTree = "<group>"; };
+		FBDB970623520F6400F9B5EE /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		FBE5D3C82421245C00935A6D /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/Localizable.strings; sourceTree = "<group>"; };
+		FBE5D3CB2421246E00935A6D /* tr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = tr; path = tr.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		FBE5D3CC2421246E00935A6D /* tr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = tr; path = tr.lproj/Localizable.strings; sourceTree = "<group>"; };
+		FBF9951E2445C32C00072630 /* PlayingMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayingMenu.swift; sourceTree = "<group>"; };
+		FBF995202445C80C00072630 /* PauseMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PauseMenu.swift; sourceTree = "<group>"; };
+		FBFF2F8F24448289000109E2 /* UIView+Autolayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Autolayout.swift"; sourceTree = "<group>"; };
+		FBFF2F91244482B6000109E2 /* Car.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Car.swift; sourceTree = "<group>"; };
+		FBFF2F9524449E31000109E2 /* SettingsMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsMenu.swift; sourceTree = "<group>"; };
+		FBFF2F9724449F84000109E2 /* AchievementsMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AchievementsMenu.swift; sourceTree = "<group>"; };
+		FBFF2F9924449F94000109E2 /* AdvertisementMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdvertisementMenu.swift; sourceTree = "<group>"; };
+		FBFF2F9B24449FBA000109E2 /* Menu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Menu.swift; sourceTree = "<group>"; };
+		FBFF2F9D2444A616000109E2 /* BackslashButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackslashButton.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		FB1EB128234FC2A8009C8E24 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4017DC9EB2B163A06EDF4BCF /* Pods_DriveFast.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		2215FE5EA4FF0E2649FCD805 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				91DFDAA228B72B1CC0A1D5AD /* Pods_DriveFast.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		E7164BA6207751D780B8DCAE /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				28C868B902AEF9FE2F310012 /* Pods-DriveFast.debug.xcconfig */,
+				A385F1CE5F85A5CDF458F5FA /* Pods-DriveFast.release.xcconfig */,
+			);
+			path = Pods;
+			sourceTree = "<group>";
+		};
+		FB0728A9245DD19400F214F4 /* ViewControllers */ = {
+			isa = PBXGroup;
+			children = (
+				FB0728A7245DD18E00F214F4 /* SplashViewController.swift */,
+				FB1EB136234FC2A8009C8E24 /* GameViewController.swift */,
+			);
+			path = ViewControllers;
+			sourceTree = "<group>";
+		};
+		FB1EB122234FC2A8009C8E24 = {
+			isa = PBXGroup;
+			children = (
+				FB9CF85C234FC7DF00AD965C /* DriveFast.entitlements */,
+				FB1EB12D234FC2A8009C8E24 /* src */,
+				FB1EB12C234FC2A8009C8E24 /* Products */,
+				E7164BA6207751D780B8DCAE /* Pods */,
+				2215FE5EA4FF0E2649FCD805 /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		FB1EB12C234FC2A8009C8E24 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				FB1EB12B234FC2A8009C8E24 /* DriveFast.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		FB1EB12D234FC2A8009C8E24 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				FB1EB140234FC2A9009C8E24 /* Info.plist */,
+				FBDB970623520F6400F9B5EE /* GoogleService-Info.plist */,
+				FB1EB12E234FC2A8009C8E24 /* AppDelegate.swift */,
+				FB9CF85B234FC68600AD965C /* Resources */,
+				FB0728A9245DD19400F214F4 /* ViewControllers */,
+				FBFF2F9424449E29000109E2 /* Views */,
+				FB732578243F4A8A0001B9B7 /* Utilities */,
+				FBD1E55F2350B438006C9CAD /* Scenes */,
+			);
+			path = src;
+			sourceTree = "<group>";
+		};
+		FB732578243F4A8A0001B9B7 /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				FB0728AA245DD1F400F214F4 /* GameManager.swift */,
+				FB8C14AE2449BD1D00C1C5A1 /* AdHelper.swift */,
+				FBFF2F8F24448289000109E2 /* UIView+Autolayout.swift */,
+				FBFF2F91244482B6000109E2 /* Car.swift */,
+				FB732581243F4F300001B9B7 /* Coin.swift */,
+				FB732572243F49000001B9B7 /* Utilities.swift */,
+				FB73257F243F4B990001B9B7 /* Extensions.swift */,
+				FBB70955245C517100E72BC4 /* AudioPlayer.swift */,
+			);
+			path = Utilities;
+			sourceTree = "<group>";
+		};
+		FB88AC0A241433CE00BD240B /* Sounds */ = {
+			isa = PBXGroup;
+			children = (
+				FB732584243F55030001B9B7 /* horns.mp3 */,
+				FB73257D243F4AE60001B9B7 /* brake.wav */,
+				FB1581CE23547B1000DD82D3 /* coin.wav */,
+				FB732576243F4A580001B9B7 /* crash.wav */,
+				FBB70953245C4F8F00E72BC4 /* race.mp3 */,
+			);
+			name = Sounds;
+			sourceTree = "<group>";
+		};
+		FB9CF85B234FC68600AD965C /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				FBD1E5502350781A006C9CAD /* Explosion.sks */,
+				FB88AC0A241433CE00BD240B /* Sounds */,
+				FB1EB13B234FC2A9009C8E24 /* Assets.xcassets */,
+				FB1EB13D234FC2A9009C8E24 /* LaunchScreen.storyboard */,
+				FB927B8A240BAB4A00BACEA9 /* InfoPlist.strings */,
+				FBE5D3C72421245C00935A6D /* Localizable.strings */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		FBD1E55F2350B438006C9CAD /* Scenes */ = {
+			isa = PBXGroup;
+			children = (
+				FBD1E55823509A21006C9CAD /* MenuScene.swift */,
+				FB1EB134234FC2A8009C8E24 /* GameScene.swift */,
+				FB732574243F492A0001B9B7 /* GameScene+SKPhysicsContactDelegate.swift */,
+			);
+			path = Scenes;
+			sourceTree = "<group>";
+		};
+		FBFF2F9424449E29000109E2 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				FBFF2F9B24449FBA000109E2 /* Menu.swift */,
+				FB732586243F60690001B9B7 /* HomeMenu.swift */,
+				FBFF2F9924449F94000109E2 /* AdvertisementMenu.swift */,
+				FBFF2F9524449E31000109E2 /* SettingsMenu.swift */,
+				FBFF2F9724449F84000109E2 /* AchievementsMenu.swift */,
+				FBF9951E2445C32C00072630 /* PlayingMenu.swift */,
+				FBF995202445C80C00072630 /* PauseMenu.swift */,
+				FB21EC84244F0318008F8C07 /* GarageMenu.swift */,
+				FBFF2F9D2444A616000109E2 /* BackslashButton.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		FB1EB12A234FC2A8009C8E24 /* DriveFast */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = FB1EB143234FC2A9009C8E24 /* Build configuration list for PBXNativeTarget "DriveFast" */;
+			buildPhases = (
+				FA50CE332A8EC87D43E9FAF3 /* [CP] Check Pods Manifest.lock */,
+				FB1EB127234FC2A8009C8E24 /* Sources */,
+				FB1EB128234FC2A8009C8E24 /* Frameworks */,
+				FB1EB129234FC2A8009C8E24 /* Resources */,
+				09ED5DB4716AE04EF2D55D9C /* [CP] Embed Pods Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = DriveFast;
+			productName = "Retro Car Racing";
+			productReference = FB1EB12B234FC2A8009C8E24 /* DriveFast.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		FB1EB123234FC2A8009C8E24 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 1110;
+				LastUpgradeCheck = 1110;
+				ORGANIZATIONNAME = "Atilla Özder";
+				TargetAttributes = {
+					FB1EB12A234FC2A8009C8E24 = {
+						CreatedOnToolsVersion = 11.1;
+					};
+				};
+			};
+			buildConfigurationList = FB1EB126234FC2A8009C8E24 /* Build configuration list for PBXProject "DriveFast" */;
+			compatibilityVersion = "Xcode 9.3";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+				tr,
+			);
+			mainGroup = FB1EB122234FC2A8009C8E24;
+			productRefGroup = FB1EB12C234FC2A8009C8E24 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				FB1EB12A234FC2A8009C8E24 /* DriveFast */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		FB1EB129234FC2A8009C8E24 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FBB70954245C4F8F00E72BC4 /* race.mp3 in Resources */,
+				FB732577243F4A580001B9B7 /* crash.wav in Resources */,
+				FB732585243F55030001B9B7 /* horns.mp3 in Resources */,
+				FB73257E243F4AE60001B9B7 /* brake.wav in Resources */,
+				FB927B8C240BAB4A00BACEA9 /* InfoPlist.strings in Resources */,
+				FB1581CF23547B1000DD82D3 /* coin.wav in Resources */,
+				FB1EB13C234FC2A9009C8E24 /* Assets.xcassets in Resources */,
+				FBD1E5512350781B006C9CAD /* Explosion.sks in Resources */,
+				FBE5D3C92421245C00935A6D /* Localizable.strings in Resources */,
+				FB1EB13F234FC2A9009C8E24 /* LaunchScreen.storyboard in Resources */,
+				FBDB970723520F6400F9B5EE /* GoogleService-Info.plist in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		09ED5DB4716AE04EF2D55D9C /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-DriveFast/Pods-DriveFast-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-DriveFast/Pods-DriveFast-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-DriveFast/Pods-DriveFast-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		FA50CE332A8EC87D43E9FAF3 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-DriveFast-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		FB1EB127234FC2A8009C8E24 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FB732582243F4F300001B9B7 /* Coin.swift in Sources */,
+				FB732573243F49000001B9B7 /* Utilities.swift in Sources */,
+				FBFF2F9C24449FBA000109E2 /* Menu.swift in Sources */,
+				FB732580243F4B990001B9B7 /* Extensions.swift in Sources */,
+				FB732575243F492A0001B9B7 /* GameScene+SKPhysicsContactDelegate.swift in Sources */,
+				FBF995212445C80C00072630 /* PauseMenu.swift in Sources */,
+				FB8C14AF2449BD1D00C1C5A1 /* AdHelper.swift in Sources */,
+				FB21EC85244F0318008F8C07 /* GarageMenu.swift in Sources */,
+				FBF9951F2445C32C00072630 /* PlayingMenu.swift in Sources */,
+				FB732587243F60690001B9B7 /* HomeMenu.swift in Sources */,
+				FB1EB135234FC2A8009C8E24 /* GameScene.swift in Sources */,
+				FBFF2F9A24449F94000109E2 /* AdvertisementMenu.swift in Sources */,
+				FB0728AB245DD1F400F214F4 /* GameManager.swift in Sources */,
+				FBD1E55923509A21006C9CAD /* MenuScene.swift in Sources */,
+				FBFF2F92244482B6000109E2 /* Car.swift in Sources */,
+				FBFF2F9024448289000109E2 /* UIView+Autolayout.swift in Sources */,
+				FBFF2F9824449F84000109E2 /* AchievementsMenu.swift in Sources */,
+				FBFF2F9624449E31000109E2 /* SettingsMenu.swift in Sources */,
+				FB1EB137234FC2A8009C8E24 /* GameViewController.swift in Sources */,
+				FBFF2F9E2444A616000109E2 /* BackslashButton.swift in Sources */,
+				FB0728A8245DD18E00F214F4 /* SplashViewController.swift in Sources */,
+				FB1EB12F234FC2A8009C8E24 /* AppDelegate.swift in Sources */,
+				FBB70956245C517100E72BC4 /* AudioPlayer.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		FB1EB13D234FC2A9009C8E24 /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				FB1EB13E234FC2A9009C8E24 /* Base */,
+				FB2C5CE2245CCAAB007A96D9 /* tr */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+		FB927B8A240BAB4A00BACEA9 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				FB927B8B240BAB4A00BACEA9 /* Base */,
+				FB927B8D240BABEB00BACEA9 /* en */,
+				FBE5D3CB2421246E00935A6D /* tr */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		FBE5D3C72421245C00935A6D /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				FBE5D3C82421245C00935A6D /* Base */,
+				FBE5D3CC2421246E00935A6D /* tr */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		FB1EB141234FC2A9009C8E24 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		FB1EB142234FC2A9009C8E24 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		FB1EB144234FC2A9009C8E24 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 28C868B902AEF9FE2F310012 /* Pods-DriveFast.debug.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = DriveFast.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 16;
+				DEVELOPMENT_TEAM = 74NMDHX448;
+				INFOPLIST_FILE = "$(SRCROOT)/src/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 2.0.4;
+				PRODUCT_BUNDLE_IDENTIFIER = com.retro2d.ios;
+				PRODUCT_NAME = DriveFast;
+				PROVISIONING_PROFILE_SPECIFIER = RetroDebugProfile;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		FB1EB145234FC2A9009C8E24 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = A385F1CE5F85A5CDF458F5FA /* Pods-DriveFast.release.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = DriveFast.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 16;
+				DEVELOPMENT_TEAM = 74NMDHX448;
+				INFOPLIST_FILE = "$(SRCROOT)/src/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 2.0.4;
+				PRODUCT_BUNDLE_IDENTIFIER = com.retro2d.ios;
+				PRODUCT_NAME = DriveFast;
+				PROVISIONING_PROFILE_SPECIFIER = RetroReleaseProfile;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		FB1EB126234FC2A8009C8E24 /* Build configuration list for PBXProject "DriveFast" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FB1EB141234FC2A9009C8E24 /* Debug */,
+				FB1EB142234FC2A9009C8E24 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		FB1EB143234FC2A9009C8E24 /* Build configuration list for PBXNativeTarget "DriveFast" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FB1EB144234FC2A9009C8E24 /* Debug */,
+				FB1EB145234FC2A9009C8E24 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = FB1EB123234FC2A8009C8E24 /* Project object */;
+}

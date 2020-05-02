@@ -1,6 +1,6 @@
 //
 //  AdHelper.swift
-//  Retro
+//  DriveFast
 //
 //  Created by Atilla Özder on 17.04.2020.
 //  Copyright © 2020 Atilla Özder. All rights reserved.
@@ -54,9 +54,12 @@ class AdHelper: NSObject {
     }
     
     func presentInterstitial() {
-        interstitial.isReady ?
-            interstitial.present(fromRootViewController: rootViewController) :
+        if interstitial.isReady {
+            AudioPlayer.shared.pauseMusic()
+            interstitial.present(fromRootViewController: rootViewController)
+        } else {
             interstitial.load(.init())
+        }
     }
     
     private func loadRewardedAd() {
@@ -77,6 +80,7 @@ class AdHelper: NSObject {
 
 extension AdHelper: GADInterstitialDelegate {
     func interstitialDidDismissScreen(_ ad: GADInterstitial) {
+        AudioPlayer.shared.playMusic(.race)
         loadInterstitial()
     }
 }

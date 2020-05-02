@@ -1,6 +1,6 @@
 //
 //  Utilities.swift
-//  Retro
+//  DriveFast
 //
 //  Created by Atilla Özder on 9.04.2020.
 //  Copyright © 2020 Atilla Özder. All rights reserved.
@@ -87,6 +87,7 @@ enum MainStrings: String {
     case continueTitle = "continueTitle"
     case garageTitle = "garageTitle"
     case chooseTitle = "chooseTitle"
+    case loadingTitle = "loadingTitle"
     
     var localized: String {
         return NSLocalizedString(self.rawValue, comment: "")

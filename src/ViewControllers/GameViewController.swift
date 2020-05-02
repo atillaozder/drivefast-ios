@@ -1,6 +1,6 @@
 //
 //  GameViewController.swift
-//  Retro
+//  DriveFast
 //
 //  Created by Atilla Özder on 10.10.2019.
 //  Copyright © 2019 Atilla Özder. All rights reserved.
@@ -188,7 +188,6 @@ class GameViewController: UIViewController {
 
         if let menuScene = skView.scene as? MenuScene {
             scene.insets = menuScene.insets
-            scene.cachedCars = menuScene.cachedCars
         } else {
             if #available(iOS 11.0, *) {
                 scene.insets = skView.safeAreaInsets
@@ -204,7 +203,9 @@ class GameViewController: UIViewController {
     
     private func rateTapped() {
         if #available(iOS 10.3, *) {
-            SKStoreReviewController.requestReview()
+            DispatchQueue.main.async {
+                SKStoreReviewController.requestReview()
+            }
         } else {
             let urlString = "https://itunes.apple.com/app/id\(1483121139)?action=write-review"
             URLNavigator.shared.open(urlString)
@@ -239,20 +240,18 @@ class GameViewController: UIViewController {
 }
 
 extension GameViewController: AdHelperDelegate {
+    private func setStateHome() {
+        gameState = .home
+    }
+    
     func adHelper(_ adHelper: AdHelper, userDidEarn reward: GADAdReward?) {
-        if reward == nil {
-            gameState = .home
-        } else {
-            gameScene.didGetReward()
-        }
+        AudioPlayer.shared.playMusic(.race)
+        reward == nil ? setStateHome() : gameScene.didGetReward()
     }
     
     func adHelper(_ adHelper: AdHelper, willPresentRewardedAd isReady: Bool) {
-        if !isReady {
-            gameState = .home
-        } else {
-            gameScene.willPresentRewardBasedVideoAd()
-        }
+        AudioPlayer.shared.pauseMusic()
+        isReady ? gameScene.willPresentRewardBasedVideoAd() : setStateHome()
     }
 }
 
@@ -267,6 +266,7 @@ extension GameViewController: SceneDelegate {
     
     func scene(_ scene: GameScene, didFinishGameWithScore score: Double) {
         UserDefaults.standard.setScore(Int(score))
+        let gameCount = GameManager.shared.gameCount
         if gameCount.remainder(dividingBy: 2) == 0 {
             adHelper.presentInterstitial()
         }

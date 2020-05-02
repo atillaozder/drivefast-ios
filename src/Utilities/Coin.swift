@@ -1,6 +1,6 @@
 //
 //  Coin.swift
-//  Retro
+//  DriveFast
 //
 //  Created by Atilla Özder on 9.04.2020.
 //  Copyright © 2020 Atilla Özder. All rights reserved.
@@ -45,5 +45,12 @@ class Coin: SKSpriteNode {
         
         let ratio = UIDevice.current.isPad ? frame.width / 3 : frame.width / 1.5
         self.setScale(to: ratio)
+        
+        let physicsBody = SKPhysicsBody(circleOfRadius: self.size.width / 2)
+        physicsBody.isDynamic = false
+        physicsBody.categoryBitMask = Category.coin.rawValue
+        physicsBody.contactTestBitMask = Category.player.rawValue
+        physicsBody.collisionBitMask = 0
+        self.physicsBody = physicsBody
     }
 }

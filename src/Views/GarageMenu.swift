@@ -1,6 +1,6 @@
 //
 //  GarageMenu.swift
-//  Retro
+//  DriveFast
 //
 //  Created by Atilla Özder on 21.04.2020.
 //  Copyright © 2020 Atilla Özder. All rights reserved.
@@ -16,7 +16,9 @@ class GarageMenu: Menu {
     
     private var dataSource: [Car] = [] {
         didSet {
-            collectionView.reloadData()
+            DispatchQueue.main.async {
+                self.collectionView.reloadData()
+            }
         }
     }
     
@@ -93,16 +95,21 @@ class GarageMenu: Menu {
         stackView.addArrangedSubview(buttons)
         stackView.spacing = UIDevice.current.isPad ? 40 : 30
         
-        let playersCar = UserDefaults.standard.playersCar
-        var cars = [Car]()
-        for idx in 0..<20 {
-            let aCar = Car(index: idx)
-            aCar == playersCar ? cars.insert(aCar, at: 0) : cars.append(aCar)
-        }
-        
-        self.dataSource = cars
+        loadData()
         self.isHidden = true
         super.setup()
+    }
+    
+    private func loadData() {
+        DispatchQueue.global().async {
+            let player = UserDefaults.standard.playerCar
+            var cars = [Car]()
+            for idx in 0..<20 {
+                let car = Car(index: idx)
+                car == player ? cars.insert(car, at: 0) : cars.append(car)
+            }
+            self.dataSource = cars
+        }
     }
     
     @objc
@@ -110,8 +117,7 @@ class GarageMenu: Menu {
         guard let ip = collectionView.indexPathsForVisibleItems.first else { return }
         let item = ip.item + 1
         guard item < dataSource.count else { return }
-        let indexPath = IndexPath(item: item, section: 0)
-        collectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
+        scroll(at: .init(item: item, section: 0))
     }
     
     @objc
@@ -119,8 +125,14 @@ class GarageMenu: Menu {
         guard let ip = collectionView.indexPathsForVisibleItems.first else { return }
         let item = ip.item - 1
         guard item >= 0 else { return }
-        let indexPath = IndexPath(item: item, section: 0)
-        collectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
+        scroll(at: .init(item: item, section: 0))
+    }
+    
+    private func scroll(at indexPath: IndexPath) {
+        UIView.animate(withDuration: 0.1) {
+            self.collectionView.scrollToItem(
+                at: indexPath, at: .centeredHorizontally, animated: false)
+        }
     }
     
     @objc

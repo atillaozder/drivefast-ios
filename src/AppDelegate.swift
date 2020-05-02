@@ -1,6 +1,6 @@
 //
 //  AppDelegate.swift
-//  Retro
+//  DriveFast
 //
 //  Created by Atilla Özder on 10.10.2019.
 //  Copyright © 2019 Atilla Özder. All rights reserved.
@@ -15,14 +15,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        
-        FirebaseApp.configure()
-        GADMobileAds.sharedInstance().start(completionHandler: nil)
-        
-        UserDefaults.standard.setSession()
-        
+                
         let window = UIWindow(frame: UIScreen.main.bounds)
-        let viewController = GameViewController()
+        let viewController = SplashViewController()
         viewController.modalPresentationStyle = .fullScreen
         viewController.modalTransitionStyle = .crossDissolve
         

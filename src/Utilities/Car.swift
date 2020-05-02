@@ -1,6 +1,6 @@
 //
 //  Car.swift
-//  Retro
+//  DriveFast
 //
 //  Created by Atilla Özder on 13.04.2020.
 //  Copyright © 2020 Atilla Özder. All rights reserved.
@@ -10,6 +10,10 @@ import UIKit
 
 // MARK: - Car
 struct Car: Hashable {
+    static var scaleRatio: CGFloat {
+        return UIDevice.current.isPad ? 6 : 4
+    }
+    
     private var _index: Int
     
     var index: Int {
@@ -21,13 +25,10 @@ struct Car: Hashable {
     }
     
     var ratio: CGFloat {
-        var value = index > 4 ? scaleRatio + 3 : scaleRatio + 2
-        
-        // truck
-        if index == 20 {
+        var value = index > 4 ? Car.scaleRatio + 3 : Car.scaleRatio + 2
+        if index == 20 { // truck
             value -= 2
         }
-        
         return UIDevice.current.isPad ? value + 3 : value
     }
     
