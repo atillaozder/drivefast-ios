@@ -28,11 +28,6 @@ extension GameScene: SKPhysicsContactDelegate {
             if let coin = bodyB.node as? Coin {
                 playerDidCollide(with: coin)
             }
-        case (.car, .fuel), (.fuel, .car):
-            let car: SKNode? = bodyA.node is Fuel ? bodyB.node : bodyA.node
-            if let wrapped = car {
-                wrapped.removeFromParent()
-            }
         case (.coin, .fuel), (.fuel, .coin):
             let coin: SKNode? = bodyA.node is Fuel ? bodyB.node : bodyA.node
             if let wrapped = coin {
@@ -65,7 +60,7 @@ extension GameScene: SKPhysicsContactDelegate {
     fileprivate func playerDidCollide(with fuelNode: Fuel) {
         soundManager.playEffect(.fuel, in: self)
         fuelNode.removeFromParent()
-        let newValue = self.fuel + fuelNode.value
+        let newValue = self.fuel + difficultyManager.fuelValue
         self.fuel = min(newValue, 100)
     }
 }

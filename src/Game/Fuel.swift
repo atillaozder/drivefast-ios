@@ -11,15 +11,7 @@ import SpriteKit
 
 // MARK: - Fuel
 class Fuel: SKSpriteNode {
-    
-    // MARK: - Properties
-    
-    static var waitForDuration: TimeInterval {
-        return 8
-    }
-    
-    private(set) var value = Float(Fuel.waitForDuration + 2)
-    
+          
     // MARK: - Constructor
     
     convenience init(frame: CGRect) {

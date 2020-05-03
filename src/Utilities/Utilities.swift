@@ -37,6 +37,34 @@ struct SoundManager {
     }
 }
 
+// MARK: - DifficultyManager
+class DifficultyManager {
+    
+    // MARK: - Properties
+    private(set) var carAppearanceDuration: TimeInterval = 3
+    private(set) var carAppearanceThreshold: TimeInterval = 1.5
+    private(set) var carWaitingDuration: TimeInterval = 1
+    private(set) var carWaitingThreshold: TimeInterval = 0.5
+    private(set) var fuelWaitingDuration: TimeInterval = 8
+    private(set) var fuelWaitingThreshold: TimeInterval = 2
+    private(set) var fuelConsumption: Float = 1
+    
+    var fuelValue: Float {
+        return fuelConsumption * Float(fuelWaitingDuration) + 2
+    }
+    
+    // MARK: - Helpers
+    func updateDifficulty() {
+        if carAppearanceDuration > carAppearanceThreshold
+            || carWaitingDuration > carWaitingThreshold {
+            carAppearanceDuration = max(carAppearanceThreshold, carAppearanceDuration - 0.5)
+            carWaitingDuration = max(carWaitingThreshold, carWaitingDuration - 0.1)
+            fuelWaitingDuration = max(fuelWaitingThreshold, fuelWaitingDuration - 2)
+            fuelConsumption = min(5, fuelConsumption + 1)
+        }
+    }
+}
+
 // MARK: - RoadBoundingBox
 struct RoadBoundingBox {
     var minY: CGFloat
@@ -59,6 +87,8 @@ enum Cars: String {
 enum Actions: String {
     case addCar = "add_car"
     case movePlayer = "move_player"
+    case addCoin = "add_coin"
+    case addFuel = "add_fuel"
 }
 
 // MARK: - Category

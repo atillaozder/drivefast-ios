@@ -42,6 +42,7 @@ class GameScene: SKScene {
     
     private let motionManager = CMMotionManager()
     let soundManager = SoundManager()
+    let difficultyManager = DifficultyManager()
     weak var sceneDelegate: SceneDelegate?
     
     lazy var playerNode: SKSpriteNode = {
@@ -87,11 +88,11 @@ class GameScene: SKScene {
                 // it means a coin has taken
                 let division = (newScore / divisor).rounded(.down)
                 if score < (divisor * division) && newScore > (divisor * division) {
-                    self.setGameDifficulty()
+                    self.updateDifficulty()
                 }
             } else {
                 if newScore.truncatingRemainder(dividingBy: divisor) == 0 {
-                    self.setGameDifficulty()
+                    self.updateDifficulty()
                 }
             }
         } didSet {
@@ -102,7 +103,7 @@ class GameScene: SKScene {
     var fuel: Float = 100 {
         didSet {
             DispatchQueue.main.async {
-                if self.fuel == 0 {
+                if self.fuel <= 0 {
                     self.gameDidFinish(forReason: .runningOutOfFuel)
                 }
                 self.sceneDelegate?.scene(
@@ -136,13 +137,7 @@ class GameScene: SKScene {
         
         return .init(minY: minY, minX: minX, maxY: maxY, maxX: maxX)
     }()
-    
-    /// game difficulty algorithm properties
-    private var appearanceDuration: TimeInterval = 3
-    private var waitingDuration: TimeInterval = 1
-    private var appearanceThreshold: TimeInterval = 1.5
-    private var waitingThreshold: TimeInterval = 0.5
-    
+        
     // MARK: - Game Life Cycle
     override func willMove(from view: SKView) {
         super.willMove(from: view)
@@ -160,16 +155,17 @@ class GameScene: SKScene {
         
         if UIDevice.current.isPad {
             addFlatRoadLine()
-        }
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-            if !UIDevice.current.isPad {
+        } else {
+            DispatchQueue.main.async {
                 let addRoadLineSq: SKAction = .sequence([
                     .wait(forDuration: 0.05),
                     .run(self.addRoadLine, queue: .global())
                 ])
                 self.run(.repeatForever(addRoadLineSq))
             }
+        }
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
             self.initiateCarSequence()
         }
     }
@@ -190,14 +186,9 @@ class GameScene: SKScene {
             .run(addCoin, queue: .init(label: "com.atillaozder.DriveFast.addCoin.serialQueue"))
         ])
         
-        run(.repeatForever(addCoinSq))
+        run(.repeatForever(addCoinSq), withKey: Actions.addCoin.rawValue)
         
-        let addFuelSq: SKAction = .sequence([
-            .wait(forDuration: Fuel.waitForDuration),
-            .run(addFuel, queue: .init(label: "com.atillaozder.DriveFast.addFuel.serialQueue"))
-        ])
-        
-        run(.repeatForever(addFuelSq))
+        initiateFuelSequence()
         
         let setFuelSq: SKAction = .sequence([
             .wait(forDuration: 1),
@@ -333,21 +324,26 @@ class GameScene: SKScene {
             qos: .default, attributes: .concurrent)
         
         let addCarSq: SKAction = .sequence([
-            .wait(forDuration: waitingDuration),
+            .wait(forDuration: difficultyManager.carWaitingDuration),
             .run(self.addRandomCar, queue: addCarQueue)
         ])
         
-        let action: SKAction = .repeatForever(addCarSq)
-        self.run(action, withKey: Actions.addCar.rawValue)
+        self.run(.repeatForever(addCarSq), withKey: Actions.addCar.rawValue)
     }
     
-    private func setGameDifficulty() {
-        if appearanceDuration > appearanceThreshold
-            || waitingDuration > waitingThreshold {
-            appearanceDuration = max(appearanceThreshold, appearanceDuration - 0.5)
-            waitingDuration = max(waitingThreshold, waitingDuration - 0.1)
-            initiateCarSequence()
-        }
+    private func initiateFuelSequence() {
+        self.removeAction(forKey: Actions.addFuel.rawValue)
+        let addFuelSq: SKAction = .sequence([
+            .wait(forDuration: difficultyManager.fuelWaitingDuration),
+            .run(addFuel, queue: .init(label: "com.atillaozder.DriveFast.addFuel.serialQueue"))
+        ])
+        self.run(.repeatForever(addFuelSq), withKey: Actions.addFuel.rawValue)
+    }
+    
+    private func updateDifficulty() {
+        difficultyManager.updateDifficulty()
+        initiateCarSequence()
+        initiateFuelSequence()
     }
     
     private func resetGame() {
@@ -405,7 +401,7 @@ class GameScene: SKScene {
             car.position = CGPoint(
                 x: self.getRandomPosX(), y: self.frame.maxY + car.size.height)
             
-            let move = SKAction.moveTo(y: -car.size.height / 2, duration: self.appearanceDuration)
+            let move = SKAction.moveTo(y: -car.size.height / 2, duration: self.difficultyManager.carAppearanceDuration)
             var actions = [SKAction]()
             actions.append(move)
             
@@ -431,8 +427,7 @@ class GameScene: SKScene {
     }
     
     private func setFuel() {
-        let newValue = fuel - 1
-        fuel = max(0, newValue)
+        self.fuel = max(0, fuel - difficultyManager.fuelConsumption)
     }
     
     private func addCoin() {
@@ -461,7 +456,8 @@ class GameScene: SKScene {
     private func addSprite(_ sprite: SKSpriteNode) {
         sprite.position.x = getRandomPosX()
         var actions = [SKAction]()
-        actions.append(.moveTo(y: -sprite.size.height / 2, duration: appearanceDuration))
+        let move: SKAction = .moveTo(y: -sprite.size.height / 2, duration: difficultyManager.carAppearanceDuration)
+        actions.append(move)
         actions.append(.removeFromParent())
         
         DispatchQueue.main.async {
