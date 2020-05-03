@@ -139,7 +139,7 @@ class GarageMenu: Menu {
     func didTapChoose(_ sender: UIButton) {
         guard let indexPath = collectionView.indexPathsForVisibleItems.first else { return }
         let selectedCar = dataSource[indexPath.item]
-        UserDefaults.standard.setPlayersCar(selectedCar)
+        UserDefaults.standard.setPlayerCar(selectedCar)
         delegate?.menu(self, didUpdateGameState: .home)
     }
     

@@ -8,43 +8,61 @@
 
 import Foundation
 import SpriteKit
+import GameKit
 
-class GameManager {
+// MARK: - GameManager
+
+class GameManager: NSObject {
+    
+    // MARK: - Properties
     
     static let shared = GameManager()
-
+    static let leaderboardID = "com.atillaozder.DriveFast.Leaderboard"
+    
     private var _explosion: SKEmitterNode!
     var explosionEffect: SKEmitterNode {
         return _explosion.copy() as! SKEmitterNode
     }
     
-    private var _cars: [SKSpriteNode] = []
-    private var objRepresentation: [SKSpriteNode: Car] = [:]
-    
-    var cars: [SKSpriteNode] {
-        return _cars
-    }
+    private(set) var cars: [SKSpriteNode] = []
+    private(set) var objRepresentation: [SKSpriteNode: Car] = [:]
     
     static let carCount: Int = 20
-    var gameCount: Double = 0
-
-    private init() {}
     
-    func preloadCars(completionHandler: @escaping ((Int) -> ())) {
-        DispatchQueue.global().async {
-            for idx in 0...GameManager.carCount {
-                let car = Car(index: idx)
-                let spriteNode = self.buildSpriteNode(from: car)
-                self._cars.append(spriteNode)
-                DispatchQueue.main.async {
-                    completionHandler(idx)
+    var gameCount: Double = 0
+    private(set) var gcEnabled = Bool()
+    private(set) var gcDefaultLeaderBoard = String()
+    
+    private let workCount: Double = 21
+    private var unitWorkValue: Double {
+        return 1 / workCount
+    }
+    
+    private var progressValue: Double = 0 {
+        didSet {
+            DispatchQueue.main.async {
+                if let loadingProgress = self.progress {
+                    loadingProgress(Float(self.progressValue))
                 }
             }
         }
     }
     
-    func preloadExplosion() {
-        self._explosion = SKEmitterNode(fileNamed: "Explosion")!
+    var progress: ((Float) -> ())?
+    
+    // MARK: - Private Constructor
+    
+    private override init() {
+        super.init()
+    }
+    
+    // MARK: - Helper Methods
+    
+    func startLoading() {
+        DispatchQueue.global().async {
+            self._explosion = SKEmitterNode(fileNamed: "Explosion")!
+            self.preloadCars()
+        }
     }
     
     func getObjRepresentation(of sprite: SKSpriteNode) -> Car {
@@ -55,6 +73,56 @@ class GameManager {
         return objRepresentation.first(where: { return $1 == value })!
     }
     
+    func submitNewScore(_ score: Int) {
+        let highscore = GKScore(leaderboardIdentifier: GameManager.leaderboardID)
+        highscore.value = Int64(score)
+        GKScore.report([highscore]) { (error) in
+            if let err = error {
+                print(err.localizedDescription)
+            }
+        }
+    }
+    
+    func authenticatePlayer(presentingViewController: UIViewController) {
+        let localPlayer = GKLocalPlayer.local
+        localPlayer.authenticateHandler = { [weak self] (viewController, error) in
+            guard let `self` = self else { return }
+            if viewController != nil {
+                presentingViewController.present(viewController!, animated: true, completion: nil)
+            } else if localPlayer.isAuthenticated {
+                self.gcEnabled = true
+//                localPlayer.loadDefaultLeaderboardIdentifier { (leaderboardID, err) in
+//                    if let error = err {
+//                        print(error.localizedDescription)
+//                        return
+//                    }
+//
+//                    if let id = leaderboardID {
+//                        self.gcDefaultLeaderBoard = id
+//                    }
+//                }
+            } else {
+                self.gcEnabled = false
+                if let err = error {
+                    print(err.localizedDescription)
+                }
+            }
+            
+            self.progressValue += self.unitWorkValue
+        }
+    }
+    
+    // MARK: - Private Helper Methods
+    
+    private func preloadCars() {
+        for idx in 0...GameManager.carCount {
+            let car = Car(index: idx)
+            let spriteNode = self.buildSpriteNode(from: car)
+            self.cars.append(spriteNode)
+            self.progressValue += self.unitWorkValue
+        }
+    }
+        
     private func buildSpriteNode(from car: Car) -> SKSpriteNode {
         let texture = SKTexture(imageNamed: car.imageName)
         let spriteNode = SKSpriteNode(texture: texture)

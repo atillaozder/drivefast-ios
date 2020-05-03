@@ -8,7 +8,7 @@ Drive Fast - Retro Car Racing is a retro-inspired, super-fun racing game that gi
 
 Do you enjoy racing your car at extreme speeds? In Drive Fast - Retro car racing you get your chance to prove your skills. It is not easy to dodge other cars with high speed on the road.
 
-Drive your car through the heavy traffic jam like a warrior. The goal is to reach the finish line without running out of fuel or hitting other cars. There are 3 keys to victory.
+Drive your car through the heavy traffic jam like a warrior. The goal is to reach the high score without running out of fuel or hitting other cars. There are 3 keys to victory.
 
 You can race pass other cars, or drift through and push them sideway. Just don't try it with the big truck. 
 

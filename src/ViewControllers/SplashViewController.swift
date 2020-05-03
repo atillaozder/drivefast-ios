@@ -25,7 +25,7 @@ class SplashViewController: UIViewController {
         pv.trackTintColor = UIColor.systemRed.withAlphaComponent(0.6)
         pv.layer.cornerRadius = 13
         pv.layer.borderColor = UIColor.systemRed.cgColor
-        pv.layer.borderWidth = 1
+        pv.layer.borderWidth = 2
         pv.layer.masksToBounds = true
         pv.progress = 0.0
         return pv
@@ -102,10 +102,12 @@ class SplashViewController: UIViewController {
         GADMobileAds.sharedInstance().start(completionHandler: nil)
         
         UserDefaults.standard.setSession()
-        GameManager.shared.preloadExplosion()
-        GameManager.shared.preloadCars { [weak self] (value) in
+        GameManager.shared.startLoading()
+        GameManager.shared.authenticatePlayer(presentingViewController: self)
+        
+        GameManager.shared.progress = { [weak self] (progress) in
             guard let `self` = self else { return }
-            self.progress += 0.05
+            self.progress = progress
         }
     }
     

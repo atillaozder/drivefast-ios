@@ -8,6 +8,7 @@
 
 import UIKit
 import SpriteKit
+import GameKit
 import GoogleMobileAds
 
 // MARK: - GameState
@@ -18,7 +19,7 @@ enum GameState: Int {
     case paused = 3
     case home
     case settings
-    case achievements
+    case leaderboard
     case continued
     case garage
 }
@@ -41,14 +42,20 @@ class GameViewController: UIViewController {
     private var menus: [UIView] {
         return [
             playingMenu, pauseMenu, advertisementMenu,
-            achievementsMenu, settingsMenu, garageMenu,
-            homeMenu]
+            settingsMenu, garageMenu, homeMenu]
     }
     
     var gameState: GameState = .home {
         didSet {
             menus.forEach { $0.isHidden = true }
             let shouldPresentNewMenu = previousGameState.rawValue < 4 && gameState == .home
+            
+            switch gameState {
+            case .advertisement, .advPresenting, .paused:
+                AudioPlayer.shared.pauseMusic()
+            default:
+                AudioPlayer.shared.playMusic(.race)
+            }
             
             if shouldPresentNewMenu {
                 homeMenu.isHidden = false
@@ -60,8 +67,9 @@ class GameViewController: UIViewController {
                 case .advertisement:
                     playingMenu.isHidden = false
                     advertisementMenu.isHidden = false
-                case .achievements:
-                    achievementsMenu.isHidden = false
+                case .leaderboard:
+                    homeMenu.isHidden = false
+                    presentLeaderboard()
                 case .settings:
                     settingsMenu.isHidden = false
                 case .playing:
@@ -90,10 +98,13 @@ class GameViewController: UIViewController {
     private lazy var homeMenu = HomeMenu()
     private lazy var advertisementMenu = AdvertisementMenu()
     private lazy var settingsMenu = SettingsMenu()
-    private lazy var achievementsMenu = AchievementsMenu()
     private lazy var playingMenu = PlayingMenu()
     private lazy var pauseMenu = PauseMenu()
     private lazy var garageMenu = GarageMenu()
+    
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return .lightContent
+    }
     
     override var prefersStatusBarHidden: Bool {
         return true
@@ -119,8 +130,6 @@ class GameViewController: UIViewController {
         self.setupMenus()
         gameState = .home
         adHelper.delegate = self
-        
-        AudioPlayer.shared.playMusic(.race)
         checkSession()
         
         NotificationCenter.default.addObserver(self, selector: #selector(setStayPaused), name: .shouldStayPausedNotification, object: nil)
@@ -142,13 +151,12 @@ class GameViewController: UIViewController {
 
         homeMenu.delegate = self
         advertisementMenu.delegate = self
-        achievementsMenu.delegate = self
         playingMenu.delegate = self
         pauseMenu.delegate = self
         settingsMenu.delegate = self
         garageMenu.delegate = self
     }
-    
+            
     private func checkSession() {
         if #available(iOS 10.3, *) {
             let session = UserDefaults.standard.session
@@ -160,6 +168,26 @@ class GameViewController: UIViewController {
             DispatchQueue.main.async {
                 SKStoreReviewController.requestReview()
             }
+        }
+    }
+    
+    private func presentLeaderboard() {
+        if GameManager.shared.gcEnabled {
+            let viewController = GKGameCenterViewController()
+            viewController.gameCenterDelegate = self
+            viewController.viewState = .leaderboards
+            viewController.leaderboardIdentifier = GameManager.leaderboardID
+            self.present(viewController, animated: true, completion: nil)
+        } else {
+            let alertController = UIAlertController(
+                title: "Drive Fast",
+                message: MainStrings.gcErrorMessage.localized,
+                preferredStyle: .alert)
+            
+            let dismissAction = UIAlertAction(
+                title: MainStrings.okTitle.localized, style: .cancel, handler: nil)
+            alertController.addAction(dismissAction)
+            self.present(alertController, animated: true, completion: nil)
         }
     }
     
@@ -245,12 +273,10 @@ extension GameViewController: AdHelperDelegate {
     }
     
     func adHelper(_ adHelper: AdHelper, userDidEarn reward: GADAdReward?) {
-        AudioPlayer.shared.playMusic(.race)
         reward == nil ? setStateHome() : gameScene.didGetReward()
     }
     
     func adHelper(_ adHelper: AdHelper, willPresentRewardedAd isReady: Bool) {
-        AudioPlayer.shared.pauseMusic()
         isReady ? gameScene.willPresentRewardBasedVideoAd() : setStateHome()
     }
 }
@@ -309,5 +335,11 @@ extension GameViewController: SettingsMenuDelegate {
         case .back:
             gameState = .home
         }
+    }
+}
+
+extension GameViewController: GKGameCenterControllerDelegate {
+    func gameCenterViewControllerDidFinish(_ gameCenterViewController: GKGameCenterViewController) {
+        gameCenterViewController.dismiss(animated: true, completion: nil)
     }
 }

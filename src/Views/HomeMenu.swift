@@ -66,13 +66,13 @@ class HomeMenu: Menu {
         let rateButton = buildRowButton(asset: .star)
         rateButton.addTarget(self, action: #selector(didTapRate(_:)), for: .touchUpInside)
                 
-        let achievementsButton = buildRowButton(asset: .podium)
-        achievementsButton.addTarget(
-            self, action: #selector(didTapAchievements(_:)), for: .touchUpInside)
+        let leaderboardButton = buildRowButton(asset: .podium)
+        leaderboardButton.addTarget(
+            self, action: #selector(didTapLeaderboard(_:)), for: .touchUpInside)
         
         let muteButton = buildMuteButton(from: rateButton)
         
-        let subviews: [UIView] = [rateButton, achievementsButton, muteButton]
+        let subviews: [UIView] = [rateButton, leaderboardButton, muteButton]
         let aStackView = UIStackView(arrangedSubviews: subviews)
         aStackView.alignment = .center
         aStackView.distribution = .fillEqually
@@ -117,8 +117,8 @@ class HomeMenu: Menu {
     }
     
     @objc
-    func didTapAchievements(_ sender: UIButton) {
-        delegate?.menu(self, didUpdateGameState: .achievements)
+    func didTapLeaderboard(_ sender: UIButton) {
+        delegate?.menu(self, didUpdateGameState: .leaderboard)
     }
 }
 

@@ -54,12 +54,9 @@ class AdHelper: NSObject {
     }
     
     func presentInterstitial() {
-        if interstitial.isReady {
-            AudioPlayer.shared.pauseMusic()
-            interstitial.present(fromRootViewController: rootViewController)
-        } else {
+        interstitial.isReady ?
+            interstitial.present(fromRootViewController: rootViewController) :
             interstitial.load(.init())
-        }
     }
     
     private func loadRewardedAd() {
@@ -80,7 +77,6 @@ class AdHelper: NSObject {
 
 extension AdHelper: GADInterstitialDelegate {
     func interstitialDidDismissScreen(_ ad: GADInterstitial) {
-        AudioPlayer.shared.playMusic(.race)
         loadInterstitial()
     }
 }

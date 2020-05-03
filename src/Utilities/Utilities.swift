@@ -77,7 +77,6 @@ enum MainStrings: String {
     case newGameTitle = "newGameTitle"
     case advButtonTitle = "advButtonTitle"
     case settingsTitle = "settingsTitle"
-    case achievementsTitle = "achievementsTitle"
     case backToMenuTitle = "backToMenuTitle"
     case rateTitle = "rateTitle"
     case supportTitle = "supportTitle"
@@ -88,6 +87,8 @@ enum MainStrings: String {
     case garageTitle = "garageTitle"
     case chooseTitle = "chooseTitle"
     case loadingTitle = "loadingTitle"
+    case okTitle = "okTitle"
+    case gcErrorMessage = "gcErrorMessage"
     
     var localized: String {
         return NSLocalizedString(self.rawValue, comment: "")

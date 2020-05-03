@@ -17,6 +17,7 @@
 		FB1EB13C234FC2A9009C8E24 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FB1EB13B234FC2A9009C8E24 /* Assets.xcassets */; };
 		FB1EB13F234FC2A9009C8E24 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FB1EB13D234FC2A9009C8E24 /* LaunchScreen.storyboard */; };
 		FB21EC85244F0318008F8C07 /* GarageMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB21EC84244F0318008F8C07 /* GarageMenu.swift */; };
+		FB389B67245EC697000006F4 /* GameKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FB389B66245EC697000006F4 /* GameKit.framework */; };
 		FB732573243F49000001B9B7 /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB732572243F49000001B9B7 /* Utilities.swift */; };
 		FB732575243F492A0001B9B7 /* GameScene+SKPhysicsContactDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB732574243F492A0001B9B7 /* GameScene+SKPhysicsContactDelegate.swift */; };
 		FB732577243F4A580001B9B7 /* crash.wav in Resources */ = {isa = PBXBuildFile; fileRef = FB732576243F4A580001B9B7 /* crash.wav */; };
@@ -38,7 +39,6 @@
 		FBFF2F9024448289000109E2 /* UIView+Autolayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBFF2F8F24448289000109E2 /* UIView+Autolayout.swift */; };
 		FBFF2F92244482B6000109E2 /* Car.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBFF2F91244482B6000109E2 /* Car.swift */; };
 		FBFF2F9624449E31000109E2 /* SettingsMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBFF2F9524449E31000109E2 /* SettingsMenu.swift */; };
-		FBFF2F9824449F84000109E2 /* AchievementsMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBFF2F9724449F84000109E2 /* AchievementsMenu.swift */; };
 		FBFF2F9A24449F94000109E2 /* AdvertisementMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBFF2F9924449F94000109E2 /* AdvertisementMenu.swift */; };
 		FBFF2F9C24449FBA000109E2 /* Menu.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBFF2F9B24449FBA000109E2 /* Menu.swift */; };
 		FBFF2F9E2444A616000109E2 /* BackslashButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBFF2F9D2444A616000109E2 /* BackslashButton.swift */; };
@@ -60,6 +60,7 @@
 		FB1EB140234FC2A9009C8E24 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		FB21EC84244F0318008F8C07 /* GarageMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GarageMenu.swift; sourceTree = "<group>"; };
 		FB2C5CE2245CCAAB007A96D9 /* tr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = tr; path = tr.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
+		FB389B66245EC697000006F4 /* GameKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GameKit.framework; path = System/Library/Frameworks/GameKit.framework; sourceTree = SDKROOT; };
 		FB732572243F49000001B9B7 /* Utilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utilities.swift; sourceTree = "<group>"; };
 		FB732574243F492A0001B9B7 /* GameScene+SKPhysicsContactDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GameScene+SKPhysicsContactDelegate.swift"; sourceTree = "<group>"; };
 		FB732576243F4A580001B9B7 /* crash.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = crash.wav; sourceTree = "<group>"; };
@@ -85,7 +86,6 @@
 		FBFF2F8F24448289000109E2 /* UIView+Autolayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Autolayout.swift"; sourceTree = "<group>"; };
 		FBFF2F91244482B6000109E2 /* Car.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Car.swift; sourceTree = "<group>"; };
 		FBFF2F9524449E31000109E2 /* SettingsMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsMenu.swift; sourceTree = "<group>"; };
-		FBFF2F9724449F84000109E2 /* AchievementsMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AchievementsMenu.swift; sourceTree = "<group>"; };
 		FBFF2F9924449F94000109E2 /* AdvertisementMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdvertisementMenu.swift; sourceTree = "<group>"; };
 		FBFF2F9B24449FBA000109E2 /* Menu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Menu.swift; sourceTree = "<group>"; };
 		FBFF2F9D2444A616000109E2 /* BackslashButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackslashButton.swift; sourceTree = "<group>"; };
@@ -97,6 +97,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				4017DC9EB2B163A06EDF4BCF /* Pods_DriveFast.framework in Frameworks */,
+				FB389B67245EC697000006F4 /* GameKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -106,6 +107,7 @@
 		2215FE5EA4FF0E2649FCD805 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				FB389B66245EC697000006F4 /* GameKit.framework */,
 				91DFDAA228B72B1CC0A1D5AD /* Pods_DriveFast.framework */,
 			);
 			name = Frameworks;
@@ -220,7 +222,6 @@
 				FB732586243F60690001B9B7 /* HomeMenu.swift */,
 				FBFF2F9924449F94000109E2 /* AdvertisementMenu.swift */,
 				FBFF2F9524449E31000109E2 /* SettingsMenu.swift */,
-				FBFF2F9724449F84000109E2 /* AchievementsMenu.swift */,
 				FBF9951E2445C32C00072630 /* PlayingMenu.swift */,
 				FBF995202445C80C00072630 /* PauseMenu.swift */,
 				FB21EC84244F0318008F8C07 /* GarageMenu.swift */,
@@ -369,7 +370,6 @@
 				FBD1E55923509A21006C9CAD /* MenuScene.swift in Sources */,
 				FBFF2F92244482B6000109E2 /* Car.swift in Sources */,
 				FBFF2F9024448289000109E2 /* UIView+Autolayout.swift in Sources */,
-				FBFF2F9824449F84000109E2 /* AchievementsMenu.swift in Sources */,
 				FBFF2F9624449E31000109E2 /* SettingsMenu.swift in Sources */,
 				FB1EB137234FC2A8009C8E24 /* GameViewController.swift in Sources */,
 				FBFF2F9E2444A616000109E2 /* BackslashButton.swift in Sources */,
@@ -545,10 +545,10 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.0.4;
+				MARKETING_VERSION = 2.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.retro2d.ios;
 				PRODUCT_NAME = DriveFast;
-				PROVISIONING_PROFILE_SPECIFIER = RetroDebugProfile;
+				PROVISIONING_PROFILE_SPECIFIER = "Drive Fast Debug";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -570,10 +570,10 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.0.4;
+				MARKETING_VERSION = 2.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.retro2d.ios;
 				PRODUCT_NAME = DriveFast;
-				PROVISIONING_PROFILE_SPECIFIER = RetroReleaseProfile;
+				PROVISIONING_PROFILE_SPECIFIER = "Drive Fast Release";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};

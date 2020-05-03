@@ -28,6 +28,14 @@ extension UserDefaults {
         return integer(forKey: "sound_preference") == 0
     }
     
+    var playerCar: Car {
+        return Car(index: playerCarNo)
+    }
+        
+    var playerCarNo: Int {
+        return integer(forKey: "players_car")
+    }
+    
     func setScore(_ score: Int) {
         set(score, forKey: "score")
         setHighscore(score)
@@ -35,6 +43,7 @@ extension UserDefaults {
     
     func setHighscore(_ score: Int) {
         if score > highscore {
+            GameManager.shared.submitNewScore(score)
             set(score, forKey: "best_score")
         }
     }
@@ -47,16 +56,8 @@ extension UserDefaults {
     func setSound(_ sound: Bool) {
         set(!sound, forKey: "sound_preference")
     }
-
-    var playerCar: Car {
-        return Car(index: playerCarNo)
-    }
-        
-    var playerCarNo: Int {
-        return integer(forKey: "players_car")
-    }
     
-    func setPlayersCar(_ player: Car) {
+    func setPlayerCar(_ player: Car) {
         set(player.index, forKey: "players_car")
     }
 }

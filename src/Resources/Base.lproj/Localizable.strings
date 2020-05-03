@@ -11,7 +11,6 @@
 "newGameTitle" = "New Game";
 "advButtonTitle" = "View this ad to continue racing";
 "settingsTitle" = "Settings";
-"achievementsTitle" = "Achievements";
 "backToMenuTitle" = "Main Menu";
 "rateTitle" = "Rate";
 "supportTitle" = "Support";
@@ -22,3 +21,5 @@
 "garageTitle" = "Garage";
 "chooseTitle" = "Choose";
 "loadingTitle" = "Loading...";
+"okTitle" = "OK";
+"gcErrorMessage" = "An error occurred while presenting leaderboard. Please make sure you are connected to Game Center and try again.";
