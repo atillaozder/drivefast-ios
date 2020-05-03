@@ -78,13 +78,11 @@ class GameViewController: UIViewController {
                     playingMenu.isHidden = false
                     adHelper.presentRewardedAd()
                 case .paused:
-                    gameScene.isPaused = true
-                    gameScene.didChangePauseState()
+                    gameScene.setPausedAndNotify(true)
                     playingMenu.isHidden = false
                     pauseMenu.isHidden = false
                 case .continued:
-                    gameScene.isPaused = false
-                    gameScene.didChangePauseState()
+                    gameScene.setPausedAndNotify(false)
                     playingMenu.isHidden = false
                 case .garage:
                     garageMenu.isHidden = false

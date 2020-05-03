@@ -76,12 +76,12 @@ class PlayingMenu: Menu {
     func reset() {
         setScore(0)
         setLifeCount(3)
-        setFuelProgress(1.0)
+        setFuelProgress(1.0, animated: false)
         isHidden = false
     }
     
-    func setFuelProgress(_ progress: Float) {
-        self.progressView.setProgress(progress, animated: true)
+    func setFuelProgress(_ progress: Float, animated: Bool = true) {
+        self.progressView.setProgress(progress, animated: animated)
     }
     
     func setScore(_ score: Double) {

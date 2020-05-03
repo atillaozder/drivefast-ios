@@ -11,16 +11,15 @@ import SpriteKit
 
 // MARK: - Effect
 enum Effect {
-    case coin, crash, horns, brake, fuel
+    case coin, crash, horns, fuel
 }
 
 // MARK: - SoundManager
 struct SoundManager {
     let coin = SKAction.playSoundFileNamed("coin.wav", waitForCompletion: false)
-    let fuel = SKAction.playSoundFileNamed("coin.wav", waitForCompletion: false)
+    let fuel = SKAction.playSoundFileNamed("fuel.wav", waitForCompletion: false)
     let crash = SKAction.playSoundFileNamed("crash.wav", waitForCompletion: false)
     let horns = SKAction.playSoundFileNamed("horns.mp3", waitForCompletion: false)
-//    let brake = SKAction.playSoundFileNamed("brake.wav", waitForCompletion: false)
     
     func playEffect(_ effect: Effect, in scene: SKScene) {
         if UserDefaults.standard.isSoundOn {
@@ -33,9 +32,6 @@ struct SoundManager {
                 scene.run(crash)
             case .horns:
                 scene.run(horns)
-            case .brake:
-                break
-//                scene.run(brake)
             }
         }
     }
@@ -72,6 +68,12 @@ enum Category: UInt32 {
     case car = 0x10
     case player = 0x1
     case none = 0x10000
+}
+
+// MARK: - GameOverReason
+enum GameOverReason {
+    case runningOutOfFuel
+    case crash
 }
 
 // MARK: - MainStrings

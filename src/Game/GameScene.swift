@@ -75,7 +75,7 @@ class GameScene: SKScene {
     private lazy var singleCoin = Coin(frame: frame, type: .single)
     private lazy var multipleCoins = Coin(frame: frame, type: .multiple)
     private lazy var coinBag = Coin(frame: frame, type: .bag)
-    private lazy var fuel = Fuel(frame: frame)
+    private lazy var fuelNode = Fuel(frame: frame)
 
     var score: Double = 0 {
         willSet (newScore) {
@@ -99,14 +99,14 @@ class GameScene: SKScene {
         }
     }
     
-    var remainingFuel: Float = 100 {
+    var fuel: Float = 100 {
         didSet {
             DispatchQueue.main.async {
-//                if self.remainingFuel == 0 {
-//                    self.finishGame()
-//                }
+                if self.fuel == 0 {
+                    self.gameDidFinish(forReason: .runningOutOfFuel)
+                }
                 self.sceneDelegate?.scene(
-                    self, didUpdateRemainingFuel: self.remainingFuel)
+                    self, didUpdateRemainingFuel: self.fuel)
             }
         }
     }
@@ -120,7 +120,7 @@ class GameScene: SKScene {
         willSet {
             sceneDelegate?.scene(self, willUpdateLifeCount: newValue)
             if newValue == 0 {
-                finishGame()
+                gameDidFinish(forReason: .crash)
             }
         }
     }
@@ -146,7 +146,7 @@ class GameScene: SKScene {
     // MARK: - Game Life Cycle
     override func willMove(from view: SKView) {
         super.willMove(from: view)
-        clearGame()
+        resetGame()
     }
     
     override func didMove(to view: SKView) {
@@ -209,45 +209,46 @@ class GameScene: SKScene {
         
     fileprivate func stopGame() {
         if !gotReward {
-            self.isPaused = true
+            self.setPausedAndNotify(true)
             self.sceneDelegate?.scene(self, didUpdateGameState: .advertisement)
         } else {
             self.sceneDelegate?.scene(self, didUpdateGameState: .home)
         }
     }
-    
-    func finishGame() {
+        
+    func gameDidFinish(forReason reason: GameOverReason) {
         self.gameOver = true
         
-        let explosionEffect = GameManager.shared.explosionEffect
-        explosionEffect.position = playerNode.position
-        self.addChild(explosionEffect)
-        
-        soundManager.playEffect(.crash, in: self)
-        playerNode.removeFromParent()
-        self.sceneDelegate?.scene(self, didFinishGameWithScore: score)
-        
-        self.run(.wait(forDuration: 1)) { [weak self] in
-            guard let `self` = self else { return }
-            explosionEffect.removeFromParent()
+        switch reason {
+        case .crash:
+            let explosionEffect = GameManager.shared.explosionEffect
+            explosionEffect.position = playerNode.position
+            self.addChild(explosionEffect)
+            
+            soundManager.playEffect(.crash, in: self)
+            playerNode.isHidden = true
+            
+            self.run(.wait(forDuration: 1)) { [weak self] in
+                guard let `self` = self else { return }
+                explosionEffect.removeFromParent()
+                self.stopGame()
+            }
+        case .runningOutOfFuel:
             self.stopGame()
         }
+        
+        self.sceneDelegate?.scene(self, didFinishGameWithScore: score)
     }
-    
-    func didChangePauseState() {
-        isPaused ? stopMotionManager() : startMotionManager()
-        if let addCarSeq = self.action(forKey: Actions.addCar.rawValue) {
-            addCarSeq.speed = isPaused ? 0 : 1
-        }
-    }
-    
+        
     func didGetReward() {
+        AudioPlayer.shared.playMusic(.race)
         resetPlayerPosition()
-        addChild(playerNode)
+        playerNode.isHidden = false
         
         self.lifeCount = 1
+        self.fuel = 100
         self.gameOver = false
-        self.isPaused = false
+        self.setPausedAndNotify(false)
     }
     
     func willPresentRewardBasedVideoAd() {
@@ -262,6 +263,18 @@ class GameScene: SKScene {
     func setStayPaused() {
         if (super.isPaused) {
             self.stayPaused = true
+        }
+    }
+    
+    func setPausedAndNotify(_ isPaused: Bool) {
+        self.isPaused = isPaused
+        self.didChangePauseState()
+    }
+    
+    func didChangePauseState() {
+        isPaused ? stopMotionManager() : startMotionManager()
+        if let addCarSeq = self.action(forKey: Actions.addCar.rawValue) {
+            addCarSeq.speed = isPaused ? 0 : 1
         }
     }
     
@@ -337,7 +350,7 @@ class GameScene: SKScene {
         }
     }
     
-    private func clearGame() {
+    private func resetGame() {
         stopMotionManager()
         self.removeAllActions()
         self.removeAllChildren()
@@ -418,8 +431,8 @@ class GameScene: SKScene {
     }
     
     private func setFuel() {
-        let newValue = remainingFuel - 1
-        remainingFuel = max(0, newValue)
+        let newValue = fuel - 1
+        fuel = max(0, newValue)
     }
     
     private func addCoin() {
@@ -441,7 +454,7 @@ class GameScene: SKScene {
     }
         
     private func addFuel() {
-        let sprite = self.fuel.copy() as! Fuel
+        let sprite = self.fuelNode.copy() as! Fuel
         addSprite(sprite)
     }
     

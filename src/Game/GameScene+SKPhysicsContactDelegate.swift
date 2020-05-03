@@ -62,11 +62,11 @@ extension GameScene: SKPhysicsContactDelegate {
         score += coin.value
     }
     
-    fileprivate func playerDidCollide(with fuel: Fuel) {
+    fileprivate func playerDidCollide(with fuelNode: Fuel) {
         soundManager.playEffect(.fuel, in: self)
-        fuel.removeFromParent()
-        let newValue = self.remainingFuel + fuel.value
-        self.remainingFuel = min(newValue, 100)
+        fuelNode.removeFromParent()
+        let newValue = self.fuel + fuelNode.value
+        self.fuel = min(newValue, 100)
     }
 }
 
