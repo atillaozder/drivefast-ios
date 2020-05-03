@@ -11,11 +11,12 @@ import GameplayKit
 import CoreMotion
 
 // MARK: - SceneDelegate
-protocol SceneDelegate: class {
+protocol SceneDelegate: AnyObject {
     func scene(_ scene: GameScene, didUpdateScore score: Double)
     func scene(_ scene: GameScene, willUpdateLifeCount count: Int)
     func scene(_ scene: GameScene, didFinishGameWithScore score: Double)
     func scene(_ scene: GameScene, didUpdateGameState state: GameState)
+    func scene(_ scene: GameScene, didUpdateRemainingFuel fuel: Float)
 }
 
 // MARK: - GameScene
@@ -71,10 +72,11 @@ class GameScene: SKScene {
         return node
     }()
     
-    lazy var singleCoin = Coin(frame: frame, type: .single)
-    lazy var multipleCoins = Coin(frame: frame, type: .multiple)
-    lazy var coinBag = Coin(frame: frame, type: .bag)
-    
+    private lazy var singleCoin = Coin(frame: frame, type: .single)
+    private lazy var multipleCoins = Coin(frame: frame, type: .multiple)
+    private lazy var coinBag = Coin(frame: frame, type: .bag)
+    private lazy var fuel = Fuel(frame: frame)
+
     var score: Double = 0 {
         willSet (newScore) {
             guard newScore > 0 else { return }
@@ -94,6 +96,18 @@ class GameScene: SKScene {
             }
         } didSet {
             sceneDelegate?.scene(self, didUpdateScore: score)
+        }
+    }
+    
+    var remainingFuel: Float = 100 {
+        didSet {
+            DispatchQueue.main.async {
+//                if self.remainingFuel == 0 {
+//                    self.finishGame()
+//                }
+                self.sceneDelegate?.scene(
+                    self, didUpdateRemainingFuel: self.remainingFuel)
+            }
         }
     }
     
@@ -156,61 +170,43 @@ class GameScene: SKScene {
                 ])
                 self.run(.repeatForever(addRoadLineSq))
             }
-            
             self.initiateCarSequence()
         }
     }
-    
-    private func initiateCarSequence() {
-        self.removeAction(forKey: Actions.addCar.rawValue)
-        let addCarQueue = DispatchQueue(
-            label: "com.atillaozder.DriveFast.addCar.concurrentQueue",
-            qos: .default, attributes: .concurrent)
         
-        let addCarSq: SKAction = .sequence([
-            .wait(forDuration: waitingDuration),
-            .run(self.addRandomCar, queue: addCarQueue)
-        ])
-        
-        let action: SKAction = .repeatForever(addCarSq)
-        self.run(action, withKey: Actions.addCar.rawValue)
-    }
-    
-    private func setGameDifficulty() {
-        if appearanceDuration > appearanceThreshold
-            || waitingDuration > waitingThreshold {
-            appearanceDuration = max(appearanceThreshold, appearanceDuration - 0.5)
-            waitingDuration = max(waitingThreshold, waitingDuration - 0.1)
-            initiateCarSequence()
-        }
-    }
-    
-    private func clearGame() {
-        stopMotionManager()
-        self.removeAllActions()
-        self.removeAllChildren()
-        movePlayerToMiddle()
-    }
-    
-    func movePlayerToMiddle() {
+    func resetPlayerPosition() {
         playerNode.position = .init(x: self.frame.midX, y: roadBoundingBox.minY)
     }
     
     func initiateGame() {
         GameManager.shared.gameCount += 1
-        movePlayerToMiddle()
+        resetPlayerPosition()
         addChild(playerNode)
         
         startMotionManager()
         
         let addCoinSq: SKAction = .sequence([
-            .wait(forDuration: 5),
+            .wait(forDuration: Coin.waitForDuration),
             .run(addCoin, queue: .init(label: "com.atillaozder.DriveFast.addCoin.serialQueue"))
         ])
         
         run(.repeatForever(addCoinSq))
+        
+        let addFuelSq: SKAction = .sequence([
+            .wait(forDuration: Fuel.waitForDuration),
+            .run(addFuel, queue: .init(label: "com.atillaozder.DriveFast.addFuel.serialQueue"))
+        ])
+        
+        run(.repeatForever(addFuelSq))
+        
+        let setFuelSq: SKAction = .sequence([
+            .wait(forDuration: 1),
+            .run(setFuel, queue: .global())
+        ])
+        
+        run(.repeatForever(setFuelSq))
     }
-    
+        
     fileprivate func stopGame() {
         if !gotReward {
             self.isPaused = true
@@ -246,7 +242,7 @@ class GameScene: SKScene {
     }
     
     func didGetReward() {
-        movePlayerToMiddle()
+        resetPlayerPosition()
         addChild(playerNode)
         
         self.lifeCount = 1
@@ -269,6 +265,8 @@ class GameScene: SKScene {
         }
     }
     
+    // MARK: - Private Helper Methods
+    
     private func addFlatRoadLine() {
         var posX = self.roadNode.frame.minX
         for _ in 1..<Int(Car.scaleRatio) {
@@ -282,6 +280,13 @@ class GameScene: SKScene {
                 self.addChild(node)
             }
         }
+    }
+    
+    private func getRandomPosX() -> CGFloat {
+        let roadMinX = Int(self.frame.minX + 30)
+        let roadMaxX = Int(self.frame.maxX - 30)
+        let randomDist = GKRandomDistribution(lowestValue: roadMinX, highestValue: roadMaxX)
+        return CGFloat(randomDist.nextInt())
     }
     
     private func stopMotionManager() {
@@ -308,6 +313,37 @@ class GameScene: SKScene {
         }
     }
     
+    private func initiateCarSequence() {
+        self.removeAction(forKey: Actions.addCar.rawValue)
+        let addCarQueue = DispatchQueue(
+            label: "com.atillaozder.DriveFast.addCar.concurrentQueue",
+            qos: .default, attributes: .concurrent)
+        
+        let addCarSq: SKAction = .sequence([
+            .wait(forDuration: waitingDuration),
+            .run(self.addRandomCar, queue: addCarQueue)
+        ])
+        
+        let action: SKAction = .repeatForever(addCarSq)
+        self.run(action, withKey: Actions.addCar.rawValue)
+    }
+    
+    private func setGameDifficulty() {
+        if appearanceDuration > appearanceThreshold
+            || waitingDuration > waitingThreshold {
+            appearanceDuration = max(appearanceThreshold, appearanceDuration - 0.5)
+            waitingDuration = max(waitingThreshold, waitingDuration - 0.1)
+            initiateCarSequence()
+        }
+    }
+    
+    private func clearGame() {
+        stopMotionManager()
+        self.removeAllActions()
+        self.removeAllChildren()
+        resetPlayerPosition()
+    }
+    
     // MARK: - RepeatForever Actions
     private func addRoadLine() {
         let height = roadLineNode.size.height + 20
@@ -330,7 +366,7 @@ class GameScene: SKScene {
             }
         }
     }
-    
+        
     private func addRandomCar() {
         let addCarClosure: () -> Void = { [weak self] in
             guard let `self` = self else { return }
@@ -352,15 +388,9 @@ class GameScene: SKScene {
                 #endif
             }
             
-            let roadMinX = Int(self.frame.minX + 30)
-            let roadMaxX = Int(self.frame.maxX - 30)
-            
-            let randomDist = GKRandomDistribution(
-                lowestValue: roadMinX, highestValue: roadMaxX)
-            
             car.setScale(to: self.frame.width / obj.ratio)
             car.position = CGPoint(
-                x: CGFloat(randomDist.nextInt()), y: self.frame.maxY + car.size.height)
+                x: self.getRandomPosX(), y: self.frame.maxY + car.size.height)
             
             let move = SKAction.moveTo(y: -car.size.height / 2, duration: self.appearanceDuration)
             var actions = [SKAction]()
@@ -387,6 +417,11 @@ class GameScene: SKScene {
         }
     }
     
+    private func setFuel() {
+        let newValue = remainingFuel - 1
+        remainingFuel = max(0, newValue)
+    }
+    
     private func addCoin() {
         let random = Int.random(in: 0...10)
         var coin: Coin
@@ -401,19 +436,24 @@ class GameScene: SKScene {
             coin = self.coinBag.copy() as! Coin
             coin.type = .bag
         }
+    
+        addSprite(coin)
+    }
         
-        let roadMinX = Int(self.frame.minX + 30)
-        let roadMaxX = Int(self.frame.maxX - 30)
-        let randomDist = GKRandomDistribution(lowestValue: roadMinX, highestValue: roadMaxX)
-        coin.position.x = CGFloat(randomDist.nextInt())
-                
+    private func addFuel() {
+        let sprite = self.fuel.copy() as! Fuel
+        addSprite(sprite)
+    }
+    
+    private func addSprite(_ sprite: SKSpriteNode) {
+        sprite.position.x = getRandomPosX()
         var actions = [SKAction]()
-        actions.append(.moveTo(y: -coin.size.height / 2, duration: appearanceDuration))
+        actions.append(.moveTo(y: -sprite.size.height / 2, duration: appearanceDuration))
         actions.append(.removeFromParent())
         
         DispatchQueue.main.async {
-            self.addChild(coin)
-            coin.run(.sequence(actions))
+            self.addChild(sprite)
+            sprite.run(.sequence(actions))
         }
     }
 }

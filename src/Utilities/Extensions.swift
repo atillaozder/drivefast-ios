@@ -108,6 +108,10 @@ extension UIColor {
         return UIColor(red: 17, green: 52, blue: 68)
     }
     
+    class var menuButtonBorder: UIColor {
+        return UIColor(red: 41, green: 84, blue: 108)
+    }
+    
     class var roadColor: UIColor {
         return .init(red: 33, green: 44, blue: 48)
     }
@@ -216,6 +220,10 @@ extension UIEdgeInsets {
     static func initialize(_ constant: CGFloat) -> UIEdgeInsets {
         return .init(top: constant, left: constant, bottom: constant, right: constant)
     }
+    
+    static func viewEdge(_ constant: CGFloat) -> UIEdgeInsets {
+        return .init(top: constant, left: constant, bottom: -constant, right: -constant)
+    }
 }
 
 // MARK: - NSNotification
@@ -233,6 +241,7 @@ enum Asset: String {
     case leftArrow = "left-arrow"
     case rightArrow = "right-arrow"
     case splash = "splash"
+    case fuel = "fuel"
     
     func imageRepresentation() -> UIImage? {
         return UIImage(named: self.rawValue)

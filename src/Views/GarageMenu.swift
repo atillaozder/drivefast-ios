@@ -87,7 +87,7 @@ class GarageMenu: Menu {
         let buttons = UIStackView()
         buttons.alignment = .fill
         buttons.axis = .vertical
-        buttons.spacing = UIDevice.current.isPad ? 22 : 12
+        buttons.spacing = defaultSpacing
         buttons.distribution = .fill
         buttons.addArrangedSubview(chooseButton)
         buttons.addArrangedSubview(backButton)

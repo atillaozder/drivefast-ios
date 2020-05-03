@@ -20,6 +20,10 @@ protocol MenuDelegate: AnyObject {
 class Menu: UIView {
     
     static let defaultButtonHeight: CGFloat = 50
+    
+    var defaultSpacing: CGFloat {
+        return UIDevice.current.isPad ? 16 : 12
+    }
 
     lazy var backButton: UIButton = {
         let btn = buildButton(withTitle: .backToMenuTitle)
@@ -35,7 +39,7 @@ class Menu: UIView {
         sv.distribution = .fill
         sv.alignment = .fill
         sv.axis = .vertical
-        sv.spacing = UIDevice.current.isPad ? 22 : 12
+        sv.spacing = defaultSpacing
         return sv
     }()
     
@@ -75,7 +79,7 @@ class Menu: UIView {
         btn.titleEdgeInsets = .init(top: 6, left: 16, bottom: 6, right: 16)
         btn.contentHorizontalAlignment = .center
         btn.backgroundColor = .menuButton
-        btn.layer.borderColor = UIColor(red: 41, green: 84, blue: 108).cgColor
+        btn.layer.borderColor = UIColor.menuButtonBorder.cgColor
         btn.layer.borderWidth = UIDevice.current.isPad ? 6 : 4
         btn.layer.cornerRadius = UIDevice.current.isPad ? 16 : 12
         btn.pinHeight(to: aHeight)

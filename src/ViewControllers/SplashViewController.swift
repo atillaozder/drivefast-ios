@@ -34,7 +34,7 @@ class SplashViewController: UIViewController {
     var progress: Float {
         get { return loadingProgress.progress }
         set {
-            self.loadingProgress.progress = newValue
+            self.loadingProgress.setProgress(newValue, animated: true)
             if newValue > 1 {
                 guard presentedViewController == nil else { return }
                 self.presentGameController()
@@ -92,7 +92,12 @@ class SplashViewController: UIViewController {
         
         view.addSubview(rootStackView)
         rootStackView.pinCenterOfSuperview()
-        rootStackView.pinWidth(to: view.heightAnchor, multiplier: 1/2)
+        if UIDevice.current.isPad {
+            rootStackView.pinWidth(to: 300)
+        } else {
+            rootStackView.pinEdgesToView(
+                view, insets: .viewEdge(32), exclude: [.top, .bottom])
+        }
         
         startLoading()
     }

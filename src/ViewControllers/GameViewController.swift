@@ -224,9 +224,7 @@ class GameViewController: UIViewController {
         
         skView.ignoresSiblingOrder = true
         skView.presentScene(scene)
-        playingMenu.setScore(0)
-        playingMenu.setLifeCount(3)
-        playingMenu.isHidden = false
+        playingMenu.reset()
     }
     
     private func rateTapped() {
@@ -300,6 +298,11 @@ extension GameViewController: SceneDelegate {
     
     func scene(_ scene: GameScene, didUpdateGameState state: GameState) {
         gameState = state
+    }
+    
+    func scene(_ scene: GameScene, didUpdateRemainingFuel fuel: Float) {
+        let progress = fuel / 100
+        playingMenu.setFuelProgress(progress)
     }
 }
 

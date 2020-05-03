@@ -35,7 +35,7 @@ class HomeMenu: Menu {
             btn.tintColor = .white
             btn.setImage(asset.imageRepresentation()?.withRenderingMode(.alwaysTemplate), for: .normal)
             btn.backgroundColor = UIColor.menuButton
-            btn.layer.borderColor = UIColor(red: 41, green: 84, blue: 108).cgColor
+            btn.layer.borderColor = UIColor.menuButtonBorder.cgColor
             btn.layer.borderWidth = UIDevice.current.isPad ? 6 : 4
             btn.layer.cornerRadius = UIDevice.current.isPad ? 16 : 12
             btn.imageEdgeInsets = UIDevice.current.isPad ? .initialize(20) : .initialize(16)
@@ -73,12 +73,12 @@ class HomeMenu: Menu {
         let muteButton = buildMuteButton(from: rateButton)
         
         let subviews: [UIView] = [rateButton, leaderboardButton, muteButton]
-        let aStackView = UIStackView(arrangedSubviews: subviews)
-        aStackView.alignment = .center
-        aStackView.distribution = .fillEqually
-        aStackView.spacing = UIDevice.current.isPad ? 20 : 12
-        aStackView.axis = .horizontal
-        stackView.addArrangedSubview(aStackView)
+        let sv = UIStackView(arrangedSubviews: subviews)
+        sv.alignment = .center
+        sv.distribution = .fillEqually
+        sv.spacing = defaultSpacing
+        sv.axis = .horizontal
+        stackView.addArrangedSubview(sv)
     }
 
     @objc

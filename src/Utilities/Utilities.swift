@@ -11,12 +11,13 @@ import SpriteKit
 
 // MARK: - Effect
 enum Effect {
-    case coin, crash, horns, brake
+    case coin, crash, horns, brake, fuel
 }
 
 // MARK: - SoundManager
 struct SoundManager {
     let coin = SKAction.playSoundFileNamed("coin.wav", waitForCompletion: false)
+    let fuel = SKAction.playSoundFileNamed("coin.wav", waitForCompletion: false)
     let crash = SKAction.playSoundFileNamed("crash.wav", waitForCompletion: false)
     let horns = SKAction.playSoundFileNamed("horns.mp3", waitForCompletion: false)
 //    let brake = SKAction.playSoundFileNamed("brake.wav", waitForCompletion: false)
@@ -26,6 +27,8 @@ struct SoundManager {
             switch effect {
             case .coin:
                 scene.run(coin)
+            case .fuel:
+                scene.run(fuel)
             case .crash:
                 scene.run(crash)
             case .horns:
@@ -64,10 +67,11 @@ enum Actions: String {
 
 // MARK: - Category
 enum Category: UInt32 {
+    case fuel = 0x1000
     case coin = 0x100
     case car = 0x10
     case player = 0x1
-    case none = 0x1000
+    case none = 0x10000
 }
 
 // MARK: - MainStrings

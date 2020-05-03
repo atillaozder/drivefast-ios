@@ -8,15 +8,21 @@
 
 import SpriteKit
 
-// MARK: - CoinType
-enum CoinType: String {
-    case single = "single_coin"
-    case multiple = "multiple_coins"
-    case bag = "coin_bag"
-}
-
 // MARK: - Coin
 class Coin: SKSpriteNode {
+    
+    // MARK: - CoinType
+    enum CoinType: String {
+        case single = "single_coin"
+        case multiple = "multiple_coins"
+        case bag = "coin_bag"
+    }
+    
+    // MARK: - Properties
+    
+    static var waitForDuration: TimeInterval {
+        return 5
+    }
     
     var type: CoinType!
     

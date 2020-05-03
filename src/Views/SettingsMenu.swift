@@ -21,27 +21,23 @@ class SettingsMenu: Menu {
     weak var delegate: SettingsMenuDelegate?
     
     override func setup() {
-        let fontSize: CGFloat = UIDevice.current.isPad ? 28 : 18
-        let font = UIFont.buildFont(withSize: fontSize)
-        
-        let shareButton = buildButton(withTitle: .shareTitle, font: font)
+        let shareButton = buildButton(withTitle: .shareTitle)
         shareButton.addTarget(self, action: #selector(didTapShare(_:)), for: .touchUpInside)
         stackView.addArrangedSubview(shareButton)
         
-        let moreAppButton = buildButton(withTitle: .moreAppTitle, font: font)
+        let moreAppButton = buildButton(withTitle: .moreAppTitle)
         moreAppButton.addTarget(self, action: #selector(didTapMoreApp(_:)), for: .touchUpInside)
         stackView.addArrangedSubview(moreAppButton)
         
-        let ppButton = buildButton(withTitle: .privacyTitle, font: font)
+        let ppButton = buildButton(withTitle: .privacyTitle)
         ppButton.addTarget(self, action: #selector(didTapPrivacy(_:)), for: .touchUpInside)
         stackView.addArrangedSubview(ppButton)
         
-        let supportButton = buildButton(withTitle: .supportTitle, font: font)
+        let supportButton = buildButton(withTitle: .supportTitle)
         supportButton.addTarget(self, action: #selector(didTapSupport(_:)), for: .touchUpInside)
         stackView.addArrangedSubview(supportButton)
                         
         backButton.addTarget(self, action: #selector(didTapBack(_:)), for: .touchUpInside)
-        backButton.titleLabel?.font = font
         stackView.addArrangedSubview(backButton)
         
         self.isHidden = true

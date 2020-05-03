@@ -74,11 +74,13 @@ class GameManager: NSObject {
     }
     
     func submitNewScore(_ score: Int) {
-        let highscore = GKScore(leaderboardIdentifier: GameManager.leaderboardID)
-        highscore.value = Int64(score)
-        GKScore.report([highscore]) { (error) in
-            if let err = error {
-                print(err.localizedDescription)
+        if gcEnabled {
+            let highscore = GKScore(leaderboardIdentifier: GameManager.leaderboardID)
+            highscore.value = Int64(score)
+            GKScore.report([highscore]) { (error) in
+                if let err = error {
+                    print(err.localizedDescription)
+                }
             }
         }
     }
