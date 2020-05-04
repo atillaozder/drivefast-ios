@@ -35,9 +35,9 @@ Download Drive Fast - Retro Car Racing now, and start your challenge.
 ## Appearance
 
 <p>
-  <img src="https://github.com/atillaozder/retro-ios/blob/master/resources/screenshots/ipx/ipx1.png" alt="gameplay_1" width="250">
-  <img src="https://github.com/atillaozder/retro-ios/blob/master/resources/screenshots/ipx/ipx3.png" alt="gameplay_2" width="250">
-  <img src="https://github.com/atillaozder/retro-ios/blob/master/resources/screenshots/ipx/ipx5.png" alt="gameplay_3" width="250">
+  <img src="https://github.com/atillaozder/drivefast-ios/blob/master/resources/screenshots/iphoneX/iphoneX1.png" alt="gameplay_1" width="250">
+  <img src="https://github.com/atillaozder/drivefast-ios/blob/master/resources/screenshots/iphoneX/iphoneX3.png" alt="gameplay_2" width="250">
+  <img src="https://github.com/atillaozder/drivefast-ios/blob/master/resources/screenshots/iphoneX/iphoneX5.png" alt="gameplay_3" width="250">
 </p>
 
 ## License
