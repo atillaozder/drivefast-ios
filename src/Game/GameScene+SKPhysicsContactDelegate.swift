@@ -44,7 +44,7 @@ extension GameScene: SKPhysicsContactDelegate {
     
     fileprivate func playerDidCollide(with car: SKNode) {
         if lifeCount > 1 {
-            soundManager.playEffect(.horns, in: self)
+            gameHelper.playEffect(.horns, in: self)
         }
         
         car.removeFromParent()
@@ -52,15 +52,15 @@ extension GameScene: SKPhysicsContactDelegate {
     }
     
     fileprivate func playerDidCollide(with coin: Coin) {
-        soundManager.playEffect(.coin, in: self)
+        gameHelper.playEffect(.coin, in: self)
         coin.removeFromParent()
         score += coin.value
     }
     
     fileprivate func playerDidCollide(with fuelNode: Fuel) {
-        soundManager.playEffect(.fuel, in: self)
+        gameHelper.playEffect(.fuel, in: self)
         fuelNode.removeFromParent()
-        let newValue = self.fuel + difficultyManager.fuelValue
+        let newValue = self.fuel + gameHelper.fuelValue
         self.fuel = min(newValue, 100)
     }
 }

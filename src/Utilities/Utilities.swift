@@ -14,53 +14,49 @@ enum Effect {
     case coin, crash, horns, fuel
 }
 
-// MARK: - SoundManager
-struct SoundManager {
-    let coin = SKAction.playSoundFileNamed("coin.wav", waitForCompletion: false)
-    let fuel = SKAction.playSoundFileNamed("fuel.wav", waitForCompletion: false)
-    let crash = SKAction.playSoundFileNamed("crash.wav", waitForCompletion: false)
-    let horns = SKAction.playSoundFileNamed("horns.mp3", waitForCompletion: false)
+// MARK: - GameHelper
+class GameHelper {
+    
+    // MARK: - Properties
+    private(set) var spriteMoveDuration: TimeInterval = 3
+    private var spriteMoveThreshold: TimeInterval = 1.5
+    private(set) var carWaitForDuration: TimeInterval = 1
+    private var carWaitForThreshold: TimeInterval = 0.5
+    private(set) var fuelWaitForDuration: TimeInterval = 8
+    private var fuelWaitForThreshold: TimeInterval = 3
+    
+    private(set) var fuelConsumption: Float = 1
+    private var maxFuelConsumption: Float = 5
+    
+    var fuelValue: Float {
+        return fuelConsumption * Float(fuelWaitForDuration) + 5
+    }
+    
+    let coinSound = SKAction.playSoundFileNamed("coin.wav", waitForCompletion: false)
+    let fuelSound = SKAction.playSoundFileNamed("fuel.wav", waitForCompletion: false)
+    let crashSound = SKAction.playSoundFileNamed("crash.wav", waitForCompletion: false)
+    let hornSound = SKAction.playSoundFileNamed("horns.mp3", waitForCompletion: false)
+            
+    // MARK: - Helpers
+    func updateDifficulty() {
+        spriteMoveDuration = max(spriteMoveThreshold, spriteMoveDuration - 0.5)
+        carWaitForDuration = max(carWaitForThreshold, carWaitForDuration - 0.1)
+        fuelWaitForDuration = max(fuelWaitForThreshold, fuelWaitForDuration - 2)
+        fuelConsumption = min(maxFuelConsumption, fuelConsumption + 1)
+    }
     
     func playEffect(_ effect: Effect, in scene: SKScene) {
         if UserDefaults.standard.isSoundOn {
             switch effect {
             case .coin:
-                scene.run(coin)
+                scene.run(coinSound)
             case .fuel:
-                scene.run(fuel)
+                scene.run(fuelSound)
             case .crash:
-                scene.run(crash)
+                scene.run(crashSound)
             case .horns:
-                scene.run(horns)
+                scene.run(hornSound)
             }
-        }
-    }
-}
-
-// MARK: - DifficultyManager
-class DifficultyManager {
-    
-    // MARK: - Properties
-    private(set) var carAppearanceDuration: TimeInterval = 3
-    private(set) var carAppearanceThreshold: TimeInterval = 1.5
-    private(set) var carWaitingDuration: TimeInterval = 1
-    private(set) var carWaitingThreshold: TimeInterval = 0.5
-    private(set) var fuelWaitingDuration: TimeInterval = 8
-    private(set) var fuelWaitingThreshold: TimeInterval = 2
-    private(set) var fuelConsumption: Float = 1
-    
-    var fuelValue: Float {
-        return fuelConsumption * Float(fuelWaitingDuration) + 2
-    }
-    
-    // MARK: - Helpers
-    func updateDifficulty() {
-        if carAppearanceDuration > carAppearanceThreshold
-            || carWaitingDuration > carWaitingThreshold {
-            carAppearanceDuration = max(carAppearanceThreshold, carAppearanceDuration - 0.5)
-            carWaitingDuration = max(carWaitingThreshold, carWaitingDuration - 0.1)
-            fuelWaitingDuration = max(fuelWaitingThreshold, fuelWaitingDuration - 2)
-            fuelConsumption = min(5, fuelConsumption + 1)
         }
     }
 }
@@ -125,6 +121,7 @@ enum MainStrings: String {
     case loadingTitle = "loadingTitle"
     case okTitle = "okTitle"
     case gcErrorMessage = "gcErrorMessage"
+    case fuelAlert = "fuelAlert"
     
     var localized: String {
         return NSLocalizedString(self.rawValue, comment: "")

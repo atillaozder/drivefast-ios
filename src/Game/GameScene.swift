@@ -23,8 +23,14 @@ protocol SceneDelegate: AnyObject {
 class GameScene: SKScene {
     
     // MARK: - Properties
-    private var stayPaused = false
     
+    /// safe area insets of the game view controller
+    lazy var insets: UIEdgeInsets = .zero
+    private var gotReward: Bool = false
+    private var gameOver: Bool = false
+    
+    private var stayPaused = false
+
     override var isPaused: Bool {
         get {
             return super.isPaused
@@ -41,8 +47,8 @@ class GameScene: SKScene {
     }
     
     private let motionManager = CMMotionManager()
-    let soundManager = SoundManager()
-    let difficultyManager = DifficultyManager()
+    let gameHelper = GameHelper()
+    
     weak var sceneDelegate: SceneDelegate?
     
     lazy var playerNode: SKSpriteNode = {
@@ -112,11 +118,6 @@ class GameScene: SKScene {
         }
     }
     
-    /// safe area insets of the game view controller
-    lazy var insets: UIEdgeInsets = .zero
-    lazy var gotReward: Bool = false
-    lazy var gameOver: Bool = false
-    
     var lifeCount: Int = 3 {
         willSet {
             sceneDelegate?.scene(self, willUpdateLifeCount: newValue)
@@ -125,7 +126,7 @@ class GameScene: SKScene {
             }
         }
     }
-    
+        
     private lazy var roadBoundingBox: RoadBoundingBox = {
         let w = playerNode.size.width / 2
         let h = playerNode.size.height / 2
@@ -216,7 +217,7 @@ class GameScene: SKScene {
             explosionEffect.position = playerNode.position
             self.addChild(explosionEffect)
             
-            soundManager.playEffect(.crash, in: self)
+            gameHelper.playEffect(.crash, in: self)
             playerNode.isHidden = true
             
             self.run(.wait(forDuration: 1)) { [weak self] in
@@ -236,7 +237,10 @@ class GameScene: SKScene {
         resetPlayerPosition()
         playerNode.isHidden = false
         
-        self.lifeCount = 1
+        if self.lifeCount == 0 {
+            self.lifeCount = 1
+        }
+        
         self.fuel = 100
         self.gameOver = false
         self.setPausedAndNotify(false)
@@ -324,7 +328,7 @@ class GameScene: SKScene {
             qos: .default, attributes: .concurrent)
         
         let addCarSq: SKAction = .sequence([
-            .wait(forDuration: difficultyManager.carWaitingDuration),
+            .wait(forDuration: gameHelper.carWaitForDuration),
             .run(self.addRandomCar, queue: addCarQueue)
         ])
         
@@ -334,14 +338,14 @@ class GameScene: SKScene {
     private func initiateFuelSequence() {
         self.removeAction(forKey: Actions.addFuel.rawValue)
         let addFuelSq: SKAction = .sequence([
-            .wait(forDuration: difficultyManager.fuelWaitingDuration),
+            .wait(forDuration: gameHelper.fuelWaitForDuration),
             .run(addFuel, queue: .init(label: "com.atillaozder.DriveFast.addFuel.serialQueue"))
         ])
         self.run(.repeatForever(addFuelSq), withKey: Actions.addFuel.rawValue)
     }
     
     private func updateDifficulty() {
-        difficultyManager.updateDifficulty()
+        gameHelper.updateDifficulty()
         initiateCarSequence()
         initiateFuelSequence()
     }
@@ -401,7 +405,8 @@ class GameScene: SKScene {
             car.position = CGPoint(
                 x: self.getRandomPosX(), y: self.frame.maxY + car.size.height)
             
-            let move = SKAction.moveTo(y: -car.size.height / 2, duration: self.difficultyManager.carAppearanceDuration)
+            let move = SKAction.moveTo(
+                y: -car.size.height / 2, duration: self.gameHelper.spriteMoveDuration)
             var actions = [SKAction]()
             actions.append(move)
             
@@ -427,7 +432,7 @@ class GameScene: SKScene {
     }
     
     private func setFuel() {
-        self.fuel = max(0, fuel - difficultyManager.fuelConsumption)
+        self.fuel = max(0, fuel - gameHelper.fuelConsumption)
     }
     
     private func addCoin() {
@@ -456,7 +461,8 @@ class GameScene: SKScene {
     private func addSprite(_ sprite: SKSpriteNode) {
         sprite.position.x = getRandomPosX()
         var actions = [SKAction]()
-        let move: SKAction = .moveTo(y: -sprite.size.height / 2, duration: difficultyManager.carAppearanceDuration)
+        let move: SKAction = .moveTo(
+            y: -sprite.size.height / 2, duration: gameHelper.spriteMoveDuration)
         actions.append(move)
         actions.append(.removeFromParent())
         

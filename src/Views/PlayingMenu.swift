@@ -8,10 +8,13 @@
 
 import UIKit
 
+// MARK: - PlayingMenu
 class PlayingMenu: Menu {
     
+    // MARK: - Properties
+    private var isAnimated: Bool = false
     weak var delegate: MenuDelegate?
-    
+
     static var scoreHeight: CGFloat {
         return UIDevice.current.isPad ? 70 : 40
     }
@@ -59,17 +62,32 @@ class PlayingMenu: Menu {
         let tappableView = UIView()
         tappableView.addSubview(container)
         tappableView.pinSize(to: .initialize(size.width * 1.5))
-
+        
         let padding: CGFloat = UIDevice.current.isPad ? 16 : 8
         container.pinTop(to: tappableView.topAnchor, constant: padding)
         container.pinTrailing(to: tappableView.trailingAnchor, constant: -padding)
         return tappableView
     }()
     
+    lazy var fuelAlertLabel: UILabel = {
+        let lbl = UILabel()
+        lbl.text = MainStrings.fuelAlert.localized
+        lbl.font = .buildFont()
+        lbl.textAlignment = .center
+        lbl.textColor = .red
+        lbl.isHidden = true
+        return lbl
+    }()
+    
     override func setup() {
         setupPauseButton()
         setupScoreButton()
         setupProgressBar()
+        
+        addSubview(fuelAlertLabel)
+        fuelAlertLabel.pinTop(to: livesStackView.bottomAnchor, constant: 16)
+        fuelAlertLabel.pinCenterX(to: centerXAnchor)
+        fuelAlertLabel.pinHeight(to: 40)
         self.isHidden = true
     }
     
@@ -81,6 +99,11 @@ class PlayingMenu: Menu {
     }
     
     func setFuelProgress(_ progress: Float, animated: Bool = true) {
+        if progress == 0 {
+            stopFuelAnimation()
+        }
+        
+        progress < 0.25 && progress > 0.0 ? startFuelAnimation() : stopFuelAnimation()
         self.progressView.setProgress(progress, animated: animated)
     }
     
@@ -98,6 +121,30 @@ class PlayingMenu: Menu {
         } else {
             addLives(count)
         }
+    }
+    
+    private func startFuelAnimation() {
+        if isAnimated {
+            return
+        }
+        
+        fuelAlertLabel.isHidden = false
+        isAnimated = true
+        fuelAlertLabel.alpha = 1
+        
+        UIView.animate(
+            withDuration: 0.25,
+            delay: 0.0,
+            options: [.repeat, .autoreverse],
+            animations: {
+                self.fuelAlertLabel.alpha = 0.5
+        }, completion: nil)
+    }
+    
+    func stopFuelAnimation() {
+        isAnimated = false
+        fuelAlertLabel.isHidden = true
+        fuelAlertLabel.layer.removeAllAnimations()
     }
     
     private func setupPauseButton() {
@@ -128,7 +175,7 @@ class PlayingMenu: Menu {
         addSubview(fuelImageView)
         let insets: UIEdgeInsets = UIDevice.current.isPad ? .viewEdge(16) : .viewEdge(8)
         fuelImageView.pinEdgesToView(self, insets: insets, exclude: [.top, .leading])
-
+        
         addSubview(progressView)
         let height: CGFloat = UIDevice.current.isPad ? 24 : 16
         let width: CGFloat = UIDevice.current.isPad ? 300 : 240

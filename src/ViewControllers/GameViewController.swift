@@ -56,7 +56,7 @@ class GameViewController: UIViewController {
             default:
                 AudioPlayer.shared.playMusic(.race)
             }
-            
+                        
             if shouldPresentNewMenu {
                 homeMenu.isHidden = false
                 presentMenuScene()
@@ -123,9 +123,9 @@ class GameViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.presentEmptyScene()
-        self.registerRemoteNotifications()
-        self.setupMenus()
+        presentEmptyScene()
+        registerRemoteNotifications()
+        setupMenus()
         gameState = .home
         adHelper.delegate = self
         checkSession()
@@ -300,7 +300,7 @@ extension GameViewController: SceneDelegate {
     
     func scene(_ scene: GameScene, didUpdateRemainingFuel fuel: Float) {
         let progress = fuel / 100
-        playingMenu.setFuelProgress(progress)
+        playingMenu.setFuelProgress(progress, animated: progress != 1.0)
     }
 }
 
