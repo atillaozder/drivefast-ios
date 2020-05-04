@@ -99,11 +99,12 @@ class PlayingMenu: Menu {
     }
     
     func setFuelProgress(_ progress: Float, animated: Bool = true) {
-        if progress == 0 {
+        if progress.isZero || livesStackView.arrangedSubviews.isEmpty {
             stopFuelAnimation()
+        } else {
+            progress < 0.25 ? startFuelAnimation() : stopFuelAnimation()
         }
         
-        progress < 0.25 && progress > 0.0 ? startFuelAnimation() : stopFuelAnimation()
         self.progressView.setProgress(progress, animated: animated)
     }
     
