@@ -48,7 +48,7 @@ extension GameScene: SKPhysicsContactDelegate {
         }
         
         car.removeFromParent()
-        lifeCount -= 1
+        lifeCount = max(0, lifeCount - 1)
     }
     
     fileprivate func playerDidCollide(with coin: Coin) {

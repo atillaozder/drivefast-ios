@@ -218,7 +218,7 @@ class GameScene: SKScene {
             self.addChild(explosionEffect)
             
             gameHelper.playEffect(.crash, in: self)
-            playerNode.isHidden = true
+            playerNode.removeFromParent()
             
             self.run(.wait(forDuration: 1)) { [weak self] in
                 guard let `self` = self else { return }
@@ -235,12 +235,11 @@ class GameScene: SKScene {
     func didGetReward() {
         AudioPlayer.shared.playMusic(.race)
         resetPlayerPosition()
-        playerNode.isHidden = false
-        
-        if self.lifeCount == 0 {
-            self.lifeCount = 1
+        if playerNode.parent == nil {
+            addChild(playerNode)
         }
         
+        self.lifeCount = max(1, lifeCount)
         self.fuel = 100
         self.gameOver = false
         self.setPausedAndNotify(false)
@@ -329,7 +328,7 @@ class GameScene: SKScene {
         
         let addCarSq: SKAction = .sequence([
             .wait(forDuration: gameHelper.carWaitForDuration),
-            .run(self.addRandomCar, queue: addCarQueue)
+            .run(self.addCar, queue: addCarQueue)
         ])
         
         self.run(.repeatForever(addCarSq), withKey: Actions.addCar.rawValue)
@@ -380,7 +379,7 @@ class GameScene: SKScene {
         }
     }
         
-    private func addRandomCar() {
+    private func addCar() {
         let addCarClosure: () -> Void = { [weak self] in
             guard let `self` = self else { return }
             

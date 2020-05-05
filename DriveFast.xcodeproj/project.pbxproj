@@ -541,7 +541,7 @@
 				CODE_SIGN_ENTITLEMENTS = DriveFast.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 18;
+				CURRENT_PROJECT_VERSION = 19;
 				DEVELOPMENT_TEAM = 74NMDHX448;
 				INFOPLIST_FILE = "$(SRCROOT)/src/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
@@ -549,7 +549,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.1.0;
+				MARKETING_VERSION = 2.1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.retro2d.ios;
 				PRODUCT_NAME = DriveFast;
 				PROVISIONING_PROFILE_SPECIFIER = "Drive Fast Debug";
@@ -566,7 +566,7 @@
 				CODE_SIGN_ENTITLEMENTS = DriveFast.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 18;
+				CURRENT_PROJECT_VERSION = 19;
 				DEVELOPMENT_TEAM = 74NMDHX448;
 				INFOPLIST_FILE = "$(SRCROOT)/src/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
@@ -574,7 +574,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.1.0;
+				MARKETING_VERSION = 2.1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.retro2d.ios;
 				PRODUCT_NAME = DriveFast;
 				PROVISIONING_PROFILE_SPECIFIER = "Drive Fast Release";
