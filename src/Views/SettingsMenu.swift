@@ -9,7 +9,7 @@
 import UIKit
 
 enum SettingsMenuOption {
-    case moreApp, privacy, share, support, back
+    case otherApps, privacy, share, support, back
 }
 
 protocol SettingsMenuDelegate: AnyObject {
@@ -25,9 +25,9 @@ class SettingsMenu: Menu {
         shareButton.addTarget(self, action: #selector(didTapShare(_:)), for: .touchUpInside)
         stackView.addArrangedSubview(shareButton)
         
-        let moreAppButton = buildButton(withTitle: .moreAppTitle)
-        moreAppButton.addTarget(self, action: #selector(didTapMoreApp(_:)), for: .touchUpInside)
-        stackView.addArrangedSubview(moreAppButton)
+        let otherAppsButton = buildButton(withTitle: .otherAppsTitle)
+        otherAppsButton.addTarget(self, action: #selector(didTapOtherApps(_:)), for: .touchUpInside)
+        stackView.addArrangedSubview(otherAppsButton)
         
         let ppButton = buildButton(withTitle: .privacyTitle)
         ppButton.addTarget(self, action: #selector(didTapPrivacy(_:)), for: .touchUpInside)
@@ -50,9 +50,9 @@ class SettingsMenu: Menu {
     }
     
     @objc
-    func didTapMoreApp(_ sender: UIButton) {
+    func didTapOtherApps(_ sender: UIButton) {
         sender.scale()
-        delegate?.settingsMenu(self, didSelectOption: .moreApp)
+        delegate?.settingsMenu(self, didSelectOption: .otherApps)
     }
     
     @objc

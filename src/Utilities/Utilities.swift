@@ -113,7 +113,7 @@ enum MainStrings: String {
     case rateTitle = "rateTitle"
     case supportTitle = "supportTitle"
     case privacyTitle = "privacyTitle"
-    case moreAppTitle = "moreAppTitle"
+    case otherAppsTitle = "otherAppsTitle"
     case shareTitle = "shareTitle"
     case continueTitle = "continueTitle"
     case garageTitle = "garageTitle"

@@ -322,7 +322,7 @@ extension GameViewController: MenuDelegate {
 extension GameViewController: SettingsMenuDelegate {
     func settingsMenu(_ settingsMenu: SettingsMenu, didSelectOption option: SettingsMenuOption) {
         switch option {
-        case .moreApp:
+        case .otherApps:
             let urlString = "itms-apps://itunes.apple.com/developer/atilla-ozder/id1440770128?mt=8"
             URLNavigator.shared.open(urlString)
         case .privacy:
