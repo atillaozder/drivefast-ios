@@ -184,7 +184,7 @@ class GameScene: SKScene {
         
         let addCoinSq: SKAction = .sequence([
             .wait(forDuration: Coin.waitForDuration),
-            .run(addCoin, queue: .init(label: "com.atillaozder.DriveFast.addCoin.serialQueue"))
+            .run(addCoin, queue: .init(label: "com.atillaozder.DriveFast.serialQueue.addCoin"))
         ])
         
         run(.repeatForever(addCoinSq), withKey: Actions.addCoin.rawValue)
@@ -323,7 +323,7 @@ class GameScene: SKScene {
     private func initiateCarSequence() {
         self.removeAction(forKey: Actions.addCar.rawValue)
         let addCarQueue = DispatchQueue(
-            label: "com.atillaozder.DriveFast.addCar.concurrentQueue",
+            label: "com.atillaozder.DriveFast.concurrentQueue.addCar",
             qos: .default, attributes: .concurrent)
         
         let addCarSq: SKAction = .sequence([
@@ -338,7 +338,7 @@ class GameScene: SKScene {
         self.removeAction(forKey: Actions.addFuel.rawValue)
         let addFuelSq: SKAction = .sequence([
             .wait(forDuration: gameHelper.fuelWaitForDuration),
-            .run(addFuel, queue: .init(label: "com.atillaozder.DriveFast.addFuel.serialQueue"))
+            .run(addFuel, queue: .init(label: "com.atillaozder.DriveFast.serialQueue.addFuel"))
         ])
         self.run(.repeatForever(addFuelSq), withKey: Actions.addFuel.rawValue)
     }

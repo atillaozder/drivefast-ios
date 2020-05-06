@@ -18,7 +18,7 @@ final class AudioPlayer: NSObject {
     private var readyForMusic: Music = .none
 
     private lazy var queue = DispatchQueue(
-        label: "com.atillaozder.DriveFast.AudioPlayer.serialQueue", qos: .userInitiated)
+        label: "com.atillaozder.DriveFast.serialQueue.audioPlayer", qos: .userInitiated)
     
     var isSoundOn: Bool {
         return UserDefaults.standard.isSoundOn
