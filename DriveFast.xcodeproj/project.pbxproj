@@ -181,7 +181,7 @@
 			path = Utilities;
 			sourceTree = "<group>";
 		};
-		FB88AC0A241433CE00BD240B /* Sounds */ = {
+		FB99E08E24643CA0009E788B /* Sounds */ = {
 			isa = PBXGroup;
 			children = (
 				FB732584243F55030001B9B7 /* horns.mp3 */,
@@ -190,14 +190,14 @@
 				FB732576243F4A580001B9B7 /* crash.wav */,
 				FBB70953245C4F8F00E72BC4 /* race.mp3 */,
 			);
-			name = Sounds;
+			path = Sounds;
 			sourceTree = "<group>";
 		};
 		FB9CF85B234FC68600AD965C /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				FB99E08E24643CA0009E788B /* Sounds */,
 				FBD1E5502350781A006C9CAD /* Explosion.sks */,
-				FB88AC0A241433CE00BD240B /* Sounds */,
 				FB1EB13B234FC2A9009C8E24 /* Assets.xcassets */,
 				FB1EB13D234FC2A9009C8E24 /* LaunchScreen.storyboard */,
 				FB927B8A240BAB4A00BACEA9 /* InfoPlist.strings */,
