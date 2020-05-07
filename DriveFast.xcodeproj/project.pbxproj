@@ -18,6 +18,7 @@
 		FB1EB13F234FC2A9009C8E24 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FB1EB13D234FC2A9009C8E24 /* LaunchScreen.storyboard */; };
 		FB21EC85244F0318008F8C07 /* GarageMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB21EC84244F0318008F8C07 /* GarageMenu.swift */; };
 		FB389B67245EC697000006F4 /* GameKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FB389B66245EC697000006F4 /* GameKit.framework */; };
+		FB48C3FC246445F4000BFF85 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = FB48C3FB246445F4000BFF85 /* GoogleService-Info.plist */; };
 		FB732573243F49000001B9B7 /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB732572243F49000001B9B7 /* Utilities.swift */; };
 		FB732575243F492A0001B9B7 /* GameScene+SKPhysicsContactDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB732574243F492A0001B9B7 /* GameScene+SKPhysicsContactDelegate.swift */; };
 		FB732577243F4A580001B9B7 /* crash.wav in Resources */ = {isa = PBXBuildFile; fileRef = FB732576243F4A580001B9B7 /* crash.wav */; };
@@ -33,7 +34,6 @@
 		FBD1E5512350781B006C9CAD /* Explosion.sks in Resources */ = {isa = PBXBuildFile; fileRef = FBD1E5502350781A006C9CAD /* Explosion.sks */; };
 		FBD1E55923509A21006C9CAD /* MenuScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBD1E55823509A21006C9CAD /* MenuScene.swift */; };
 		FBD885B6245EF4D200B7E3BF /* Fuel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBD885B5245EF4D200B7E3BF /* Fuel.swift */; };
-		FBDB970723520F6400F9B5EE /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = FBDB970623520F6400F9B5EE /* GoogleService-Info.plist */; };
 		FBE5D3C92421245C00935A6D /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = FBE5D3C72421245C00935A6D /* Localizable.strings */; };
 		FBF9951F2445C32C00072630 /* PlayingMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBF9951E2445C32C00072630 /* PlayingMenu.swift */; };
 		FBF995212445C80C00072630 /* PauseMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBF995202445C80C00072630 /* PauseMenu.swift */; };
@@ -62,6 +62,7 @@
 		FB21EC84244F0318008F8C07 /* GarageMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GarageMenu.swift; sourceTree = "<group>"; };
 		FB2C5CE2245CCAAB007A96D9 /* tr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = tr; path = tr.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
 		FB389B66245EC697000006F4 /* GameKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GameKit.framework; path = System/Library/Frameworks/GameKit.framework; sourceTree = SDKROOT; };
+		FB48C3FB246445F4000BFF85 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		FB732572243F49000001B9B7 /* Utilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utilities.swift; sourceTree = "<group>"; };
 		FB732574243F492A0001B9B7 /* GameScene+SKPhysicsContactDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GameScene+SKPhysicsContactDelegate.swift"; sourceTree = "<group>"; };
 		FB732576243F4A580001B9B7 /* crash.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = crash.wav; sourceTree = "<group>"; };
@@ -79,7 +80,6 @@
 		FBD1E5502350781A006C9CAD /* Explosion.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = Explosion.sks; sourceTree = "<group>"; };
 		FBD1E55823509A21006C9CAD /* MenuScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuScene.swift; sourceTree = "<group>"; };
 		FBD885B5245EF4D200B7E3BF /* Fuel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Fuel.swift; sourceTree = "<group>"; };
-		FBDB970623520F6400F9B5EE /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		FBE5D3C82421245C00935A6D /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/Localizable.strings; sourceTree = "<group>"; };
 		FBE5D3CB2421246E00935A6D /* tr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = tr; path = tr.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		FBE5D3CC2421246E00935A6D /* tr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = tr; path = tr.lproj/Localizable.strings; sourceTree = "<group>"; };
@@ -156,7 +156,7 @@
 			isa = PBXGroup;
 			children = (
 				FB1EB140234FC2A9009C8E24 /* Info.plist */,
-				FBDB970623520F6400F9B5EE /* GoogleService-Info.plist */,
+				FB48C3FB246445F4000BFF85 /* GoogleService-Info.plist */,
 				FB1EB12E234FC2A8009C8E24 /* AppDelegate.swift */,
 				FB9CF85B234FC68600AD965C /* Resources */,
 				FB0728A9245DD19400F214F4 /* ViewControllers */,
@@ -302,9 +302,9 @@
 				FB1581CF23547B1000DD82D3 /* coin.wav in Resources */,
 				FB1EB13C234FC2A9009C8E24 /* Assets.xcassets in Resources */,
 				FBD1E5512350781B006C9CAD /* Explosion.sks in Resources */,
+				FB48C3FC246445F4000BFF85 /* GoogleService-Info.plist in Resources */,
 				FBE5D3C92421245C00935A6D /* Localizable.strings in Resources */,
 				FB1EB13F234FC2A9009C8E24 /* LaunchScreen.storyboard in Resources */,
-				FBDB970723520F6400F9B5EE /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
