@@ -63,7 +63,7 @@ class SplashViewController: UIViewController {
 
         let titleLabel = UILabel()
         titleLabel.text = "DRIVE FAST"
-        titleLabel.font = .buildFont(AmericanTypeWriter.bold, withSize: 24)
+        titleLabel.font = .buildFont(Fonts.AmericanTypeWriter.bold, withSize: 24)
         titleLabel.textAlignment = .center
         titleLabel.textColor = .white
         stackView.addArrangedSubview(titleLabel)
@@ -74,7 +74,7 @@ class SplashViewController: UIViewController {
         
         let loadingTitleLabel = UILabel()
         loadingTitleLabel.text = MainStrings.loadingTitle.localized
-        loadingTitleLabel.font = .buildFont(AmericanTypeWriter.semibold, withSize: 18)
+        loadingTitleLabel.font = .buildFont(Fonts.AmericanTypeWriter.semibold, withSize: 18)
         loadingTitleLabel.textAlignment = .center
         loadingTitleLabel.textColor = .white
         

@@ -8,10 +8,26 @@
 
 import UIKit
 
+// MARK: - BackslashButton
+
 class BackslashButton: UIButton {
 
+    // MARK: - Properties
+    
     private var shapeLayer: CAShapeLayer?
-    var borderColor: CGColor? = UIColor.white.cgColor
+    
+    var lineWidth: CGFloat = Globals.borderWidth {
+        didSet {
+            layer.setNeedsDisplay()
+        }
+    }
+    
+    var borderColor: CGColor? = UIColor.white.cgColor {
+        didSet {
+            layer.setNeedsDisplay()
+        }
+    }
+    
     var backslashDrawable: Bool = false {
         didSet {
             layer.setNeedsDisplay()
@@ -42,8 +58,6 @@ class BackslashButton: UIButton {
             guard self.shapeLayer == nil else { return }
             
             let shapeLayer = CAShapeLayer()
-            let lineWidth: CGFloat = UIDevice.current.isPad ? 8 : 5
-            
             let path = UIBezierPath()
             path.move(to: CGPoint(x: bounds.minX, y: bounds.maxY))
             path.addLine(to: CGPoint(x: bounds.maxX, y: bounds.minY))
@@ -88,7 +102,7 @@ class BackslashButton: UIButton {
         border.fillColor = nil
         border.strokeColor = borderColor
         
-        border.lineWidth = UIDevice.current.isPad ? 10 : 6
+        border.lineWidth = lineWidth
         container.layer.addSublayer(border)
         container.pinSize(to: size)
 

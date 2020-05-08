@@ -20,11 +20,12 @@ class PlayingMenu: Menu {
     }
     
     lazy var scoreButton: UIButton = {
-        let btn = buildButton(withTitle: .scoreTitle, height: PlayingMenu.scoreHeight)
+        let font: UIFont = UIDevice.current.isPad ? .buildFont(withSize: 24) : .buildFont()
+        let btn = buildButton(withTitle: .scoreTitle, font: font, height: PlayingMenu.scoreHeight)
         btn.setTitle(MainStrings.scoreTitle.localized + ": 0", for: .normal)
-        btn.layer.cornerRadius = PlayingMenu.scoreHeight / 2
         btn.isUserInteractionEnabled = false
-        btn.titleEdgeInsets = .init(top: 6, left: 10, bottom: 6, right: 10)
+        btn.contentEdgeInsets = UIDevice.current.isPad ? .init(top: 0, left: 6, bottom: 0, right: 6) : .zero
+        btn.titleEdgeInsets = UIDevice.current.isPad ? .init(top: 0, left: 10, bottom: 0, right: 10) : .init(top: 6, left: 10, bottom: 6, right: 10)
         return btn
     }()
     
@@ -53,6 +54,7 @@ class PlayingMenu: Menu {
     
     lazy var pauseContainer: UIView = {
         let btn = BackslashButton()
+        btn.lineWidth = Globals.borderWidth + 2
         let image = Asset.pause.imageRepresentation()?.withRenderingMode(.alwaysTemplate)
         btn.setImage(image, for: .normal)
         btn.imageEdgeInsets = UIDevice.current.isPad ? .initialize(4) : .initialize(2)
@@ -89,6 +91,7 @@ class PlayingMenu: Menu {
         fuelAlertLabel.pinCenterX(to: centerXAnchor)
         fuelAlertLabel.pinHeight(to: 40)
         self.isHidden = true
+        self.backgroundColor = nil
     }
     
     func reset() {

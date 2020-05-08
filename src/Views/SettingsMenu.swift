@@ -25,6 +25,10 @@ class SettingsMenu: Menu {
         shareButton.addTarget(self, action: #selector(didTapShare(_:)), for: .touchUpInside)
         stackView.addArrangedSubview(shareButton)
         
+        let supportButton = buildButton(withTitle: .supportTitle)
+        supportButton.addTarget(self, action: #selector(didTapSupport(_:)), for: .touchUpInside)
+        stackView.addArrangedSubview(supportButton)
+        
         let otherAppsButton = buildButton(withTitle: .otherAppsTitle)
         otherAppsButton.addTarget(self, action: #selector(didTapOtherApps(_:)), for: .touchUpInside)
         stackView.addArrangedSubview(otherAppsButton)
@@ -33,10 +37,6 @@ class SettingsMenu: Menu {
         ppButton.addTarget(self, action: #selector(didTapPrivacy(_:)), for: .touchUpInside)
         stackView.addArrangedSubview(ppButton)
         
-        let supportButton = buildButton(withTitle: .supportTitle)
-        supportButton.addTarget(self, action: #selector(didTapSupport(_:)), for: .touchUpInside)
-        stackView.addArrangedSubview(supportButton)
-                        
         backButton.addTarget(self, action: #selector(didTapBack(_:)), for: .touchUpInside)
         stackView.addArrangedSubview(backButton)
         

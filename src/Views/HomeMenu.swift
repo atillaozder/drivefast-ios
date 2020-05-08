@@ -36,9 +36,9 @@ class HomeMenu: Menu {
             btn.setImage(asset.imageRepresentation()?.withRenderingMode(.alwaysTemplate), for: .normal)
             btn.backgroundColor = UIColor.menuButton
             btn.layer.borderColor = UIColor.menuButtonBorder.cgColor
-            btn.layer.borderWidth = UIDevice.current.isPad ? 6 : 4
-            btn.layer.cornerRadius = UIDevice.current.isPad ? 16 : 12
-            btn.imageEdgeInsets = UIDevice.current.isPad ? .initialize(20) : .initialize(16)
+            btn.layer.borderWidth = Globals.borderWidth
+            btn.layer.cornerRadius = 16
+            btn.imageEdgeInsets = .initialize(16)
             btn.adjustsImageWhenHighlighted = false
             btn.adjustsImageWhenDisabled = false
             btn.pinHeight(to: btn.widthAnchor)

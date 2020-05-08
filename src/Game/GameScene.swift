@@ -380,6 +380,8 @@ class GameScene: SKScene {
     }
         
     private func addCar() {
+        var prevCarFrame: CGRect = .zero
+        
         let addCarClosure: () -> Void = { [weak self] in
             guard let `self` = self else { return }
             
@@ -404,6 +406,13 @@ class GameScene: SKScene {
             car.position = CGPoint(
                 x: self.getRandomPosX(), y: self.frame.maxY + car.size.height)
             
+            if UIDevice.current.isPad {
+                if prevCarFrame.intersects(car.frame) {
+                    return
+                }
+                prevCarFrame = car.frame
+            }
+
             let move = SKAction.moveTo(
                 y: -car.size.height / 2, duration: self.gameHelper.spriteMoveDuration)
             var actions = [SKAction]()

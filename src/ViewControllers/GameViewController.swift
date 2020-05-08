@@ -144,7 +144,7 @@ class GameViewController: UIViewController {
     private func setupMenus() {
         menus.forEach { (menu) in
             self.view.addSubview(menu)
-            menu.pinEdgesToSuperview()
+            menu.pinEdgesToUnsafeArea()
         }
 
         homeMenu.delegate = self

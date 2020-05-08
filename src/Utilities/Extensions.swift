@@ -9,6 +9,12 @@
 import UIKit
 import SpriteKit
 
+struct Globals {
+    static var borderWidth: CGFloat {
+        return UIDevice.current.isPad ? 5 : 3
+    }
+}
+
 // MARK: - UserDefaults
 extension UserDefaults {
     
@@ -153,16 +159,29 @@ protocol FontNameRepresentable {
     var fontName: String { get }
 }
 
-enum AmericanTypeWriter: String, FontNameRepresentable {
-    case bold = "-Bold"
-    case semibold = "-Semibold"
-    case condensed = "-Condensed"
-    case condensedBold = "-CondensedBold"
-    case light = "-Light"
-    case regular = ""
+// MARK: - Fonts
+struct Fonts {
     
-    var fontName: String {
-        return "AmericanTypewriter\(rawValue)"
+    enum Courier: String, FontNameRepresentable {
+        case bold = "-Bold"
+        case regular = ""
+        
+        var fontName: String {
+            return "Courier\(rawValue)"
+        }
+    }
+    
+    enum AmericanTypeWriter: String, FontNameRepresentable {
+        case bold = "-Bold"
+        case semibold = "-Semibold"
+        case condensed = "-Condensed"
+        case condensedBold = "-CondensedBold"
+        case light = "-Light"
+        case regular = ""
+        
+        var fontName: String {
+            return "AmericanTypewriter\(rawValue)"
+        }
     }
 }
 
@@ -181,11 +200,9 @@ extension UIFont {
     }
     
     static func buildFont(
-        _ font: FontNameRepresentable = AmericanTypeWriter.bold,
+        _ font: FontNameRepresentable = Fonts.AmericanTypeWriter.bold,
         withSize size: CGFloat? = nil) -> UIFont {
-        let defaultSize: CGFloat = UIDevice.current.isPad ? 26 : 20
-        let aSize: CGFloat = size == nil ? defaultSize : size!
-        return buildFont(name: font.fontName, size: aSize)
+        return buildFont(name: font.fontName, size: size ?? 18)
     }
 }
 

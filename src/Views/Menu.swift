@@ -19,7 +19,7 @@ protocol MenuDelegate: AnyObject {
 
 class Menu: UIView {
     
-    static let defaultButtonHeight: CGFloat = 50
+    static let defaultButtonHeight: CGFloat = 44
     
     var defaultSpacing: CGFloat {
         return UIDevice.current.isPad ? 16 : 12
@@ -54,9 +54,14 @@ class Menu: UIView {
     }
     
     func setup() {
-        addSubview(stackView)
+        self.backgroundColor = UIColor.black.withAlphaComponent(0.4)
+        let container = UIView()
+        container.addSubview(stackView)
         stackView.pinCenterOfSuperview()
-        stackView.pinWidth(to: UIDevice.current.isPad ? 300 : 220)
+        stackView.pinWidth(to: 200)
+        
+        addSubview(container)
+        container.pinEdgesToSuperview()
     }
     
     func buildButton(withTitle localizable: MainStrings,
@@ -76,12 +81,12 @@ class Menu: UIView {
         btn.titleLabel?.baselineAdjustment = .alignCenters
         btn.titleLabel?.minimumScaleFactor = 0.2
         btn.titleLabel?.adjustsFontSizeToFitWidth = true
-        btn.titleEdgeInsets = .init(top: 6, left: 16, bottom: 6, right: 16)
+        btn.contentEdgeInsets = .init(top: 6, left: 16, bottom: 6, right: 16)
         btn.contentHorizontalAlignment = .center
         btn.backgroundColor = .menuButton
         btn.layer.borderColor = UIColor.menuButtonBorder.cgColor
-        btn.layer.borderWidth = UIDevice.current.isPad ? 6 : 4
-        btn.layer.cornerRadius = UIDevice.current.isPad ? 16 : 12
+        btn.layer.borderWidth = Globals.borderWidth
+        btn.layer.cornerRadius = aHeight / 2
         btn.pinHeight(to: aHeight)
         return btn
     }
