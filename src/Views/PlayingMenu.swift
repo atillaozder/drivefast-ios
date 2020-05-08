@@ -24,8 +24,13 @@ class PlayingMenu: Menu {
         let btn = buildButton(withTitle: .scoreTitle, font: font, height: PlayingMenu.scoreHeight)
         btn.setTitle(MainStrings.scoreTitle.localized + ": 0", for: .normal)
         btn.isUserInteractionEnabled = false
-        btn.contentEdgeInsets = UIDevice.current.isPad ? .init(top: 0, left: 6, bottom: 0, right: 6) : .zero
-        btn.titleEdgeInsets = UIDevice.current.isPad ? .init(top: 0, left: 10, bottom: 0, right: 10) : .init(top: 6, left: 10, bottom: 6, right: 10)
+        btn.contentEdgeInsets = UIDevice.current.isPad ?
+            .init(top: 0, left: 6, bottom: 0, right: 6) :
+            .zero
+        
+        btn.titleEdgeInsets = UIDevice.current.isPad ?
+            .init(top: 0, left: 10, bottom: 0, right: 10) :
+            .init(top: 6, left: 10, bottom: 6, right: 10)
         return btn
     }()
     

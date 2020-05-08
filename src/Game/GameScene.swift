@@ -386,8 +386,11 @@ class GameScene: SKScene {
             guard let `self` = self else { return }
             
             var cars = GameManager.shared.cars
-            cars.shuffle()
+            if cars.isEmpty {
+                return
+            }
             
+            cars.shuffle()
             let randomCar = cars[0]
             let obj = GameManager.shared.getObjRepresentation(of: randomCar)
             let car = randomCar.copy() as! SKSpriteNode

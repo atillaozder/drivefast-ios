@@ -30,21 +30,6 @@ class HomeMenu: Menu {
     }
     
     private func setupRowButtons() {
-        func buildRowButton(asset: Asset) -> UIButton {
-            let btn = UIButton()
-            btn.tintColor = .white
-            btn.setImage(asset.imageRepresentation()?.withRenderingMode(.alwaysTemplate), for: .normal)
-            btn.backgroundColor = UIColor.menuButton
-            btn.layer.borderColor = UIColor.menuButtonBorder.cgColor
-            btn.layer.borderWidth = Globals.borderWidth
-            btn.layer.cornerRadius = 16
-            btn.imageEdgeInsets = .initialize(16)
-            btn.adjustsImageWhenHighlighted = false
-            btn.adjustsImageWhenDisabled = false
-            btn.pinHeight(to: btn.widthAnchor)
-            return btn
-        }
-        
         func buildMuteButton(from rowButton: UIButton) -> UIButton {
             let btn = BackslashButton()
             let image = Asset.music.imageRepresentation()?.withRenderingMode(.alwaysTemplate)
@@ -63,10 +48,10 @@ class HomeMenu: Menu {
             return btn
         }
         
-        let rateButton = buildRowButton(asset: .star)
+        let rateButton = buildSquareButton(asset: .star)
         rateButton.addTarget(self, action: #selector(didTapRate(_:)), for: .touchUpInside)
                 
-        let leaderboardButton = buildRowButton(asset: .podium)
+        let leaderboardButton = buildSquareButton(asset: .podium)
         leaderboardButton.addTarget(
             self, action: #selector(didTapLeaderboard(_:)), for: .touchUpInside)
         

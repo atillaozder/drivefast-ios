@@ -9,15 +9,34 @@
 import UIKit
 import Firebase
 
+enum ApplicationState {
+    case splash, game
+}
+
+let applicationState: ApplicationState = .splash
+
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
     
+    static var rootViewController: UIViewController {
+        #if DEBUG
+        switch applicationState {
+        case .splash:
+            return SplashViewController()
+        case .game:
+            return GameViewController()
+        }
+        #else
+        return SplashViewController()
+        #endif
+    }
+    
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
                 
         let window = UIWindow(frame: UIScreen.main.bounds)
-        let viewController = SplashViewController()
+        let viewController = AppDelegate.rootViewController
         viewController.modalPresentationStyle = .fullScreen
         viewController.modalTransitionStyle = .crossDissolve
         window.backgroundColor = UIColor.roadColor

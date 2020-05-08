@@ -15,7 +15,7 @@ import GoogleMobileAds
 enum GameState: Int {
     case playing = 0
     case advertisement = 1
-    case advPresenting = 2
+    case adPresented = 2
     case paused = 3
     case home
     case settings
@@ -51,7 +51,7 @@ class GameViewController: UIViewController {
             let shouldPresentNewMenu = previousGameState.rawValue < 4 && gameState == .home
             
             switch gameState {
-            case .advertisement, .advPresenting, .paused:
+            case .advertisement, .adPresented, .paused:
                 AudioPlayer.shared.pauseMusic()
             default:
                 AudioPlayer.shared.playMusic(.race)
@@ -74,7 +74,7 @@ class GameViewController: UIViewController {
                     settingsMenu.isHidden = false
                 case .playing:
                     presentGameScene()
-                case .advPresenting:
+                case .adPresented:
                     playingMenu.isHidden = false
                     adHelper.presentRewardedAd()
                 case .paused:

@@ -259,6 +259,8 @@ enum Asset: String {
     case rightArrow = "right-arrow"
     case splash = "splash"
     case fuel = "fuel"
+    case menu = "menu"
+    case roll = "roll"
     
     func imageRepresentation() -> UIImage? {
         return UIImage(named: self.rawValue)

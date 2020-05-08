@@ -54,7 +54,7 @@ class Menu: UIView {
     }
     
     func setup() {
-        self.backgroundColor = UIColor.black.withAlphaComponent(0.4)
+        self.backgroundColor = UIColor.black.withAlphaComponent(0.6)
         let container = UIView()
         container.addSubview(stackView)
         stackView.pinCenterOfSuperview()
@@ -88,6 +88,21 @@ class Menu: UIView {
         btn.layer.borderWidth = Globals.borderWidth
         btn.layer.cornerRadius = aHeight / 2
         btn.pinHeight(to: aHeight)
+        return btn
+    }
+    
+    func buildSquareButton(asset: Asset) -> UIButton {
+        let btn = UIButton()
+        btn.tintColor = .white
+        btn.setImage(asset.imageRepresentation()?.withRenderingMode(.alwaysTemplate), for: .normal)
+        btn.backgroundColor = UIColor.menuButton
+        btn.layer.borderColor = UIColor.menuButtonBorder.cgColor
+        btn.layer.borderWidth = Globals.borderWidth
+        btn.layer.cornerRadius = 16
+        btn.imageEdgeInsets = .initialize(16)
+        btn.adjustsImageWhenHighlighted = false
+        btn.adjustsImageWhenDisabled = false
+        btn.pinHeight(to: btn.widthAnchor)
         return btn
     }
 }
