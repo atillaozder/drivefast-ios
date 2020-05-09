@@ -9,11 +9,11 @@
 import UIKit
 import Firebase
 
-enum ApplicationState {
+enum RootViewControllerType {
     case splash, game
 }
 
-let applicationState: ApplicationState = .splash
+let applicationViewControllerState: RootViewControllerType = .splash
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -22,7 +22,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     static var rootViewController: UIViewController {
         #if DEBUG
-        switch applicationState {
+        switch applicationViewControllerState {
         case .splash:
             return SplashViewController()
         case .game:

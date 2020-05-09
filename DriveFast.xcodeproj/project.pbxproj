@@ -60,7 +60,6 @@
 		FB1EB13E234FC2A9009C8E24 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		FB1EB140234FC2A9009C8E24 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		FB21EC84244F0318008F8C07 /* GarageMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GarageMenu.swift; sourceTree = "<group>"; };
-		FB2C5CE2245CCAAB007A96D9 /* tr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = tr; path = tr.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
 		FB389B66245EC697000006F4 /* GameKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GameKit.framework; path = System/Library/Frameworks/GameKit.framework; sourceTree = SDKROOT; };
 		FB48C3FB246445F4000BFF85 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		FB732572243F49000001B9B7 /* Utilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utilities.swift; sourceTree = "<group>"; };
@@ -137,7 +136,7 @@
 			isa = PBXGroup;
 			children = (
 				FB9CF85C234FC7DF00AD965C /* DriveFast.entitlements */,
-				FB1EB12D234FC2A8009C8E24 /* src */,
+				FB1EB12D234FC2A8009C8E24 /* DriveFast */,
 				FB1EB12C234FC2A8009C8E24 /* Products */,
 				E7164BA6207751D780B8DCAE /* Pods */,
 				2215FE5EA4FF0E2649FCD805 /* Frameworks */,
@@ -152,7 +151,7 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		FB1EB12D234FC2A8009C8E24 /* src */ = {
+		FB1EB12D234FC2A8009C8E24 /* DriveFast */ = {
 			isa = PBXGroup;
 			children = (
 				FB1EB140234FC2A9009C8E24 /* Info.plist */,
@@ -164,7 +163,7 @@
 				FB732578243F4A8A0001B9B7 /* Utilities */,
 				FBD1E55F2350B438006C9CAD /* Game */,
 			);
-			path = src;
+			path = DriveFast;
 			sourceTree = "<group>";
 		};
 		FB732578243F4A8A0001B9B7 /* Utilities */ = {
@@ -390,7 +389,6 @@
 			isa = PBXVariantGroup;
 			children = (
 				FB1EB13E234FC2A9009C8E24 /* Base */,
-				FB2C5CE2245CCAAB007A96D9 /* tr */,
 			);
 			name = LaunchScreen.storyboard;
 			sourceTree = "<group>";
@@ -543,7 +541,7 @@
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 21;
 				DEVELOPMENT_TEAM = 74NMDHX448;
-				INFOPLIST_FILE = "$(SRCROOT)/src/Info.plist";
+				INFOPLIST_FILE = "$(SRCROOT)/DriveFast/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -568,7 +566,7 @@
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 21;
 				DEVELOPMENT_TEAM = 74NMDHX448;
-				INFOPLIST_FILE = "$(SRCROOT)/src/Info.plist";
+				INFOPLIST_FILE = "$(SRCROOT)/DriveFast/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
