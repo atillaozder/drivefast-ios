@@ -225,7 +225,7 @@ class GameViewController: UIViewController {
         playingMenu.reset()
     }
     
-    private func rateTapped() {
+    private func rate() {
         if #available(iOS 10.3, *) {
             DispatchQueue.main.async {
                 SKStoreReviewController.requestReview()
@@ -236,7 +236,7 @@ class GameViewController: UIViewController {
         }
     }
     
-    private func shareTapped() {
+    private func share() {
         if let url = URL(string: "https://apps.apple.com/app/id\(GameManager.appID)") {
             let viewController = UIActivityViewController(
                 activityItems: [url], applicationActivities: nil)
@@ -313,7 +313,7 @@ extension GameViewController: MenuDelegate {
     func menu(_ menu: Menu, didSelectOption option: MenuOption) {
         switch option {
         case .rate:
-            rateTapped()
+            rate()
         }
     }
 }
@@ -329,7 +329,7 @@ extension GameViewController: SettingsMenuDelegate {
             let urlString = "http://www.atillaozder.com/privacy-policy"
             URLNavigator.shared.open(urlString)
         case .share:
-            shareTapped()
+            share()
         case .support:
             let urlString = "http://www.atillaozder.com"
             URLNavigator.shared.open(urlString)
