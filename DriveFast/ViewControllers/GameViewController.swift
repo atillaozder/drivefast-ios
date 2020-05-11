@@ -17,10 +17,10 @@ enum GameState: Int {
     case advertisement = 1
     case adPresented = 2
     case paused = 3
+    case continued = 4
     case home
     case settings
     case leaderboard
-    case continued
     case garage
 }
 
@@ -48,7 +48,7 @@ class GameViewController: UIViewController {
     var gameState: GameState = .home {
         didSet {
             menus.forEach { $0.isHidden = true }
-            let shouldPresentNewMenu = previousGameState.rawValue < 4 && gameState == .home
+            let shouldPresentNewMenu = previousGameState.rawValue < 5 && gameState == .home
             
             switch gameState {
             case .advertisement, .adPresented, .paused:

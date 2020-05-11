@@ -35,7 +35,7 @@ class SplashViewController: UIViewController {
         get { return loadingProgress.progress }
         set {
             self.loadingProgress.setProgress(newValue, animated: true)
-            if newValue > 1 {
+            if newValue >= 1 {
                 guard presentedViewController == nil else { return }
                 self.presentGameController()
             }
