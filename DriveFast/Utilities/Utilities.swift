@@ -9,6 +9,13 @@
 import UIKit
 import SpriteKit
 
+// MARK: - Globals
+struct Globals {
+    static var borderWidth: CGFloat {
+        return UIDevice.current.isPad ? 5 : 3
+    }
+}
+
 // MARK: - Effect
 enum Effect {
     case coin, crash, horns, fuel
@@ -153,5 +160,55 @@ class URLNavigator {
     func open(_ urlString: String) -> Bool {
         guard let url = URL(string: urlString) else { return false }
         return open(url)
+    }
+}
+
+// MARK: - Asset
+enum Asset: String {
+    case music = "music"
+    case podium = "podium"
+    case star = "star"
+    case heart = "heart"
+    case pause = "pause"
+    case leftArrow = "left-arrow"
+    case rightArrow = "right-arrow"
+    case splash = "splash"
+    case fuel = "fuel"
+    case menu = "menu"
+    case roll = "roll"
+    
+    func imageRepresentation() -> UIImage? {
+        return UIImage(named: self.rawValue)
+    }
+}
+
+// MARK: - FontNameRepresentable
+protocol FontNameRepresentable {
+    var fontName: String { get }
+}
+
+// MARK: - Fonts
+struct Fonts {
+    
+    enum Courier: String, FontNameRepresentable {
+        case bold = "-Bold"
+        case regular = ""
+        
+        var fontName: String {
+            return "Courier\(rawValue)"
+        }
+    }
+    
+    enum AmericanTypeWriter: String, FontNameRepresentable {
+        case bold = "-Bold"
+        case semibold = "-Semibold"
+        case condensed = "-Condensed"
+        case condensedBold = "-CondensedBold"
+        case light = "-Light"
+        case regular = ""
+        
+        var fontName: String {
+            return "AmericanTypewriter\(rawValue)"
+        }
     }
 }

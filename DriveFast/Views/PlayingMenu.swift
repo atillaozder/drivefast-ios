@@ -20,7 +20,7 @@ class PlayingMenu: Menu {
     }
     
     lazy var scoreButton: UIButton = {
-        let font: UIFont = UIDevice.current.isPad ? .buildFont(withSize: 24) : .buildFont()
+        let font: UIFont = UIDevice.current.isPad ? .buildFont(withSize: 24) : .buildFont(withSize: 18)
         let btn = buildButton(withTitle: .scoreTitle, font: font, height: PlayingMenu.scoreHeight)
         btn.setTitle(MainStrings.scoreTitle.localized + ": 0", for: .normal)
         btn.isUserInteractionEnabled = false
@@ -79,7 +79,7 @@ class PlayingMenu: Menu {
     lazy var fuelAlertLabel: UILabel = {
         let lbl = UILabel()
         lbl.text = MainStrings.fuelAlert.localized
-        lbl.font = .buildFont()
+        lbl.font = .buildFont(withSize: 18)
         lbl.textAlignment = .center
         lbl.textColor = .red
         lbl.isHidden = true

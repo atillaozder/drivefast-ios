@@ -18,6 +18,7 @@ class GameManager: NSObject {
     
     static let shared = GameManager()
     static let leaderboardID = "com.atillaozder.DriveFast.Leaderboard"
+    static let appID = 1483121139
     
     private var _explosion: SKEmitterNode!
     var explosionEffect: SKEmitterNode {

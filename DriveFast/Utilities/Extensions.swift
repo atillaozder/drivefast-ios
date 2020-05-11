@@ -9,12 +9,6 @@
 import UIKit
 import SpriteKit
 
-struct Globals {
-    static var borderWidth: CGFloat {
-        return UIDevice.current.isPad ? 5 : 3
-    }
-}
-
 // MARK: - UserDefaults
 extension UserDefaults {
     
@@ -154,37 +148,6 @@ extension UIDevice {
     }
 }
 
-// MARK: - FontNameRepresentable
-protocol FontNameRepresentable {
-    var fontName: String { get }
-}
-
-// MARK: - Fonts
-struct Fonts {
-    
-    enum Courier: String, FontNameRepresentable {
-        case bold = "-Bold"
-        case regular = ""
-        
-        var fontName: String {
-            return "Courier\(rawValue)"
-        }
-    }
-    
-    enum AmericanTypeWriter: String, FontNameRepresentable {
-        case bold = "-Bold"
-        case semibold = "-Semibold"
-        case condensed = "-Condensed"
-        case condensedBold = "-CondensedBold"
-        case light = "-Light"
-        case regular = ""
-        
-        var fontName: String {
-            return "AmericanTypewriter\(rawValue)"
-        }
-    }
-}
-
 // MARK: - UIFont
 extension UIFont {
     static func buildFont(name: String, size: CGFloat) -> UIFont {
@@ -202,7 +165,7 @@ extension UIFont {
     static func buildFont(
         _ font: FontNameRepresentable = Fonts.AmericanTypeWriter.bold,
         withSize size: CGFloat? = nil) -> UIFont {
-        return buildFont(name: font.fontName, size: size ?? 18)
+        return buildFont(name: font.fontName, size: size ?? 16)
     }
 }
 
@@ -248,21 +211,3 @@ extension NSNotification.Name {
     static let shouldStayPausedNotification = Notification.Name("shouldStayPausedNotification")
 }
 
-// MARK: - Asset
-enum Asset: String {
-    case music = "music"
-    case podium = "podium"
-    case star = "star"
-    case heart = "heart"
-    case pause = "pause"
-    case leftArrow = "left-arrow"
-    case rightArrow = "right-arrow"
-    case splash = "splash"
-    case fuel = "fuel"
-    case menu = "menu"
-    case roll = "roll"
-    
-    func imageRepresentation() -> UIImage? {
-        return UIImage(named: self.rawValue)
-    }
-}

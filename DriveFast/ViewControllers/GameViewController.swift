@@ -231,13 +231,13 @@ class GameViewController: UIViewController {
                 SKStoreReviewController.requestReview()
             }
         } else {
-            let urlString = "https://itunes.apple.com/app/id\(1483121139)?action=write-review"
+            let urlString = "https://itunes.apple.com/app/id\(GameManager.appID)?action=write-review"
             URLNavigator.shared.open(urlString)
         }
     }
     
     private func shareTapped() {
-        if let url = URL(string: "https://apps.apple.com/app/id\(1483121139)") {
+        if let url = URL(string: "https://apps.apple.com/app/id\(GameManager.appID)") {
             let viewController = UIActivityViewController(
                 activityItems: [url], applicationActivities: nil)
             viewController.popoverPresentationController?.sourceView = self.view
