@@ -83,8 +83,8 @@ class Menu: UIView {
         btn.titleLabel?.adjustsFontSizeToFitWidth = true
         btn.contentEdgeInsets = .init(top: 6, left: 16, bottom: 6, right: 16)
         btn.contentHorizontalAlignment = .center
-        btn.backgroundColor = .menuButton
-        btn.layer.borderColor = UIColor.menuButtonBorder.cgColor
+        btn.backgroundColor = .customBlue
+        btn.layer.borderColor = UIColor.customBlue2.cgColor
         btn.layer.borderWidth = Globals.borderWidth
         btn.layer.cornerRadius = aHeight / 2
         btn.pinHeight(to: aHeight)
@@ -95,8 +95,8 @@ class Menu: UIView {
         let btn = UIButton()
         btn.tintColor = .white
         btn.setImage(asset.imageRepresentation()?.withRenderingMode(.alwaysTemplate), for: .normal)
-        btn.backgroundColor = UIColor.menuButton
-        btn.layer.borderColor = UIColor.menuButtonBorder.cgColor
+        btn.backgroundColor = .customBlue
+        btn.layer.borderColor = UIColor.customBlue2.cgColor
         btn.layer.borderWidth = Globals.borderWidth
         btn.layer.cornerRadius = 16
         btn.imageEdgeInsets = .initialize(16)

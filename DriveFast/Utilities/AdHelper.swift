@@ -43,7 +43,7 @@ class AdHelper: NSObject {
         self.rootViewController = rootViewController
         super.init()
         loadRewardedAd()
-        loadInterstitial()
+        self.interstitial = buildInterstitial()
     }
     
     func presentRewardedAd() {
@@ -68,16 +68,17 @@ class AdHelper: NSObject {
         }
     }
     
-    private func loadInterstitial() {
-        interstitial = GADInterstitial(adUnitID: AdHelper.interstitialID)
+    private func buildInterstitial() -> GADInterstitial {
+        let interstitial = GADInterstitial(adUnitID: AdHelper.interstitialID)
         interstitial.load(.init())
         interstitial.delegate = self
+        return interstitial
     }
 }
 
 extension AdHelper: GADInterstitialDelegate {
     func interstitialDidDismissScreen(_ ad: GADInterstitial) {
-        loadInterstitial()
+        self.interstitial = buildInterstitial()
     }
 }
 

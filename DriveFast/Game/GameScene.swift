@@ -233,7 +233,7 @@ class GameScene: SKScene {
     }
         
     func didGetReward() {
-        AudioPlayer.shared.playMusic(.race)
+        AudioPlayer.shared.playMusic()
         resetPlayerPosition()
         if playerNode.parent == nil {
             addChild(playerNode)

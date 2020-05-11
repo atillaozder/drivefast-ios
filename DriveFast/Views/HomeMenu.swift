@@ -76,7 +76,7 @@ class HomeMenu: Menu {
         }
         
         newValue ?
-            AudioPlayer.shared.playMusic(.race) :
+            AudioPlayer.shared.playMusic() :
             AudioPlayer.shared.pauseMusic()
     }
         

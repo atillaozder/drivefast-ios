@@ -110,11 +110,11 @@ extension UIColor {
         )
     }
     
-    class var menuButton: UIColor {
+    class var customBlue: UIColor {
         return UIColor(red: 17, green: 52, blue: 68)
     }
     
-    class var menuButtonBorder: UIColor {
+    class var customBlue2: UIColor {
         return UIColor(red: 41, green: 84, blue: 108)
     }
     

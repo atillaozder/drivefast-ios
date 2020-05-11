@@ -51,7 +51,7 @@ final class AudioPlayer: NSObject {
         }
     }
             
-    func playMusic(_ music: Music, withVolume volume: Float = 1) {
+    func playMusic(_ music: Music = .main, withVolume volume: Float = 1) {
         if !isSoundOn {
             return
         }
@@ -89,14 +89,14 @@ protocol URLRepresentable {
 
 // MARK: - Music
 enum Music: Int {
-    case none = 0, race
+    case none = 0, main
 }
 
 extension Music: URLRepresentable {
     func urlRepresentation() -> URL? {
         switch self {
-            case .race:
-                return Bundle.main.url(forResource: "race", withExtension: ".mp3")
+            case .main:
+                return Bundle.main.url(forResource: "main", withExtension: ".mp3")
             default:
                 return nil
         }

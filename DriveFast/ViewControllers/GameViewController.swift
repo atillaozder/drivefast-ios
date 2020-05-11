@@ -54,7 +54,7 @@ class GameViewController: UIViewController {
             case .advertisement, .adPresented, .paused:
                 AudioPlayer.shared.pauseMusic()
             default:
-                AudioPlayer.shared.playMusic(.race)
+                AudioPlayer.shared.playMusic()
             }
                         
             if shouldPresentNewMenu {
