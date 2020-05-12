@@ -18,7 +18,6 @@
 		FB1EB13F234FC2A9009C8E24 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FB1EB13D234FC2A9009C8E24 /* LaunchScreen.storyboard */; };
 		FB21EC85244F0318008F8C07 /* GarageMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB21EC84244F0318008F8C07 /* GarageMenu.swift */; };
 		FB389B67245EC697000006F4 /* GameKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FB389B66245EC697000006F4 /* GameKit.framework */; };
-		FB48C3FC246445F4000BFF85 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = FB48C3FB246445F4000BFF85 /* GoogleService-Info.plist */; };
 		FB732573243F49000001B9B7 /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB732572243F49000001B9B7 /* Utilities.swift */; };
 		FB732575243F492A0001B9B7 /* GameScene+SKPhysicsContactDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB732574243F492A0001B9B7 /* GameScene+SKPhysicsContactDelegate.swift */; };
 		FB732577243F4A580001B9B7 /* crash.wav in Resources */ = {isa = PBXBuildFile; fileRef = FB732576243F4A580001B9B7 /* crash.wav */; };
@@ -27,6 +26,7 @@
 		FB732585243F55030001B9B7 /* horns.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = FB732584243F55030001B9B7 /* horns.mp3 */; };
 		FB732587243F60690001B9B7 /* HomeMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB732586243F60690001B9B7 /* HomeMenu.swift */; };
 		FB8C14AF2449BD1D00C1C5A1 /* AdHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB8C14AE2449BD1D00C1C5A1 /* AdHelper.swift */; };
+		FB8E876A246B045F0008E5FA /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = FB8E8769246B045F0008E5FA /* GoogleService-Info.plist */; };
 		FB927B8C240BAB4A00BACEA9 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = FB927B8A240BAB4A00BACEA9 /* InfoPlist.strings */; };
 		FBB70954245C4F8F00E72BC4 /* main.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = FBB70953245C4F8F00E72BC4 /* main.mp3 */; };
 		FBB70956245C517100E72BC4 /* AudioPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB70955245C517100E72BC4 /* AudioPlayer.swift */; };
@@ -61,7 +61,6 @@
 		FB1EB140234FC2A9009C8E24 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		FB21EC84244F0318008F8C07 /* GarageMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GarageMenu.swift; sourceTree = "<group>"; };
 		FB389B66245EC697000006F4 /* GameKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GameKit.framework; path = System/Library/Frameworks/GameKit.framework; sourceTree = SDKROOT; };
-		FB48C3FB246445F4000BFF85 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		FB732572243F49000001B9B7 /* Utilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utilities.swift; sourceTree = "<group>"; };
 		FB732574243F492A0001B9B7 /* GameScene+SKPhysicsContactDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GameScene+SKPhysicsContactDelegate.swift"; sourceTree = "<group>"; };
 		FB732576243F4A580001B9B7 /* crash.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = crash.wav; sourceTree = "<group>"; };
@@ -70,6 +69,7 @@
 		FB732584243F55030001B9B7 /* horns.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = horns.mp3; sourceTree = "<group>"; };
 		FB732586243F60690001B9B7 /* HomeMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeMenu.swift; sourceTree = "<group>"; };
 		FB8C14AE2449BD1D00C1C5A1 /* AdHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdHelper.swift; sourceTree = "<group>"; };
+		FB8E8769246B045F0008E5FA /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		FB927B8B240BAB4A00BACEA9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		FB927B8D240BABEB00BACEA9 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		FB9CF85C234FC7DF00AD965C /* DriveFast.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = DriveFast.entitlements; sourceTree = "<group>"; };
@@ -155,7 +155,7 @@
 			isa = PBXGroup;
 			children = (
 				FB1EB140234FC2A9009C8E24 /* Info.plist */,
-				FB48C3FB246445F4000BFF85 /* GoogleService-Info.plist */,
+				FB8E8769246B045F0008E5FA /* GoogleService-Info.plist */,
 				FB1EB12E234FC2A8009C8E24 /* AppDelegate.swift */,
 				FB9CF85B234FC68600AD965C /* Resources */,
 				FB0728A9245DD19400F214F4 /* ViewControllers */,
@@ -301,7 +301,7 @@
 				FB1581CF23547B1000DD82D3 /* coin.wav in Resources */,
 				FB1EB13C234FC2A9009C8E24 /* Assets.xcassets in Resources */,
 				FBD1E5512350781B006C9CAD /* Explosion.sks in Resources */,
-				FB48C3FC246445F4000BFF85 /* GoogleService-Info.plist in Resources */,
+				FB8E876A246B045F0008E5FA /* GoogleService-Info.plist in Resources */,
 				FBE5D3C92421245C00935A6D /* Localizable.strings in Resources */,
 				FB1EB13F234FC2A9009C8E24 /* LaunchScreen.storyboard in Resources */,
 			);
