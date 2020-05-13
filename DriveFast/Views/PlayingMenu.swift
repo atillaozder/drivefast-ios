@@ -19,19 +19,12 @@ class PlayingMenu: Menu {
         return UIDevice.current.isPad ? 70 : 40
     }
     
-    lazy var scoreButton: UIButton = {
-        let font: UIFont = UIDevice.current.isPad ? .buildFont(withSize: 24) : .buildFont(withSize: 18)
-        let btn = buildButton(withTitle: .scoreTitle, font: font, height: PlayingMenu.scoreHeight)
-        btn.setTitle(MainStrings.scoreTitle.localized + ": 0", for: .normal)
-        btn.isUserInteractionEnabled = false
-        btn.contentEdgeInsets = UIDevice.current.isPad ?
-            .init(top: 0, left: 6, bottom: 0, right: 6) :
-            .zero
-        
-        btn.titleEdgeInsets = UIDevice.current.isPad ?
-            .init(top: 0, left: 10, bottom: 0, right: 10) :
-            .init(top: 6, left: 10, bottom: 6, right: 10)
-        return btn
+    let scoreLabel: UILabel = {
+        let lbl = UILabel()
+        lbl.textColor = UIColor.white
+        lbl.font = UIDevice.current.isPad ? .buildFont(withSize: 24) : .buildFont(withSize: 18)
+        lbl.text = MainStrings.scoreTitle.localized + ": 0"
+        return lbl
     }()
     
     lazy var livesStackView: UIStackView = {
@@ -117,8 +110,7 @@ class PlayingMenu: Menu {
     }
     
     func setScore(_ score: Double) {
-        let text = MainStrings.scoreTitle.localized + ": \(Int(score))"
-        scoreButton.setTitle(text, for: .normal)
+        scoreLabel.text = MainStrings.scoreTitle.localized + ": \(Int(score))"
     }
     
     func setLifeCount(_ count: Int) {
@@ -164,7 +156,7 @@ class PlayingMenu: Menu {
     }
     
     private func setupScoreButton() {
-        let scoreStack = UIStackView(arrangedSubviews: [scoreButton, livesStackView])
+        let scoreStack = UIStackView(arrangedSubviews: [scoreLabel, livesStackView])
         scoreStack.spacing = 6
         scoreStack.alignment = .center
         scoreStack.distribution = .fill

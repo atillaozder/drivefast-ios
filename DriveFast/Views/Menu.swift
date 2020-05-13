@@ -27,10 +27,9 @@ class Menu: UIView {
 
     lazy var backButton: UIButton = {
         let btn = buildButton(withTitle: .backToMenuTitle)
-        let color = UIColor.systemYellow
-        btn.backgroundColor = color
-        btn.layer.borderColor = color.darker().cgColor
-        btn.setTitleColor(.customBlack, for: .normal)
+        btn.backgroundColor = .systemRed
+        btn.layer.borderColor = UIColor.mainBorderColor.cgColor
+        btn.setTitleColor(.white, for: .normal)
         return btn
     }()
     
@@ -83,8 +82,8 @@ class Menu: UIView {
         btn.titleLabel?.adjustsFontSizeToFitWidth = true
         btn.contentEdgeInsets = .init(top: 6, left: 16, bottom: 6, right: 16)
         btn.contentHorizontalAlignment = .center
-        btn.backgroundColor = .customBlue
-        btn.layer.borderColor = UIColor.customBlue2.cgColor
+        btn.backgroundColor = .mainColor
+        btn.layer.borderColor = UIColor.mainBorderColor.cgColor
         btn.layer.borderWidth = Globals.borderWidth
         btn.layer.cornerRadius = aHeight / 2
         btn.pinHeight(to: aHeight)
@@ -95,8 +94,8 @@ class Menu: UIView {
         let btn = UIButton()
         btn.tintColor = .white
         btn.setImage(asset.imageRepresentation()?.withRenderingMode(.alwaysTemplate), for: .normal)
-        btn.backgroundColor = .customBlue
-        btn.layer.borderColor = UIColor.customBlue2.cgColor
+        btn.backgroundColor = .mainColor
+        btn.layer.borderColor = UIColor.mainBorderColor.cgColor
         btn.layer.borderWidth = Globals.borderWidth
         btn.layer.cornerRadius = 16
         btn.imageEdgeInsets = .initialize(16)

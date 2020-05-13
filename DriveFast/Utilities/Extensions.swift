@@ -104,12 +104,12 @@ extension UIColor {
         )
     }
     
-    class var customBlue: UIColor {
-        return UIColor(red: 17, green: 52, blue: 68)
+    class var mainColor: UIColor {
+        return .systemBlue
     }
     
-    class var customBlue2: UIColor {
-        return UIColor(red: 41, green: 84, blue: 108)
+    class var mainBorderColor: UIColor {
+        return .white
     }
     
     class var roadColor: UIColor {
