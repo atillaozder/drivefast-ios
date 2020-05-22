@@ -104,8 +104,8 @@ extension UIColor {
         )
     }
     
-    class var mainColor: UIColor {
-        return .systemBlue
+    static var mainColor: UIColor {
+        return UIColor(red: 88, green: 86, blue: 214)
     }
     
     class var mainBorderColor: UIColor {
