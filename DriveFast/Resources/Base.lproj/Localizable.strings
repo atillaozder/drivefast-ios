@@ -24,3 +24,4 @@
 "okTitle" = "OK";
 "gcErrorMessage" = "An error occurred while presenting leaderboard. Please make sure you are connected to Game Center and try again.";
 "fuelAlert" = "Low Fuel!";
+"resetDataSharingConfigurationsTitle" = "Reset Data Sharing Configurations";

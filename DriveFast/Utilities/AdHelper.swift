@@ -9,59 +9,72 @@
 import Foundation
 import GoogleMobileAds
 
+// MARK: - AdHelperDelegate
+
 protocol AdHelperDelegate: AnyObject {
     func adHelper(_ adHelper: AdHelper, userDidEarn reward: GADAdReward?)
     func adHelper(_ adHelper: AdHelper, willPresentRewardedAd isReady: Bool)
 }
 
 // MARK: - AdHelper
-class AdHelper: NSObject {
+
+final class AdHelper: NSObject {
+    
     static var interstitialID: String {
-        #if DEBUG
-        return "ca-app-pub-3940256099942544/4411468910"
-        #else
         return "ca-app-pub-3176546388613754/6987129300"
-        #endif
     }
     
     static var rewardedAdID: String {
-        #if DEBUG
-        return "ca-app-pub-3940256099942544/1712485313"
-        #else
-        return "ca-app-pub-3176546388613754/7634389777"
-        #endif
+        return "ca-app-pub-3176546388613754/6713944364"
     }
     
     weak var delegate: AdHelperDelegate?
-        
+    
     private var rootViewController: UIViewController!
     private var rewardedAd: GADRewardedAd!
     private var interstitial: GADInterstitial!
     private var reward: GADAdReward?
+    private var adRequestInProgress: Bool
 
     init(rootViewController: UIViewController) {
         self.rootViewController = rootViewController
+        self.adRequestInProgress = false
         super.init()
-        loadRewardedAd()
+        buildRewardedAd()
         self.interstitial = buildInterstitial()
     }
     
     func presentRewardedAd() {
         delegate?.adHelper(self, willPresentRewardedAd: rewardedAd.isReady)
-        rewardedAd.isReady ?
-            rewardedAd.present(fromRootViewController: rootViewController, delegate: self) :
+
+        if rewardedAd.isReady {
+            AudioPlayer.shared.pauseMusic()
+            rewardedAd.present(fromRootViewController: rootViewController, delegate: self)
+        } else {
+            guard !adRequestInProgress else { return }
             loadRewardedAd()
+        }
     }
     
     func presentInterstitial() {
-        interstitial.isReady ?
-            interstitial.present(fromRootViewController: rootViewController) :
+        if interstitial.isReady {
+            AudioPlayer.shared.pauseMusic()
+            interstitial.present(fromRootViewController: rootViewController)
+        } else {
             interstitial.load(.init())
+        }
+    }
+    
+    private func buildRewardedAd() {
+        adRequestInProgress = true
+        rewardedAd = GADRewardedAd(adUnitID: AdHelper.rewardedAdID)
+        loadRewardedAd()
     }
     
     private func loadRewardedAd() {
-        rewardedAd = GADRewardedAd(adUnitID: AdHelper.rewardedAdID)
-        rewardedAd.load(.init()) { (error) in
+        rewardedAd.load(.init()) { [weak self] (error) in
+            guard let self = self else { return }
+            self.adRequestInProgress = false
             if let err = error {
                 print(err.localizedDescription)
             }
@@ -78,7 +91,34 @@ class AdHelper: NSObject {
 
 extension AdHelper: GADInterstitialDelegate {
     func interstitialDidDismissScreen(_ ad: GADInterstitial) {
+        AudioPlayer.shared.playMusic(.main)
         self.interstitial = buildInterstitial()
+    }
+    
+    func interstitial(_ ad: GADInterstitial,
+                      didFailToReceiveAdWithError error: GADRequestError) {
+        // Gets the domain from which the error came.
+        let errorDomain = error.domain
+        // Gets the error code. See
+        // https://developers.google.com/admob/ios/api/reference/Enums/GADErrorCode
+        // for a list of possible codes.
+        let errorCode = error.code
+        // Gets an error message.
+        // For example "Account not approved yet". See
+        // https://support.google.com/admob/answer/9905175 for explanations of
+        // common errors.
+        let errorMessage = error.localizedDescription
+        // Gets additional response information about the request. See
+        // https://developers.google.com/admob/ios/response-info for more information.
+        let responseInfo = error.userInfo[GADErrorUserInfoKeyResponseInfo] as? GADResponseInfo
+        // Gets the underlyingError, if available.
+        let underlyingError = error.userInfo[NSUnderlyingErrorKey] as? Error
+        
+        if let responseInfo = responseInfo {
+            print("Received error with domain: \(errorDomain)\ncode: \(errorCode)"
+            + "\nmessage: \(errorMessage)\nresponseInfo: \(responseInfo)"
+            + "\nunderLyingError: \(underlyingError?.localizedDescription ?? "nil")")
+        }
     }
 }
 
@@ -88,8 +128,15 @@ extension AdHelper: GADRewardedAdDelegate {
     }
     
     func rewardedAdDidDismiss(_ rewardedAd: GADRewardedAd) {
+        AudioPlayer.shared.playMusic(.main)
         delegate?.adHelper(self, userDidEarn: reward)
         reward = nil
-        loadRewardedAd()
+        buildRewardedAd()
     }
+    
+    #if DEBUG
+    func rewardedAd(_ rewardedAd: GADRewardedAd, didFailToPresentWithError error: Error) {
+        print(error.localizedDescription)
+    }
+    #endif
 }

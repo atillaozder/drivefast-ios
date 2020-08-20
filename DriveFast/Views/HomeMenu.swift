@@ -8,7 +8,9 @@
 
 import UIKit
 
-class HomeMenu: Menu {
+// MARK: - HomeMenu
+
+final class HomeMenu: Menu {
     
     weak var delegate: MenuDelegate?
  

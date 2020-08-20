@@ -9,7 +9,9 @@
 import UIKit
 import Firebase
 
-class SplashViewController: UIViewController {
+// MARK: - SplashViewController
+
+final class SplashViewController: UIViewController {
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .lightContent
@@ -104,7 +106,11 @@ class SplashViewController: UIViewController {
     
     private func startLoading() {
         FirebaseApp.configure()
-        GADMobileAds.sharedInstance().start(completionHandler: nil)
+        let adService = GADMobileAds.sharedInstance()
+        adService.start(completionHandler: nil)
+        #if DEBUG
+        adService.requestConfiguration.testDeviceIdentifiers = ["54763374aaf9208f4336c270dfdb1caf"]
+        #endif
         
         UserDefaults.standard.setSession()
         GameManager.shared.startLoading()

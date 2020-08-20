@@ -10,6 +10,7 @@ import UIKit
 import SpriteKit
 
 // MARK: - UserDefaults
+
 extension UserDefaults {
     
     var score: Int {
@@ -64,6 +65,7 @@ extension UserDefaults {
 
 
 // MARK: - SKSpriteNode
+
 extension SKSpriteNode {
     func aspectFill(to size: CGSize) {
         if let texture = self.texture {
@@ -93,6 +95,7 @@ extension SKSpriteNode {
 }
 
 // MARK: - UIColor
+
 extension UIColor {
     
     convenience init(red: Int, green: Int, blue: Int) {
@@ -142,6 +145,7 @@ extension UIColor {
 }
 
 // MARK: - UIDevice
+
 extension UIDevice {
     var isPad: Bool {
         return UIDevice.current.userInterfaceIdiom == .pad
@@ -149,6 +153,7 @@ extension UIDevice {
 }
 
 // MARK: - UIFont
+
 extension UIFont {
     static func buildFont(name: String, size: CGFloat) -> UIFont {
         guard let font = UIFont(name: name, size: size) else {
@@ -170,7 +175,13 @@ extension UIFont {
 }
 
 // MARK: - UIView
-extension UIView {    
+
+extension UIView {
+    
+    func viewWithTag(_ tag: Globals.Tags) -> UIView? {
+        return viewWithTag(tag.rawValue)
+    }
+    
     func addTapGesture(target: Any?, action: Selector) {
         let tapGesture = UITapGestureRecognizer(target: target, action: action)
         self.isUserInteractionEnabled = true
@@ -189,6 +200,7 @@ extension UIView {
 }
 
 // MARK: - CGSize
+
 extension CGSize {
     static func initialize(_ constant: CGFloat) -> CGSize {
         return .init(width: constant, height: constant)
@@ -196,6 +208,7 @@ extension CGSize {
 }
 
 // MARK: - UIEdgeInsets
+
 extension UIEdgeInsets {
     static func initialize(_ constant: CGFloat) -> UIEdgeInsets {
         return .init(top: constant, left: constant, bottom: constant, right: constant)
@@ -207,6 +220,7 @@ extension UIEdgeInsets {
 }
 
 // MARK: - NSNotification
+
 extension NSNotification.Name {
     static let shouldStayPausedNotification = Notification.Name("shouldStayPausedNotification")
 }

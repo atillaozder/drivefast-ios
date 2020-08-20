@@ -24,3 +24,4 @@
 "okTitle" = "Tamam";
 "gcErrorMessage" = "Skor tablosuna erişilemiyor. Lütfen Game Center'a bağlı olduğunuzdan emin olun ve tekrar deneyin.";
 "fuelAlert" = "Yakıt Tükeniyor!";
+"resetDataSharingConfigurationsTitle" = "Veri Paylaşım Ayarlarını Sıfırla";

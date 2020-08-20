@@ -10,7 +10,7 @@ import UIKit
 
 // MARK: - BackslashButton
 
-class BackslashButton: UIButton {
+final class BackslashButton: UIButton {
 
     // MARK: - Properties
     

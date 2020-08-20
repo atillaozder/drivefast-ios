@@ -11,9 +11,12 @@ import SpriteKit
 
 // MARK: - Globals
 struct Globals {
-    static var borderWidth: CGFloat {
-        return UIDevice.current.isPad ? 5 : 3
+    
+    enum Tags: Int {
+        case toast = 1000
     }
+    
+    static let borderWidth: CGFloat = UIDevice.current.isPad ? 5 : 3
 }
 
 // MARK: - Effect
@@ -129,6 +132,7 @@ enum MainStrings: String {
     case okTitle = "okTitle"
     case gcErrorMessage = "gcErrorMessage"
     case fuelAlert = "fuelAlert"
+    case resetDataSharingConfigurationsTitle = "resetDataSharingConfigurationsTitle"
     
     var localized: String {
         return NSLocalizedString(self.rawValue, comment: "")

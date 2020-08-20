@@ -9,7 +9,8 @@
 import UIKit
 
 // MARK: - PlayingMenu
-class PlayingMenu: Menu {
+
+final class PlayingMenu: Menu {
     
     // MARK: - Properties
     private var isAnimated: Bool = false

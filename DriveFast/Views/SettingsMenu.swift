@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import UserMessagingPlatform
 
 enum SettingsMenuOption {
     case otherApps, privacy, share, support, back
@@ -16,7 +17,9 @@ protocol SettingsMenuDelegate: AnyObject {
     func settingsMenu(_ settingsMenu: SettingsMenu, didSelectOption option: SettingsMenuOption)
 }
 
-class SettingsMenu: Menu {
+// MARK: - SettingsMenu
+
+final class SettingsMenu: Menu {
     
     weak var delegate: SettingsMenuDelegate?
     
@@ -26,7 +29,8 @@ class SettingsMenu: Menu {
         stackView.addArrangedSubview(shareButton)
         
         let supportButton = buildButton(withTitle: .supportTitle)
-        supportButton.addTarget(self, action: #selector(didTapSupport(_:)), for: .touchUpInside)
+        supportButton.addTarget(
+            self, action: #selector(didTapSupport(_:)), for: .touchUpInside)
         stackView.addArrangedSubview(supportButton)
         
         let otherAppsButton = buildButton(withTitle: .otherAppsTitle)
@@ -36,6 +40,21 @@ class SettingsMenu: Menu {
         let ppButton = buildButton(withTitle: .privacyTitle)
         ppButton.addTarget(self, action: #selector(didTapPrivacy(_:)), for: .touchUpInside)
         stackView.addArrangedSubview(ppButton)
+        
+        let resetButtonHeight: CGFloat = UIDevice.current.isPad ? 70 : 60
+        let resetButton = buildButton(
+            withTitle: .resetDataSharingConfigurationsTitle, height: resetButtonHeight)
+        
+        resetButton.contentEdgeInsets = .init(top: 2, left: 16, bottom: 2, right: 16)
+        resetButton.layer.cornerRadius = ppButton.layer.cornerRadius
+        resetButton.titleLabel?.numberOfLines = 2
+        
+        resetButton.addTarget(
+            self,
+            action: #selector(didTapResetDataSharingConfigurations(_:)),
+            for: .touchUpInside)
+        
+        stackView.addArrangedSubview(resetButton)
         
         backButton.addTarget(self, action: #selector(didTapBack(_:)), for: .touchUpInside)
         stackView.addArrangedSubview(backButton)
@@ -71,5 +90,12 @@ class SettingsMenu: Menu {
     func didTapShare(_ sender: UIButton) {
         sender.scale()
         delegate?.settingsMenu(self, didSelectOption: .share)
+    }
+    
+    @objc
+    func didTapResetDataSharingConfigurations(_ sender: UIButton) {
+        sender.scale()
+        UMPConsentInformation.sharedInstance.reset()
+        Toast.shared.present(in: self, with: "Reset successfully!", duration: 1.5)
     }
 }

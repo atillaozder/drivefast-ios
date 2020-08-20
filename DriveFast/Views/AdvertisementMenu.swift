@@ -8,7 +8,9 @@
 
 import UIKit
 
-class AdvertisementMenu: Menu {
+// MARK: - AdvertisementMenu
+
+final class AdvertisementMenu: Menu {
     
     weak var delegate: MenuDelegate?
     

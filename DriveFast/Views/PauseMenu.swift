@@ -8,7 +8,9 @@
 
 import UIKit
 
-class PauseMenu: Menu {
+// MARK: - PauseMenu
+
+final class PauseMenu: Menu {
     
     weak var delegate: MenuDelegate?
     

@@ -10,8 +10,10 @@ import UIKit
 import SpriteKit
 import GameKit
 import GoogleMobileAds
+import UserMessagingPlatform
 
 // MARK: - GameState
+
 enum GameState: Int {
     case playing = 0
     case advertisement = 1
@@ -25,7 +27,8 @@ enum GameState: Int {
 }
 
 // MARK: - GameViewController
-class GameViewController: UIViewController {
+
+final class GameViewController: UIViewController {
     
     // MARK: - Properties
     var skView: SKView {
@@ -124,15 +127,17 @@ class GameViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         presentEmptyScene()
-        registerRemoteNotifications()
-        setupMenus()
-        gameState = .home
-        adHelper.delegate = self
-        checkSession()
-        
-        NotificationCenter.default.addObserver(self, selector: #selector(setStayPaused), name: .shouldStayPausedNotification, object: nil)
+        ConsentManager.shared.requestConsent { [unowned self] (form) in
+            self.handleForm(form)
+        }
+
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(setStayPaused),
+            name: .shouldStayPausedNotification,
+            object: nil)
     }
-    
+            
     @objc
     func setStayPaused() {
         if gameState == .paused || gameState == .advertisement {
@@ -141,6 +146,28 @@ class GameViewController: UIViewController {
     }
     
     // MARK: - Private Helper Methods
+    
+    private func handleForm(_ form: UMPConsentForm?) {
+        if let form = form {
+            form.present(from: self, completionHandler: { [unowned self] (error) in
+                self.loadGame()
+                if let err = error {
+                    print(err.localizedDescription)
+                }
+            })
+        } else {
+            loadGame()
+        }
+    }
+    
+    private func loadGame() {
+        registerRemoteNotifications()
+        setupMenus()
+        gameState = .home
+        adHelper.delegate = self
+        requestReviewIfNeeded()
+    }
+    
     private func setupMenus() {
         menus.forEach { (menu) in
             self.view.addSubview(menu)
@@ -155,7 +182,7 @@ class GameViewController: UIViewController {
         garageMenu.delegate = self
     }
             
-    private func checkSession() {
+    private func requestReviewIfNeeded() {
         if #available(iOS 10.3, *) {
             let session = UserDefaults.standard.session
             guard session > 0 &&
@@ -340,7 +367,8 @@ extension GameViewController: SettingsMenuDelegate {
 }
 
 extension GameViewController: GKGameCenterControllerDelegate {
-    func gameCenterViewControllerDidFinish(_ gameCenterViewController: GKGameCenterViewController) {
+    func gameCenterViewControllerDidFinish(
+        _ gameCenterViewController: GKGameCenterViewController) {
         gameCenterViewController.dismiss(animated: true, completion: nil)
     }
 }

@@ -17,7 +17,9 @@ protocol MenuDelegate: AnyObject {
     func menu(_ menu: Menu, didSelectOption option: MenuOption)
 }
 
-class Menu: UIView {
+// MARK: - Menu
+
+class Menu: View {
     
     static let defaultButtonHeight: CGFloat = 44
     
@@ -42,17 +44,8 @@ class Menu: UIView {
         return sv
     }()
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        setup()
-    }
-    
-    required init?(coder: NSCoder) {
-        super.init(coder: coder)
-        setup()
-    }
-    
-    func setup() {
+    override func setup() {
+        super.setup()
         self.backgroundColor = UIColor.black.withAlphaComponent(0.6)
         let container = UIView()
         container.addSubview(stackView)
@@ -80,12 +73,15 @@ class Menu: UIView {
         btn.titleLabel?.baselineAdjustment = .alignCenters
         btn.titleLabel?.minimumScaleFactor = 0.2
         btn.titleLabel?.adjustsFontSizeToFitWidth = true
+        
         btn.contentEdgeInsets = .init(top: 6, left: 16, bottom: 6, right: 16)
         btn.contentHorizontalAlignment = .center
+        
         btn.backgroundColor = .mainColor
         btn.layer.borderColor = UIColor.mainBorderColor.cgColor
         btn.layer.borderWidth = Globals.borderWidth
         btn.layer.cornerRadius = aHeight / 2
+        
         btn.pinHeight(to: aHeight)
         return btn
     }
@@ -93,14 +89,18 @@ class Menu: UIView {
     func buildSquareButton(asset: Asset) -> UIButton {
         let btn = UIButton()
         btn.tintColor = .white
-        btn.setImage(asset.imageRepresentation()?.withRenderingMode(.alwaysTemplate), for: .normal)
+        btn.setImage(
+            asset.imageRepresentation()?.withRenderingMode(.alwaysTemplate),
+            for: .normal)
+        btn.imageEdgeInsets = .initialize(16)
+        btn.adjustsImageWhenHighlighted = false
+        btn.adjustsImageWhenDisabled = false
+        
         btn.backgroundColor = .mainColor
         btn.layer.borderColor = UIColor.mainBorderColor.cgColor
         btn.layer.borderWidth = Globals.borderWidth
         btn.layer.cornerRadius = 16
-        btn.imageEdgeInsets = .initialize(16)
-        btn.adjustsImageWhenHighlighted = false
-        btn.adjustsImageWhenDisabled = false
+                
         btn.pinHeight(to: btn.widthAnchor)
         return btn
     }

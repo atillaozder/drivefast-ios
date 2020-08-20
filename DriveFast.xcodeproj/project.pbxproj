@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		4017DC9EB2B163A06EDF4BCF /* Pods_DriveFast.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 91DFDAA228B72B1CC0A1D5AD /* Pods_DriveFast.framework */; };
+		A529EB096468BB2B778885D3 /* Pods_DriveFast.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C8E169B391C8119C9E4976D1 /* Pods_DriveFast.framework */; };
 		FB0728A8245DD18E00F214F4 /* SplashViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB0728A7245DD18E00F214F4 /* SplashViewController.swift */; };
 		FB0728AB245DD1F400F214F4 /* GameManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB0728AA245DD1F400F214F4 /* GameManager.swift */; };
 		FB1581CF23547B1000DD82D3 /* coin.wav in Resources */ = {isa = PBXBuildFile; fileRef = FB1581CE23547B1000DD82D3 /* coin.wav */; };
@@ -31,6 +31,9 @@
 		FBB70954245C4F8F00E72BC4 /* main.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = FBB70953245C4F8F00E72BC4 /* main.mp3 */; };
 		FBB70956245C517100E72BC4 /* AudioPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB70955245C517100E72BC4 /* AudioPlayer.swift */; };
 		FBC0B5EF245F62D100F3775A /* fuel.wav in Resources */ = {isa = PBXBuildFile; fileRef = FBC0B5EE245F62D100F3775A /* fuel.wav */; };
+		FBC8D4F824EE832000352200 /* ConsentManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBC8D4F724EE832000352200 /* ConsentManager.swift */; };
+		FBC8D4FA24EE8A2500352200 /* View.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBC8D4F924EE8A2500352200 /* View.swift */; };
+		FBC8D4FC24EE8A8600352200 /* Toast.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBC8D4FB24EE8A8600352200 /* Toast.swift */; };
 		FBD1E5512350781B006C9CAD /* Explosion.sks in Resources */ = {isa = PBXBuildFile; fileRef = FBD1E5502350781A006C9CAD /* Explosion.sks */; };
 		FBD1E55923509A21006C9CAD /* MenuScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBD1E55823509A21006C9CAD /* MenuScene.swift */; };
 		FBD885B6245EF4D200B7E3BF /* Fuel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBD885B5245EF4D200B7E3BF /* Fuel.swift */; };
@@ -46,9 +49,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		28C868B902AEF9FE2F310012 /* Pods-DriveFast.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DriveFast.debug.xcconfig"; path = "Target Support Files/Pods-DriveFast/Pods-DriveFast.debug.xcconfig"; sourceTree = "<group>"; };
-		91DFDAA228B72B1CC0A1D5AD /* Pods_DriveFast.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_DriveFast.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		A385F1CE5F85A5CDF458F5FA /* Pods-DriveFast.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DriveFast.release.xcconfig"; path = "Target Support Files/Pods-DriveFast/Pods-DriveFast.release.xcconfig"; sourceTree = "<group>"; };
+		59E70EAC8E08ED7CCDBEAA1A /* Pods-DriveFast.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DriveFast.debug.xcconfig"; path = "Target Support Files/Pods-DriveFast/Pods-DriveFast.debug.xcconfig"; sourceTree = "<group>"; };
+		744EBFBBED5D2C027E9BB677 /* Pods-DriveFast.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DriveFast.release.xcconfig"; path = "Target Support Files/Pods-DriveFast/Pods-DriveFast.release.xcconfig"; sourceTree = "<group>"; };
+		C8E169B391C8119C9E4976D1 /* Pods_DriveFast.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_DriveFast.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		FB0728A7245DD18E00F214F4 /* SplashViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashViewController.swift; sourceTree = "<group>"; };
 		FB0728AA245DD1F400F214F4 /* GameManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameManager.swift; sourceTree = "<group>"; };
 		FB1581CE23547B1000DD82D3 /* coin.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = coin.wav; sourceTree = "<group>"; };
@@ -76,6 +79,9 @@
 		FBB70953245C4F8F00E72BC4 /* main.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = main.mp3; sourceTree = "<group>"; };
 		FBB70955245C517100E72BC4 /* AudioPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioPlayer.swift; sourceTree = "<group>"; };
 		FBC0B5EE245F62D100F3775A /* fuel.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = fuel.wav; sourceTree = "<group>"; };
+		FBC8D4F724EE832000352200 /* ConsentManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConsentManager.swift; sourceTree = "<group>"; };
+		FBC8D4F924EE8A2500352200 /* View.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = View.swift; sourceTree = "<group>"; };
+		FBC8D4FB24EE8A8600352200 /* Toast.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Toast.swift; sourceTree = "<group>"; };
 		FBD1E5502350781A006C9CAD /* Explosion.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = Explosion.sks; sourceTree = "<group>"; };
 		FBD1E55823509A21006C9CAD /* MenuScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuScene.swift; sourceTree = "<group>"; };
 		FBD885B5245EF4D200B7E3BF /* Fuel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Fuel.swift; sourceTree = "<group>"; };
@@ -97,8 +103,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4017DC9EB2B163A06EDF4BCF /* Pods_DriveFast.framework in Frameworks */,
 				FB389B67245EC697000006F4 /* GameKit.framework in Frameworks */,
+				A529EB096468BB2B778885D3 /* Pods_DriveFast.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -109,7 +115,7 @@
 			isa = PBXGroup;
 			children = (
 				FB389B66245EC697000006F4 /* GameKit.framework */,
-				91DFDAA228B72B1CC0A1D5AD /* Pods_DriveFast.framework */,
+				C8E169B391C8119C9E4976D1 /* Pods_DriveFast.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -117,8 +123,8 @@
 		E7164BA6207751D780B8DCAE /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				28C868B902AEF9FE2F310012 /* Pods-DriveFast.debug.xcconfig */,
-				A385F1CE5F85A5CDF458F5FA /* Pods-DriveFast.release.xcconfig */,
+				59E70EAC8E08ED7CCDBEAA1A /* Pods-DriveFast.debug.xcconfig */,
+				744EBFBBED5D2C027E9BB677 /* Pods-DriveFast.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -170,12 +176,14 @@
 			isa = PBXGroup;
 			children = (
 				FB0728AA245DD1F400F214F4 /* GameManager.swift */,
+				FBC8D4F724EE832000352200 /* ConsentManager.swift */,
 				FB8C14AE2449BD1D00C1C5A1 /* AdHelper.swift */,
 				FBFF2F8F24448289000109E2 /* UIView+Autolayout.swift */,
 				FBFF2F91244482B6000109E2 /* Car.swift */,
 				FB732572243F49000001B9B7 /* Utilities.swift */,
-				FB73257F243F4B990001B9B7 /* Extensions.swift */,
 				FBB70955245C517100E72BC4 /* AudioPlayer.swift */,
+				FB73257F243F4B990001B9B7 /* Extensions.swift */,
+				FBC8D4FB24EE8A8600352200 /* Toast.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -220,6 +228,7 @@
 		FBFF2F9424449E29000109E2 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				FBC8D4F924EE8A2500352200 /* View.swift */,
 				FBFF2F9B24449FBA000109E2 /* Menu.swift */,
 				FB732586243F60690001B9B7 /* HomeMenu.swift */,
 				FBFF2F9924449F94000109E2 /* AdvertisementMenu.swift */,
@@ -239,11 +248,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = FB1EB143234FC2A9009C8E24 /* Build configuration list for PBXNativeTarget "DriveFast" */;
 			buildPhases = (
-				FA50CE332A8EC87D43E9FAF3 /* [CP] Check Pods Manifest.lock */,
+				0FB0E7A4FA0B462CC98DFB46 /* [CP] Check Pods Manifest.lock */,
 				FB1EB127234FC2A8009C8E24 /* Sources */,
 				FB1EB128234FC2A8009C8E24 /* Frameworks */,
 				FB1EB129234FC2A8009C8E24 /* Resources */,
-				09ED5DB4716AE04EF2D55D9C /* [CP] Embed Pods Frameworks */,
+				D9E2D6D4ADBB80D733278AA6 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -310,24 +319,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		09ED5DB4716AE04EF2D55D9C /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-DriveFast/Pods-DriveFast-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-DriveFast/Pods-DriveFast-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-DriveFast/Pods-DriveFast-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		FA50CE332A8EC87D43E9FAF3 /* [CP] Check Pods Manifest.lock */ = {
+		0FB0E7A4FA0B462CC98DFB46 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -347,6 +339,23 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		D9E2D6D4ADBB80D733278AA6 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-DriveFast/Pods-DriveFast-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-DriveFast/Pods-DriveFast-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-DriveFast/Pods-DriveFast-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -369,6 +378,7 @@
 				FB1EB135234FC2A8009C8E24 /* GameScene.swift in Sources */,
 				FBD885B6245EF4D200B7E3BF /* Fuel.swift in Sources */,
 				FBFF2F9A24449F94000109E2 /* AdvertisementMenu.swift in Sources */,
+				FBC8D4FC24EE8A8600352200 /* Toast.swift in Sources */,
 				FB0728AB245DD1F400F214F4 /* GameManager.swift in Sources */,
 				FBD1E55923509A21006C9CAD /* MenuScene.swift in Sources */,
 				FBFF2F92244482B6000109E2 /* Car.swift in Sources */,
@@ -376,7 +386,9 @@
 				FBFF2F9624449E31000109E2 /* SettingsMenu.swift in Sources */,
 				FB1EB137234FC2A8009C8E24 /* GameViewController.swift in Sources */,
 				FBFF2F9E2444A616000109E2 /* BackslashButton.swift in Sources */,
+				FBC8D4F824EE832000352200 /* ConsentManager.swift in Sources */,
 				FB0728A8245DD18E00F214F4 /* SplashViewController.swift in Sources */,
+				FBC8D4FA24EE8A2500352200 /* View.swift in Sources */,
 				FB1EB12F234FC2A8009C8E24 /* AppDelegate.swift in Sources */,
 				FBB70956245C517100E72BC4 /* AudioPlayer.swift in Sources */,
 			);
@@ -533,13 +545,13 @@
 		};
 		FB1EB144234FC2A9009C8E24 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 28C868B902AEF9FE2F310012 /* Pods-DriveFast.debug.xcconfig */;
+			baseConfigurationReference = 59E70EAC8E08ED7CCDBEAA1A /* Pods-DriveFast.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = DriveFast.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 24;
+				CURRENT_PROJECT_VERSION = 25;
 				DEVELOPMENT_TEAM = 74NMDHX448;
 				INFOPLIST_FILE = "$(SRCROOT)/DriveFast/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
@@ -547,7 +559,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.1.6;
+				MARKETING_VERSION = 2.1.7;
 				PRODUCT_BUNDLE_IDENTIFIER = com.retro2d.ios;
 				PRODUCT_NAME = DriveFast;
 				PROVISIONING_PROFILE_SPECIFIER = "Drive Fast Debug";
@@ -558,13 +570,13 @@
 		};
 		FB1EB145234FC2A9009C8E24 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = A385F1CE5F85A5CDF458F5FA /* Pods-DriveFast.release.xcconfig */;
+			baseConfigurationReference = 744EBFBBED5D2C027E9BB677 /* Pods-DriveFast.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = DriveFast.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 24;
+				CURRENT_PROJECT_VERSION = 25;
 				DEVELOPMENT_TEAM = 74NMDHX448;
 				INFOPLIST_FILE = "$(SRCROOT)/DriveFast/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
@@ -572,7 +584,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.1.6;
+				MARKETING_VERSION = 2.1.7;
 				PRODUCT_BUNDLE_IDENTIFIER = com.retro2d.ios;
 				PRODUCT_NAME = DriveFast;
 				PROVISIONING_PROFILE_SPECIFIER = "Drive Fast Release";
