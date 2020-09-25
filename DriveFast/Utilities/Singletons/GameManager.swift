@@ -90,7 +90,7 @@ final class GameManager: NSObject {
         if defaults.shouldRequestGCAuthentication {
             let localPlayer = GKLocalPlayer.local
             localPlayer.authenticateHandler = { [weak self] (viewController, error) in
-                guard let `self` = self else { return }
+                guard let self = self else { return }
                 if viewController != nil {
                     presentingViewController.present(viewController!, animated: true, completion: nil)
                     defaults.setGCRequestAuthentication()

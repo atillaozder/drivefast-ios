@@ -79,7 +79,7 @@ class Menu: View {
         button.setImage(
             asset.imageRepresentation()?.withRenderingMode(.alwaysTemplate),
             for: .normal)
-        button.imageEdgeInsets = .initialize(16)
+        button.imageEdgeInsets = .initialize(12)
         button.adjustsImageWhenHighlighted = false
         button.adjustsImageWhenDisabled = false
         

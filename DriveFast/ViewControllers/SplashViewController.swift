@@ -16,7 +16,8 @@ final class SplashViewController: UIViewController {
     
     override var preferredStatusBarStyle: UIStatusBarStyle { .lightContent }
     override var prefersStatusBarHidden: Bool { true }
-    
+    override var prefersHomeIndicatorAutoHidden: Bool { true }
+
     private lazy var loadingProgressView: UIProgressView = {
         buildLoadingProgressView()
     }()
@@ -59,7 +60,7 @@ final class SplashViewController: UIViewController {
         GameManager.shared.authenticatePlayer(presentingViewController: self)
         
         GameManager.shared.progress = { [weak self] (progress) in
-            guard let `self` = self else { return }
+            guard let self = self else { return }
             self.progress = progress
         }
     }

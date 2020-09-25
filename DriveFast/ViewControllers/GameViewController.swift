@@ -83,27 +83,31 @@ final class GameViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         presentEmptyScene()
-        consentManager = ConsentManager()
-        consentManager.requestConsent { [weak self] (form) in
-            guard let self = self else { return }
-            self.handleForm(form)
-        }
-
+        requestGDPRConsent()
+        
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(setStayPaused),
             name: .shouldStayPausedNotification,
             object: nil)
     }
-            
+    
+    // MARK: - Private Helper Methods
+    
     @objc
-    func setStayPaused() {
+    private func setStayPaused() {
         if gameState == .paused || gameState == .advertisement {
             gameScene.setStayPaused()
         }
     }
     
-    // MARK: - Private Helper Methods
+    private func requestGDPRConsent() {
+        consentManager = ConsentManager()
+        consentManager.requestConsent { [weak self] (form) in
+            guard let self = self else { return }
+            self.handleForm(form)
+        }
+    }
     
     private func handleForm(_ form: UMPConsentForm?) {
         if let form = form {
@@ -249,8 +253,8 @@ final class GameViewController: UIViewController {
         playingMenu.reset()
     }
     
-    private func setStateHome() {
-        gameState = .home
+    private func setGameState(_ gameState: GameState = .home) {
+        self.gameState = gameState
     }
     
     private func requestReviewIfNeeded() {
@@ -309,11 +313,11 @@ final class GameViewController: UIViewController {
 
 extension GameViewController: AdManagerDelegate {
     func adManager(_ adManager: AdManager, userDidEarn reward: GADAdReward?) {
-        reward == nil ? setStateHome() : gameScene.didGetReward()
+        reward == nil ? setGameState() : gameScene.didGetReward()
     }
     
     func adManager(_ adManager: AdManager, willPresentRewardedAd isReady: Bool) {
-        isReady ? gameScene.willPresentRewardBasedVideoAd() : setStateHome()
+        isReady ? gameScene.willPresentRewardBasedVideoAd() : setGameState()
     }
 }
 

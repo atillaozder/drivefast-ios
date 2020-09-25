@@ -197,7 +197,7 @@ class GameScene: SKScene {
             playerNode.removeFromParent()
             
             self.run(.wait(forDuration: 1)) { [weak self] in
-                guard let `self` = self else { return }
+                guard let self = self else { return }
                 explosionEffect.removeFromParent()
                 self.stopGame()
             }
@@ -280,7 +280,7 @@ class GameScene: SKScene {
         stopMotionManager()
         motionManager.accelerometerUpdateInterval = 0.01
         motionManager.startAccelerometerUpdates(to: .init()) { [weak self] (data, error) in
-            guard let `self` = self, let data = data else { return }
+            guard let self = self, let data = data else { return }
             let player = self.playerNode
             let position = player.position
             var x = position.x + CGFloat(data.acceleration.x * 10)
@@ -360,7 +360,7 @@ class GameScene: SKScene {
         var prevCarFrame: CGRect = .zero
         
         let addCarClosure: () -> Void = { [weak self] in
-            guard let `self` = self else { return }
+            guard let self = self else { return }
             
             var cars = GameManager.shared.cars
             if cars.isEmpty {
