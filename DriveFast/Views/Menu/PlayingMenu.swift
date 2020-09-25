@@ -218,14 +218,14 @@ final class PlayingMenu: Menu {
         let size: CGSize = .initialize(height)
         let containerView = pauseButton.buildContainer(withSize: size, cornerRadius: size.height / 2)
         
-        let tappableView = UIView()
-        tappableView.addSubview(containerView)
-        tappableView.pinSize(to: .initialize(size.width * 1.5))
+        let enlargedContainerView = UIView()
+        enlargedContainerView.addSubview(containerView)
+        enlargedContainerView.pinSize(to: .initialize(size.width * 1.5))
         
         let padding: CGFloat = UIDevice.current.isPad ? 16 : 8
-        containerView.pinTop(to: tappableView.topAnchor, constant: padding)
-        containerView.pinTrailing(to: tappableView.trailingAnchor, constant: -padding)
-        return tappableView
+        containerView.pinTop(to: enlargedContainerView.topAnchor, constant: padding)
+        containerView.pinTrailing(to: enlargedContainerView.trailingAnchor, constant: -padding)
+        return enlargedContainerView
     }
     
     private func buildFuelAlertLabel() -> UILabel {

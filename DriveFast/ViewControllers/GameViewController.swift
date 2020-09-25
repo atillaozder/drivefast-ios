@@ -140,6 +140,7 @@ final class GameViewController: UIViewController {
         if shouldPresentNewMenu {
             homeMenu.isHidden = false
             presentMenuScene()
+            presentInterstitialIfNeeded()
         } else {
             switch gameState {
             case .home:
@@ -185,21 +186,14 @@ final class GameViewController: UIViewController {
         settingsMenu.delegate = self
         garageMenu.delegate = self
     }
-            
-    private func requestReviewIfNeeded() {
-        if #available(iOS 10.3, *) {
-            let session = UserDefaults.standard.session
-            guard session > 0 &&
-                session.truncatingRemainder(dividingBy: 4) == 0 else {
-                    return
-            }
-            
-            DispatchQueue.main.async {
-                SKStoreReviewController.requestReview()
-            }
+    
+    private func presentInterstitialIfNeeded() {
+        let gameCount = GameManager.shared.gameCount
+        if gameCount.remainder(dividingBy: 2) == 0 {
+            adManager.presentInterstitial()
         }
     }
-    
+                
     private func presentLeaderboard() {
         if GameManager.shared.gcEnabled {
             let viewController = GKGameCenterViewController()
@@ -257,6 +251,20 @@ final class GameViewController: UIViewController {
     
     private func setStateHome() {
         gameState = .home
+    }
+    
+    private func requestReviewIfNeeded() {
+        if #available(iOS 10.3, *) {
+            let session = UserDefaults.standard.session
+            guard session > 0 &&
+                session.truncatingRemainder(dividingBy: 4) == 0 else {
+                    return
+            }
+            
+            DispatchQueue.main.async {
+                SKStoreReviewController.requestReview()
+            }
+        }
     }
     
     private func rate() {
@@ -322,10 +330,6 @@ extension GameViewController: SceneDelegate {
     
     func scene(_ scene: GameScene, didFinishGameWithScore score: Double) {
         UserDefaults.standard.setScore(Int(score))
-        let gameCount = GameManager.shared.gameCount
-        if gameCount.remainder(dividingBy: 2) == 0 {
-            adManager.presentInterstitial()
-        }
     }
     
     func scene(_ scene: GameScene, didUpdateGameState state: GameState) {

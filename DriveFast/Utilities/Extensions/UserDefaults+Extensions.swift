@@ -12,6 +12,10 @@ import Foundation
 
 extension UserDefaults {
     
+    var shouldRequestGCAuthentication: Bool {
+        integer(forKey: Globals.Keys.kGCRequestAuthentication.rawValue) == 0
+    }
+    
     var score: Int {
         integer(forKey: Globals.Keys.kScore.rawValue)
     }
@@ -57,5 +61,9 @@ extension UserDefaults {
     
     func setPlayerCar(_ player: Car) {
         set(player.index, forKey: Globals.Keys.kPlayersCar.rawValue)
+    }
+    
+    func setGCRequestAuthentication() {
+        set(1, forKey: Globals.Keys.kGCRequestAuthentication.rawValue)
     }
 }

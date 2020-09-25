@@ -71,7 +71,8 @@ final class AdManager: NSObject {
     }
     
     private func loadRewardedAd() {
-        rewardedAd.load(.init()) { [weak self] (error) in
+        let adRequest = buildAdRequest()
+        rewardedAd.load(adRequest) { [weak self] (error) in
             guard let self = self else { return }
             self.adRequestInProgress = false
             if let err = error {
@@ -82,9 +83,18 @@ final class AdManager: NSObject {
     
     private func buildInterstitial() -> GADInterstitial {
         let interstitial = GADInterstitial(adUnitID: interstitialAdID)
-        interstitial.load(.init())
+        let adRequest = buildAdRequest()
+        interstitial.load(adRequest)
         interstitial.delegate = self
         return interstitial
+    }
+    
+    private func buildAdRequest() -> GADRequest {
+        let adRequest = GADRequest()
+        if #available(iOS 13.0, *) {
+            adRequest.scene = rootViewController.view.window?.windowScene
+        }
+        return adRequest
     }
 }
 

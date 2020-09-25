@@ -86,30 +86,26 @@ final class GameManager: NSObject {
     }
     
     func authenticatePlayer(presentingViewController: UIViewController) {
-        let localPlayer = GKLocalPlayer.local
-        localPlayer.authenticateHandler = { [weak self] (viewController, error) in
-            guard let `self` = self else { return }
-            if viewController != nil {
-                presentingViewController.present(viewController!, animated: true, completion: nil)
-            } else if localPlayer.isAuthenticated {
-                self.gcEnabled = true
-//                localPlayer.loadDefaultLeaderboardIdentifier { (leaderboardID, err) in
-//                    if let error = err {
-//                        print(error.localizedDescription)
-//                        return
-//                    }
-//
-//                    if let id = leaderboardID {
-//                        self.gcDefaultLeaderBoard = id
-//                    }
-//                }
-            } else {
-                self.gcEnabled = false
-                if let err = error {
-                    print(err.localizedDescription)
+        let defaults = UserDefaults.standard
+        if defaults.shouldRequestGCAuthentication {
+            let localPlayer = GKLocalPlayer.local
+            localPlayer.authenticateHandler = { [weak self] (viewController, error) in
+                guard let `self` = self else { return }
+                if viewController != nil {
+                    presentingViewController.present(viewController!, animated: true, completion: nil)
+                    defaults.setGCRequestAuthentication()
+                } else if localPlayer.isAuthenticated {
+                    self.gcEnabled = true
+                    defaults.setGCRequestAuthentication()
+                } else {
+                    self.gcEnabled = false
+                    if let err = error {
+                        print(err.localizedDescription)
+                    }
                 }
+                self.progressValue += self.unitWorkValue
             }
-            
+        } else {
             self.progressValue += self.unitWorkValue
         }
     }

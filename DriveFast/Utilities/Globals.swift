@@ -33,6 +33,7 @@ struct Globals {
         case kMovePlayer = "move_player"
         case kAddCoin = "add_coin"
         case kAddFuel = "add_fuel"
+        case kGCRequestAuthentication = "kGCRequestAuthentication"
     }
     
     static var borderWidth: CGFloat { UIDevice.current.isPad ? 4 : 2 }
