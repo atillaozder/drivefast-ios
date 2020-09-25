@@ -10,6 +10,7 @@ import Foundation
 import AVFoundation
 
 // MARK: - AudioPlayer
+
 final class AudioPlayer: NSObject {
     
     static let shared: AudioPlayer = .init()
@@ -18,7 +19,7 @@ final class AudioPlayer: NSObject {
     private var readyForMusic: Music = .none
 
     private lazy var queue = DispatchQueue(
-        label: "com.atillaozder.DriveFast.serialQueue.audioPlayer", qos: .userInitiated)
+        label: "\(Globals.bundleID).serialQueue.audioPlayer", qos: .userInitiated)
     
     var isSoundOn: Bool {
         return UserDefaults.standard.isSoundOn
@@ -83,11 +84,13 @@ final class AudioPlayer: NSObject {
 }
 
 // MARK: - URLRepresentable
+
 protocol URLRepresentable {
     func urlRepresentation() -> URL?
 }
 
 // MARK: - Music
+
 enum Music: Int {
     case none = 0, main
 }
@@ -101,4 +104,10 @@ extension Music: URLRepresentable {
                 return nil
         }
     }
+}
+
+// MARK: - Effect
+
+enum Effect {
+    case coin, crash, horns, fuel
 }

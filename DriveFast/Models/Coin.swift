@@ -9,9 +9,11 @@
 import SpriteKit
 
 // MARK: - Coin
-class Coin: SKSpriteNode {
+
+final class Coin: SKSpriteNode {
     
     // MARK: - CoinType
+    
     enum CoinType: String {
         case single = "single_coin"
         case multiple = "multiple_coins"

@@ -59,10 +59,10 @@ extension UIView {
         priority: UILayoutPriority = .required) -> NSLayoutConstraint
     {
         self.translatesAutoresizingMaskIntoConstraints = false
-        let c = self.centerXAnchor.constraint(equalTo: to, constant: constant)
-        c.priority = priority
-        c.isActive = true
-        return c
+        let constraint = self.centerXAnchor.constraint(equalTo: to, constant: constant)
+        constraint.priority = priority
+        constraint.isActive = true
+        return constraint
     }
     
     @discardableResult
@@ -72,10 +72,10 @@ extension UIView {
         priority: UILayoutPriority = .required) -> NSLayoutConstraint
     {
         self.translatesAutoresizingMaskIntoConstraints = false
-        let c = self.centerYAnchor.constraint(equalTo: to, constant: constant)
-        c.priority = priority
-        c.isActive = true
-        return c
+        let constraint = self.centerYAnchor.constraint(equalTo: to, constant: constant)
+        constraint.priority = priority
+        constraint.isActive = true
+        return constraint
     }
     
     @discardableResult
@@ -85,10 +85,10 @@ extension UIView {
         priority: UILayoutPriority = .required) -> NSLayoutConstraint
     {
         self.translatesAutoresizingMaskIntoConstraints = false
-        let c = self.trailingAnchor.constraint(equalTo: to, constant: constant)
-        c.priority = priority
-        c.isActive = true
-        return c
+        let constraint = self.trailingAnchor.constraint(equalTo: to, constant: constant)
+        constraint.priority = priority
+        constraint.isActive = true
+        return constraint
     }
     
     @discardableResult
@@ -98,10 +98,10 @@ extension UIView {
         priority: UILayoutPriority = .required) -> NSLayoutConstraint
     {
         self.translatesAutoresizingMaskIntoConstraints = false
-        let c = self.leadingAnchor.constraint(equalTo: to, constant: constant)
-        c.priority = priority
-        c.isActive = true
-        return c
+        let constraint = self.leadingAnchor.constraint(equalTo: to, constant: constant)
+        constraint.priority = priority
+        constraint.isActive = true
+        return constraint
     }
     
     @discardableResult
@@ -111,10 +111,10 @@ extension UIView {
         priority: UILayoutPriority = .required) -> NSLayoutConstraint
     {
         self.translatesAutoresizingMaskIntoConstraints = false
-        let c = self.leftAnchor.constraint(equalTo: to, constant: constant)
-        c.priority = priority
-        c.isActive = true
-        return c
+        let constraint = self.leftAnchor.constraint(equalTo: to, constant: constant)
+        constraint.priority = priority
+        constraint.isActive = true
+        return constraint
     }
     
     @discardableResult
@@ -124,10 +124,10 @@ extension UIView {
         priority: UILayoutPriority = .required) -> NSLayoutConstraint
     {
         self.translatesAutoresizingMaskIntoConstraints = false
-        let c = self.rightAnchor.constraint(equalTo: to, constant: constant)
-        c.priority = priority
-        c.isActive = true
-        return c
+        let constraint = self.rightAnchor.constraint(equalTo: to, constant: constant)
+        constraint.priority = priority
+        constraint.isActive = true
+        return constraint
     }
     
     @discardableResult
@@ -137,10 +137,10 @@ extension UIView {
         priority: UILayoutPriority = .required) -> NSLayoutConstraint
     {
         self.translatesAutoresizingMaskIntoConstraints = false
-        let c = self.topAnchor.constraint(equalTo: to, constant: constant)
-        c.priority = priority
-        c.isActive = true
-        return c
+        let constraint = self.topAnchor.constraint(equalTo: to, constant: constant)
+        constraint.priority = priority
+        constraint.isActive = true
+        return constraint
     }
     
     @discardableResult
@@ -150,10 +150,10 @@ extension UIView {
         priority: UILayoutPriority = .required) -> NSLayoutConstraint
     {
         self.translatesAutoresizingMaskIntoConstraints = false
-        let c = self.bottomAnchor.constraint(equalTo: to, constant: constant)
-        c.priority = priority
-        c.isActive = true
-        return c
+        let constraint = self.bottomAnchor.constraint(equalTo: to, constant: constant)
+        constraint.priority = priority
+        constraint.isActive = true
+        return constraint
     }
     
     func pinEdgesToUnsafeArea(insets: UIEdgeInsets = .zero) {

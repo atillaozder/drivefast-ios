@@ -9,20 +9,17 @@
 import UIKit
 
 // MARK: - Car
+
 struct Car: Hashable {
+    
     static var scaleRatio: CGFloat {
-        return UIDevice.current.isPad ? 6 : 4
+        UIDevice.current.isPad ? 6 : 4
     }
     
     private var _index: Int
     
-    var index: Int {
-        return _index
-    }
-    
-    var imageName: String {
-        return "car\(index)"
-    }
+    var index: Int { _index }
+    var imageName: String { "car\(index)" }
     
     var ratio: CGFloat {
         var value = index > 4 ? Car.scaleRatio + 3 : Car.scaleRatio + 2
@@ -36,6 +33,8 @@ struct Car: Hashable {
         self._index = index
     }
 }
+
+// MARK: - Equatable
 
 extension Car: Equatable {
     static func == (lhs: Self, rhs: Self) -> Bool {

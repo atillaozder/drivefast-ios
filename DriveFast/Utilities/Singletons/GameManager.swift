@@ -12,13 +12,11 @@ import GameKit
 
 // MARK: - GameManager
 
-class GameManager: NSObject {
+final class GameManager: NSObject {
     
     // MARK: - Properties
     
     static let shared = GameManager()
-    static let leaderboardID = "com.atillaozder.DriveFast.Leaderboard"
-    static let appID = 1483121139
     
     private var _explosion: SKEmitterNode!
     var explosionEffect: SKEmitterNode {
@@ -76,7 +74,7 @@ class GameManager: NSObject {
     
     func submitNewScore(_ score: Int) {
         if gcEnabled {
-            let highscore = GKScore(leaderboardIdentifier: GameManager.leaderboardID)
+            let highscore = GKScore(leaderboardIdentifier: Globals.leaderboardID)
             highscore.value = Int64(score)
                         
             GKScore.report([highscore]) { (error) in
@@ -130,7 +128,7 @@ class GameManager: NSObject {
     private func buildSpriteNode(from car: Car) -> SKSpriteNode {
         let texture = SKTexture(imageNamed: car.imageName)
         let spriteNode = SKSpriteNode(texture: texture)
-        spriteNode.name = Cars.car.rawValue
+        spriteNode.name = Globals.Keys.kCar.rawValue
         spriteNode.zPosition = 1
 
         if !setSpritePhysicsBody(spriteNode, from: texture) {

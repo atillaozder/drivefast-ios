@@ -10,17 +10,12 @@ import SpriteKit
 import GameplayKit
 
 // MARK: - MenuScene
-class MenuScene: GameScene {
+
+final class MenuScene: GameScene {
     
-    override var gameStarted: Bool {
-        return false
-    }
+    override var gameStarted: Bool { false }
             
-    override func initiateGame() {
-        return
-    }
+    override func initiateGame() {}
     
-    override func didBegin(_ contact: SKPhysicsContact) {
-        return
-    }
+    override func didBegin(_ contact: SKPhysicsContact) {}
 }

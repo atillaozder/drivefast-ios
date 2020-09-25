@@ -60,14 +60,14 @@ final class Toast {
 fileprivate class ToastContainer: View {
         
     lazy var messageLabel: UILabel = {
-        let lbl = UILabel()
-        lbl.textColor = .customBlack
-        lbl.font = UIFont.systemFont(ofSize: 16)
-        lbl.textAlignment = .center
-        lbl.numberOfLines = 2
-        lbl.lineBreakMode = .byWordWrapping
-        lbl.preferredMaxLayoutWidth = UIScreen.main.bounds.width - 72
-        return lbl
+        let messageLabel = UILabel()
+        messageLabel.textColor = .black2
+        messageLabel.font = UIFont.systemFont(ofSize: 16)
+        messageLabel.textAlignment = .center
+        messageLabel.numberOfLines = 2
+        messageLabel.lineBreakMode = .byWordWrapping
+        messageLabel.preferredMaxLayoutWidth = UIScreen.main.bounds.width - 72
+        return messageLabel
     }()
     
     override func layoutSubviews() {

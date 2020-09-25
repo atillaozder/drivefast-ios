@@ -31,6 +31,11 @@ enum GameState: Int {
 final class GameViewController: UIViewController {
     
     // MARK: - Properties
+    
+    override var preferredStatusBarStyle: UIStatusBarStyle { .lightContent }
+    override var prefersStatusBarHidden: Bool { true }
+    override var prefersHomeIndicatorAutoHidden: Bool { true }
+    
     var skView: SKView {
         return self.view as! SKView
     }
@@ -39,8 +44,9 @@ final class GameViewController: UIViewController {
         return skView.scene as? GameScene ?? .init()
     }
     
-    private lazy var adHelper = AdHelper(rootViewController: self)
+    private lazy var adManager = AdManager(rootViewController: self)
     private var previousGameState: GameState = .playing
+    private var consentManager: ConsentManager!
     
     private var menus: [UIView] {
         return [
@@ -50,49 +56,7 @@ final class GameViewController: UIViewController {
     
     var gameState: GameState = .home {
         didSet {
-            menus.forEach { $0.isHidden = true }
-            let shouldPresentNewMenu = previousGameState.rawValue < 5 && gameState == .home
-            
-            switch gameState {
-            case .advertisement, .adPresented, .paused:
-                AudioPlayer.shared.pauseMusic()
-            default:
-                AudioPlayer.shared.playMusic()
-            }
-                        
-            if shouldPresentNewMenu {
-                homeMenu.isHidden = false
-                presentMenuScene()
-            } else {
-                switch gameState {
-                case .home:
-                    homeMenu.isHidden = false
-                case .advertisement:
-                    playingMenu.isHidden = false
-                    advertisementMenu.isHidden = false
-                case .leaderboard:
-                    homeMenu.isHidden = false
-                    presentLeaderboard()
-                case .settings:
-                    settingsMenu.isHidden = false
-                case .playing:
-                    presentGameScene()
-                case .adPresented:
-                    playingMenu.isHidden = false
-                    adHelper.presentRewardedAd()
-                case .paused:
-                    gameScene.setPausedAndNotify(true)
-                    playingMenu.isHidden = false
-                    pauseMenu.isHidden = false
-                case .continued:
-                    gameScene.setPausedAndNotify(false)
-                    playingMenu.isHidden = false
-                case .garage:
-                    garageMenu.isHidden = false
-                }
-            }
-            
-            previousGameState = gameState
+            didChangeGameState()
         }
     }
     
@@ -102,14 +66,6 @@ final class GameViewController: UIViewController {
     private lazy var playingMenu = PlayingMenu()
     private lazy var pauseMenu = PauseMenu()
     private lazy var garageMenu = GarageMenu()
-    
-    override var preferredStatusBarStyle: UIStatusBarStyle {
-        return .lightContent
-    }
-    
-    override var prefersStatusBarHidden: Bool {
-        return true
-    }
     
     // MARK: - View Life Cycle
     
@@ -127,7 +83,9 @@ final class GameViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         presentEmptyScene()
-        ConsentManager.shared.requestConsent { [unowned self] (form) in
+        consentManager = ConsentManager()
+        consentManager.requestConsent { [weak self] (form) in
+            guard let self = self else { return }
             self.handleForm(form)
         }
 
@@ -164,8 +122,54 @@ final class GameViewController: UIViewController {
         registerRemoteNotifications()
         setupMenus()
         gameState = .home
-        adHelper.delegate = self
+        adManager.delegate = self
         requestReviewIfNeeded()
+    }
+    
+    private func didChangeGameState() {
+        menus.forEach { $0.isHidden = true }
+        let shouldPresentNewMenu = previousGameState.rawValue < 5 && gameState == .home
+        
+        switch gameState {
+        case .advertisement, .adPresented, .paused:
+            AudioPlayer.shared.pauseMusic()
+        default:
+            AudioPlayer.shared.playMusic()
+        }
+                    
+        if shouldPresentNewMenu {
+            homeMenu.isHidden = false
+            presentMenuScene()
+        } else {
+            switch gameState {
+            case .home:
+                homeMenu.isHidden = false
+            case .advertisement:
+                playingMenu.isHidden = false
+                advertisementMenu.isHidden = false
+            case .leaderboard:
+                homeMenu.isHidden = false
+                presentLeaderboard()
+            case .settings:
+                settingsMenu.isHidden = false
+            case .playing:
+                presentGameScene()
+            case .adPresented:
+                playingMenu.isHidden = false
+                adManager.presentRewardedAd()
+            case .paused:
+                gameScene.setPausedAndNotify(true)
+                playingMenu.isHidden = false
+                pauseMenu.isHidden = false
+            case .continued:
+                gameScene.setPausedAndNotify(false)
+                playingMenu.isHidden = false
+            case .garage:
+                garageMenu.isHidden = false
+            }
+        }
+        
+        previousGameState = gameState
     }
     
     private func setupMenus() {
@@ -201,24 +205,23 @@ final class GameViewController: UIViewController {
             let viewController = GKGameCenterViewController()
             viewController.gameCenterDelegate = self
             viewController.viewState = .leaderboards
-            viewController.leaderboardIdentifier = GameManager.leaderboardID
+            viewController.leaderboardIdentifier = Globals.leaderboardID
             self.present(viewController, animated: true, completion: nil)
         } else {
             let alertController = UIAlertController(
                 title: "Drive Fast",
-                message: MainStrings.gcErrorMessage.localized,
+                message: Strings.gcErrorMessage.localized,
                 preferredStyle: .alert)
             
-            let dismissAction = UIAlertAction(
-                title: MainStrings.okTitle.localized, style: .cancel, handler: nil)
-            alertController.addAction(dismissAction)
+            let action = UIAlertAction(title: Strings.ok.capitalized, style: .cancel, handler: nil)
+            alertController.addAction(action)
             self.present(alertController, animated: true, completion: nil)
         }
     }
     
     private func presentEmptyScene() {
         let scene = SKScene(size: skView.frame.size)
-        scene.backgroundColor = .roadColor
+        scene.backgroundColor = .road
         scene.scaleMode = .aspectFit
         skView.presentScene(scene)
     }
@@ -252,19 +255,23 @@ final class GameViewController: UIViewController {
         playingMenu.reset()
     }
     
+    private func setStateHome() {
+        gameState = .home
+    }
+    
     private func rate() {
         if #available(iOS 10.3, *) {
             DispatchQueue.main.async {
                 SKStoreReviewController.requestReview()
             }
         } else {
-            let urlString = "https://itunes.apple.com/app/id\(GameManager.appID)?action=write-review"
-            URLNavigator.shared.open(urlString)
+            let urlString = "https://itunes.apple.com/app/id\(Globals.appID)?action=write-review"
+            URLNavigator().open(urlString)
         }
     }
     
     private func share() {
-        if let url = URL(string: "https://apps.apple.com/app/id\(GameManager.appID)") {
+        if let url = URL(string: "https://apps.apple.com/app/id\(Globals.appID)") {
             let viewController = UIActivityViewController(
                 activityItems: [url], applicationActivities: nil)
             viewController.popoverPresentationController?.sourceView = self.view
@@ -290,19 +297,19 @@ final class GameViewController: UIViewController {
     }
 }
 
-extension GameViewController: AdHelperDelegate {
-    private func setStateHome() {
-        gameState = .home
-    }
-    
-    func adHelper(_ adHelper: AdHelper, userDidEarn reward: GADAdReward?) {
+// MARK: - AdManagerDelegate
+
+extension GameViewController: AdManagerDelegate {
+    func adManager(_ adManager: AdManager, userDidEarn reward: GADAdReward?) {
         reward == nil ? setStateHome() : gameScene.didGetReward()
     }
     
-    func adHelper(_ adHelper: AdHelper, willPresentRewardedAd isReady: Bool) {
+    func adManager(_ adManager: AdManager, willPresentRewardedAd isReady: Bool) {
         isReady ? gameScene.willPresentRewardBasedVideoAd() : setStateHome()
     }
 }
+
+// MARK: - SceneDelegate
 
 extension GameViewController: SceneDelegate {
     func scene(_ scene: GameScene, didUpdateScore score: Double) {
@@ -317,7 +324,7 @@ extension GameViewController: SceneDelegate {
         UserDefaults.standard.setScore(Int(score))
         let gameCount = GameManager.shared.gameCount
         if gameCount.remainder(dividingBy: 2) == 0 {
-            adHelper.presentInterstitial()
+            adManager.presentInterstitial()
         }
     }
     
@@ -332,12 +339,13 @@ extension GameViewController: SceneDelegate {
 }
 
 // MARK: - MenuDelegate
+
 extension GameViewController: MenuDelegate {
     func menu(_ menu: Menu, didUpdateGameState gameState: GameState) {
         self.gameState = gameState
     }
     
-    func menu(_ menu: Menu, didSelectOption option: MenuOption) {
+    func menu(_ menu: Menu, didSelectOption option: Menu.MenuOption) {
         switch option {
         case .rate:
             rate()
@@ -346,29 +354,25 @@ extension GameViewController: MenuDelegate {
 }
 
 // MARK: - SettingsMenuDelegate
+
 extension GameViewController: SettingsMenuDelegate {
-    func settingsMenu(_ settingsMenu: SettingsMenu, didSelectOption option: SettingsMenuOption) {
+    func settingsMenu(_ settingsMenu: SettingsMenu, didSelectOption option: SettingsMenu.Option) {
         switch option {
-        case .otherApps:
-            let urlString = "itms-apps://itunes.apple.com/developer/atilla-ozder/id1440770128?mt=8"
-            URLNavigator.shared.open(urlString)
-        case .privacy:
-            let urlString = "http://www.atillaozder.com/privacy-policy"
-            URLNavigator.shared.open(urlString)
+        case .otherApps, .privacy, .support:
+            guard let url = option.url else { return }
+            URLNavigator().open(url)
         case .share:
             share()
-        case .support:
-            let urlString = "http://www.atillaozder.com"
-            URLNavigator.shared.open(urlString)
         case .back:
             gameState = .home
         }
     }
 }
 
+// MARK: - GKGameCenterControllerDelegate
+
 extension GameViewController: GKGameCenterControllerDelegate {
-    func gameCenterViewControllerDidFinish(
-        _ gameCenterViewController: GKGameCenterViewController) {
+    func gameCenterViewControllerDidFinish(_ gameCenterViewController: GKGameCenterViewController) {
         gameCenterViewController.dismiss(animated: true, completion: nil)
     }
 }

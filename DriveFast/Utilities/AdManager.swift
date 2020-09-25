@@ -1,5 +1,5 @@
 //
-//  AdHelper.swift
+//  AdManager.swift
 //  DriveFast
 //
 //  Created by Atilla Özder on 17.04.2020.
@@ -9,35 +9,34 @@
 import Foundation
 import GoogleMobileAds
 
-// MARK: - AdHelperDelegate
+// MARK: - AdManagerDelegate
 
-protocol AdHelperDelegate: AnyObject {
-    func adHelper(_ adHelper: AdHelper, userDidEarn reward: GADAdReward?)
-    func adHelper(_ adHelper: AdHelper, willPresentRewardedAd isReady: Bool)
+protocol AdManagerDelegate: AnyObject {
+    func adManager(_ adManager: AdManager, userDidEarn reward: GADAdReward?)
+    func adManager(_ adManager: AdManager, willPresentRewardedAd isReady: Bool)
 }
 
-// MARK: - AdHelper
+// MARK: - AdManager
 
-final class AdHelper: NSObject {
+final class AdManager: NSObject {
     
-    static var interstitialID: String {
-        return "ca-app-pub-3176546388613754/6987129300"
-    }
+    // MARK: - Properties
     
-    static var rewardedAdID: String {
-        return "ca-app-pub-3176546388613754/6713944364"
-    }
-    
-    weak var delegate: AdHelperDelegate?
-    
-    private var rootViewController: UIViewController!
+    private let interstitialAdID: String
+    private let rewardedAdID: String
+    private weak var rootViewController: UIViewController!
+
     private var rewardedAd: GADRewardedAd!
     private var interstitial: GADInterstitial!
     private var reward: GADAdReward?
     private var adRequestInProgress: Bool
+    
+    weak var delegate: AdManagerDelegate?
 
     init(rootViewController: UIViewController) {
         self.rootViewController = rootViewController
+        self.rewardedAdID = "ca-app-pub-3176546388613754/6713944364"
+        self.interstitialAdID = "ca-app-pub-3176546388613754/6987129300"
         self.adRequestInProgress = false
         super.init()
         buildRewardedAd()
@@ -45,7 +44,7 @@ final class AdHelper: NSObject {
     }
     
     func presentRewardedAd() {
-        delegate?.adHelper(self, willPresentRewardedAd: rewardedAd.isReady)
+        delegate?.adManager(self, willPresentRewardedAd: rewardedAd.isReady)
 
         if rewardedAd.isReady {
             AudioPlayer.shared.pauseMusic()
@@ -67,7 +66,7 @@ final class AdHelper: NSObject {
     
     private func buildRewardedAd() {
         adRequestInProgress = true
-        rewardedAd = GADRewardedAd(adUnitID: AdHelper.rewardedAdID)
+        rewardedAd = GADRewardedAd(adUnitID: rewardedAdID)
         loadRewardedAd()
     }
     
@@ -82,14 +81,16 @@ final class AdHelper: NSObject {
     }
     
     private func buildInterstitial() -> GADInterstitial {
-        let interstitial = GADInterstitial(adUnitID: AdHelper.interstitialID)
+        let interstitial = GADInterstitial(adUnitID: interstitialAdID)
         interstitial.load(.init())
         interstitial.delegate = self
         return interstitial
     }
 }
 
-extension AdHelper: GADInterstitialDelegate {
+// MARK: - GADInterstitialDelegate
+
+extension AdManager: GADInterstitialDelegate {
     func interstitialDidDismissScreen(_ ad: GADInterstitial) {
         AudioPlayer.shared.playMusic(.main)
         self.interstitial = buildInterstitial()
@@ -122,14 +123,16 @@ extension AdHelper: GADInterstitialDelegate {
     }
 }
 
-extension AdHelper: GADRewardedAdDelegate {
+// MARK: - GADRewardedAdDelegate
+
+extension AdManager: GADRewardedAdDelegate {
     func rewardedAd(_ rewardedAd: GADRewardedAd, userDidEarn reward: GADAdReward) {
         self.reward = reward
     }
     
     func rewardedAdDidDismiss(_ rewardedAd: GADRewardedAd) {
         AudioPlayer.shared.playMusic(.main)
-        delegate?.adHelper(self, userDidEarn: reward)
+        delegate?.adManager(self, userDidEarn: reward)
         reward = nil
         buildRewardedAd()
     }

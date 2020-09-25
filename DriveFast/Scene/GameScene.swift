@@ -11,6 +11,7 @@ import GameplayKit
 import CoreMotion
 
 // MARK: - SceneDelegate
+
 protocol SceneDelegate: AnyObject {
     func scene(_ scene: GameScene, didUpdateScore score: Double)
     func scene(_ scene: GameScene, willUpdateLifeCount count: Int)
@@ -20,6 +21,7 @@ protocol SceneDelegate: AnyObject {
 }
 
 // MARK: - GameScene
+
 class GameScene: SKScene {
     
     // MARK: - Properties
@@ -30,7 +32,8 @@ class GameScene: SKScene {
     private var gameOver: Bool = false
     
     private var stayPaused = false
-
+    var gameStarted: Bool { true }
+    
     override var isPaused: Bool {
         get {
             return super.isPaused
@@ -42,42 +45,14 @@ class GameScene: SKScene {
         }
     }
     
-    var gameStarted: Bool {
-        return true
-    }
-    
     private let motionManager = CMMotionManager()
-    let gameHelper = GameHelper()
+    let props = GameProps()
     
     weak var sceneDelegate: SceneDelegate?
     
-    lazy var playerNode: SKSpriteNode = {
-        let player = UserDefaults.standard.playerCar
-        let element = GameManager.shared.getDictElement(value: player)
-        let car = element.key.copy() as! SKSpriteNode
-        car.name = Cars.player.rawValue
-        car.physicsBody?.categoryBitMask = Category.player.rawValue
-        car.physicsBody?.contactTestBitMask = Category.car.rawValue
-        car.setScale(to: self.frame.width / element.value.ratio)
-        return car
-    }()
-    
-    lazy var roadNode: SKShapeNode = {
-        let roadSize: CGSize = .init(width: frame.width, height: frame.height * 2)
-        let node = SKShapeNode(rectOf: roadSize)
-        node.fillColor = .roadColor
-        node.strokeColor = .roadColor
-        node.position = .init(x: frame.midX, y: frame.minY)
-        node.zPosition = -1
-        return node
-    }()
-    
-    let roadLineNode: SKSpriteNode = {
-        let node = SKSpriteNode(imageNamed: "road-line")
-        node.zPosition = -1
-        node.size = .init(width: 6, height: 30)
-        return node
-    }()
+    private(set) lazy var playerNode: SKSpriteNode = { buildPlayerNode() }()
+    private(set) lazy var roadNode: SKShapeNode = { buildRoadShapeNode() }()
+    private lazy var roadLineNode: SKSpriteNode = { buildRoadLineNode() }()
     
     private lazy var singleCoin = Coin(frame: frame, type: .single)
     private lazy var multipleCoins = Coin(frame: frame, type: .multiple)
@@ -127,7 +102,7 @@ class GameScene: SKScene {
         }
     }
         
-    private lazy var roadBoundingBox: RoadBoundingBox = {
+    private lazy var roadRect: RoadRect = {
         let w = playerNode.size.width / 2
         let h = playerNode.size.height / 2
         
@@ -140,6 +115,7 @@ class GameScene: SKScene {
     }()
         
     // MARK: - Game Life Cycle
+    
     override func willMove(from view: SKView) {
         super.willMove(from: view)
         resetGame()
@@ -147,7 +123,7 @@ class GameScene: SKScene {
     
     override func didMove(to view: SKView) {
         super.didMove(to: view)
-        self.backgroundColor = .roadColor
+        self.backgroundColor = .road
         initiateGame()
         
         self.addChild(roadNode)
@@ -172,7 +148,7 @@ class GameScene: SKScene {
     }
         
     func resetPlayerPosition() {
-        playerNode.position = .init(x: self.frame.midX, y: roadBoundingBox.minY)
+        playerNode.position = .init(x: self.frame.midX, y: roadRect.minY)
     }
     
     func initiateGame() {
@@ -184,10 +160,10 @@ class GameScene: SKScene {
         
         let addCoinSq: SKAction = .sequence([
             .wait(forDuration: Coin.waitForDuration),
-            .run(addCoin, queue: .init(label: "com.atillaozder.DriveFast.serialQueue.addCoin"))
+            .run(addCoin, queue: .init(label: "\(Globals.bundleID).serialQueue.addCoin"))
         ])
         
-        run(.repeatForever(addCoinSq), withKey: Actions.addCoin.rawValue)
+        run(.repeatForever(addCoinSq), withKey: Globals.Keys.kAddCoin.rawValue)
         
         initiateFuelSequence()
         
@@ -217,7 +193,7 @@ class GameScene: SKScene {
             explosionEffect.position = playerNode.position
             self.addChild(explosionEffect)
             
-            gameHelper.playEffect(.crash, in: self)
+            props.playEffect(.crash, in: self)
             playerNode.removeFromParent()
             
             self.run(.wait(forDuration: 1)) { [weak self] in
@@ -248,7 +224,7 @@ class GameScene: SKScene {
     func willPresentRewardBasedVideoAd() {
         self.gotReward = true
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-            self.enumerateChildNodes(withName: Cars.car.rawValue) { (node, ptr) in
+            self.enumerateChildNodes(withName: Globals.Keys.kCar.rawValue) { (node, ptr) in
                 node.removeFromParent()
             }
         }
@@ -267,7 +243,7 @@ class GameScene: SKScene {
     
     func didChangePauseState() {
         isPaused ? stopMotionManager() : startMotionManager()
-        if let addCarSeq = self.action(forKey: Actions.addCar.rawValue) {
+        if let addCarSeq = self.action(forKey: Globals.Keys.kAddCar.rawValue) {
             addCarSeq.speed = isPaused ? 0 : 1
         }
     }
@@ -310,7 +286,7 @@ class GameScene: SKScene {
             var x = position.x + CGFloat(data.acceleration.x * 10)
             var y = position.y + CGFloat(data.acceleration.y * 10)
             
-            let road = self.roadBoundingBox
+            let road = self.roadRect
             x = max(x, road.minX)
             x = min(x, road.maxX)
             y = max(y, road.minY)
@@ -321,30 +297,30 @@ class GameScene: SKScene {
     }
     
     private func initiateCarSequence() {
-        self.removeAction(forKey: Actions.addCar.rawValue)
+        self.removeAction(forKey: Globals.Keys.kAddCar.rawValue)
         let addCarQueue = DispatchQueue(
-            label: "com.atillaozder.DriveFast.concurrentQueue.addCar",
+            label: "\(Globals.bundleID).concurrentQueue.addCar",
             qos: .default, attributes: .concurrent)
         
         let addCarSq: SKAction = .sequence([
-            .wait(forDuration: gameHelper.carWaitForDuration),
+            .wait(forDuration: props.carWaitForDuration),
             .run(self.addCar, queue: addCarQueue)
         ])
         
-        self.run(.repeatForever(addCarSq), withKey: Actions.addCar.rawValue)
+        self.run(.repeatForever(addCarSq), withKey: Globals.Keys.kAddCar.rawValue)
     }
     
     private func initiateFuelSequence() {
-        self.removeAction(forKey: Actions.addFuel.rawValue)
+        self.removeAction(forKey: Globals.Keys.kAddFuel.rawValue)
         let addFuelSq: SKAction = .sequence([
-            .wait(forDuration: gameHelper.fuelWaitForDuration),
-            .run(addFuel, queue: .init(label: "com.atillaozder.DriveFast.serialQueue.addFuel"))
+            .wait(forDuration: props.fuelWaitForDuration),
+            .run(addFuel, queue: .init(label: "\(Globals.bundleID).serialQueue.addFuel"))
         ])
-        self.run(.repeatForever(addFuelSq), withKey: Actions.addFuel.rawValue)
+        self.run(.repeatForever(addFuelSq), withKey: Globals.Keys.kAddFuel.rawValue)
     }
     
     private func updateDifficulty() {
-        gameHelper.updateDifficulty()
+        props.updateDifficulty()
         initiateCarSequence()
         initiateFuelSequence()
     }
@@ -357,6 +333,7 @@ class GameScene: SKScene {
     }
     
     // MARK: - RepeatForever Actions
+    
     private func addRoadLine() {
         let height = roadLineNode.size.height + 20
         let posY: CGFloat = self.frame.maxY + height
@@ -417,7 +394,7 @@ class GameScene: SKScene {
             }
 
             let move = SKAction.moveTo(
-                y: -car.size.height / 2, duration: self.gameHelper.spriteMoveDuration)
+                y: -car.size.height / 2, duration: self.props.spriteMoveDuration)
             var actions = [SKAction]()
             actions.append(move)
             
@@ -443,7 +420,7 @@ class GameScene: SKScene {
     }
     
     private func setFuel() {
-        self.fuel = max(0, fuel - gameHelper.fuelConsumption)
+        self.fuel = max(0, fuel - props.fuelConsumption)
     }
     
     private func addCoin() {
@@ -473,7 +450,7 @@ class GameScene: SKScene {
         sprite.position.x = getRandomPosX()
         var actions = [SKAction]()
         let move: SKAction = .moveTo(
-            y: -sprite.size.height / 2, duration: gameHelper.spriteMoveDuration)
+            y: -sprite.size.height / 2, duration: props.spriteMoveDuration)
         actions.append(move)
         actions.append(.removeFromParent())
         
@@ -481,5 +458,33 @@ class GameScene: SKScene {
             self.addChild(sprite)
             sprite.run(.sequence(actions))
         }
+    }
+    
+    private func buildPlayerNode() -> SKSpriteNode {
+        let player = UserDefaults.standard.playerCar
+        let element = GameManager.shared.getDictElement(value: player)
+        let spriteNode = element.key.copy() as! SKSpriteNode
+        spriteNode.name = Globals.Keys.kPlayer.rawValue
+        spriteNode.physicsBody?.categoryBitMask = Category.player.rawValue
+        spriteNode.physicsBody?.contactTestBitMask = Category.car.rawValue
+        spriteNode.setScale(to: self.frame.width / element.value.ratio)
+        return spriteNode
+    }
+    
+    private func buildRoadShapeNode() -> SKShapeNode {
+        let size: CGSize = .init(width: frame.width, height: frame.height * 2)
+        let shapeNode = SKShapeNode(rectOf: size)
+        shapeNode.fillColor = .road
+        shapeNode.strokeColor = .road
+        shapeNode.position = .init(x: frame.midX, y: frame.minY)
+        shapeNode.zPosition = -1
+        return shapeNode
+    }
+    
+    private func buildRoadLineNode() -> SKSpriteNode {
+        let spriteNode = SKSpriteNode(imageNamed: "road-line")
+        spriteNode.zPosition = -1
+        spriteNode.size = .init(width: 6, height: 30)
+        return spriteNode
     }
 }

@@ -12,10 +12,9 @@ import UserMessagingPlatform
 
 final class ConsentManager {
     
-    static let shared = ConsentManager()
     private var requestForConsent: Bool
     
-    private init() {
+    init() {
         self.requestForConsent = false
     }
         

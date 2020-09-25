@@ -10,7 +10,8 @@ import Foundation
 import SpriteKit
 
 // MARK: - Fuel
-class Fuel: SKSpriteNode {
+
+final class Fuel: SKSpriteNode {
           
     // MARK: - Constructor
     

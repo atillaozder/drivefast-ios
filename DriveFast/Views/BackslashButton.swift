@@ -34,6 +34,8 @@ final class BackslashButton: UIButton {
         }
     }
     
+    // MARK: - Constructor
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         setup()
@@ -43,16 +45,7 @@ final class BackslashButton: UIButton {
         super.init(coder: coder)
         setup()
     }
-    
-    private func setup() {
-        self.tintAdjustmentMode = .normal
-        self.isUserInteractionEnabled = false
-        self.adjustsImageWhenDisabled = false
-        self.adjustsImageWhenHighlighted = false
-        self.layer.masksToBounds = true
-        self.tintColor = .white
-    }
-    
+        
     override func draw(_ layer: CALayer, in ctx: CGContext) {
         if backslashDrawable {
             guard self.shapeLayer == nil else { return }
@@ -76,12 +69,21 @@ final class BackslashButton: UIButton {
         }
     }
     
+    private func setup() {
+        self.tintAdjustmentMode = .normal
+        self.isUserInteractionEnabled = false
+        self.adjustsImageWhenDisabled = false
+        self.adjustsImageWhenHighlighted = false
+        self.layer.masksToBounds = true
+        self.tintColor = .white
+    }
+    
     func buildContainer(withSize size: CGSize, cornerRadius: CGFloat) -> UIView {
-        let container = UIView()
-        container.backgroundColor = .mainColor
-        container.clipsToBounds = true
-        container.layer.borderWidth = 0
-        container.layer.borderColor = nil
+        let containerView = UIView()
+        containerView.backgroundColor = .primary
+        containerView.clipsToBounds = true
+        containerView.layer.borderWidth = 0
+        containerView.layer.borderColor = nil
                 
         let bounds: CGRect = .init(origin: .zero, size: size)
         let path = UIBezierPath(
@@ -90,26 +92,26 @@ final class BackslashButton: UIButton {
             cornerRadii: .initialize(cornerRadius)).cgPath
         
         if #available(iOS 11.0, *) {
-            container.layer.cornerRadius = cornerRadius
+            containerView.layer.cornerRadius = cornerRadius
         } else {
             let mask = CAShapeLayer()
             mask.path = path
-            container.layer.mask = mask
+            containerView.layer.mask = mask
         }
         
-        let border = CAShapeLayer()
-        border.path = path
-        border.fillColor = nil
-        border.strokeColor = borderColor
+        let borderShapeLayer = CAShapeLayer()
+        borderShapeLayer.path = path
+        borderShapeLayer.fillColor = nil
+        borderShapeLayer.strokeColor = borderColor
         
-        border.lineWidth = lineWidth
-        container.layer.addSublayer(border)
-        container.pinSize(to: size)
+        borderShapeLayer.lineWidth = lineWidth
+        containerView.layer.addSublayer(borderShapeLayer)
+        containerView.pinSize(to: size)
 
-        container.addSubview(self)
+        containerView.addSubview(self)
         self.pinEdgesToUnsafeArea()
         self.contentEdgeInsets = UIDevice.current.isPad ? .initialize(16) : .initialize(10)
         
-        return container
+        return containerView
     }
 }

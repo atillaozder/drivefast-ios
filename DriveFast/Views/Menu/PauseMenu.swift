@@ -14,25 +14,33 @@ final class PauseMenu: Menu {
     
     weak var delegate: MenuDelegate?
     
+    // MARK: - Setup Views
+    
     override func setup() {
-        let continueButton = buildButton(withTitle: .continueTitle)
-        continueButton.addTarget(self, action: #selector(didTapContinue(_:)), for: .touchUpInside)
-        stackView.addArrangedSubview(continueButton)
-                        
+        setupContinueButton()
         backButton.addTarget(self, action: #selector(didTapBack(_:)), for: .touchUpInside)
-        stackView.addArrangedSubview(backButton)
-        
+        verticalStackView.addArrangedSubview(backButton)
         self.isHidden = true
         super.setup()
     }
     
+    // MARK: - Tap Handling
+    
     @objc
-    func didTapContinue(_ sender: UIButton) {
+    private func didTapContinue(_ sender: UIButton) {
         delegate?.menu(self, didUpdateGameState: .continued)
     }
     
     @objc
-    func didTapBack(_ sender: UIButton) {
+    private func didTapBack(_ sender: UIButton) {
         delegate?.menu(self, didUpdateGameState: .home)
+    }
+    
+    // MARK: - Private Helper Methods
+    
+    private func setupContinueButton() {
+        let continueButton = buildButton(title: .continueTitle)
+        continueButton.addTarget(self, action: #selector(didTapContinue(_:)), for: .touchUpInside)
+        verticalStackView.addArrangedSubview(continueButton)
     }
 }

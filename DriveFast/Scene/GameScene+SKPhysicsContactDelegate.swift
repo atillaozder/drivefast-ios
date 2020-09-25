@@ -9,6 +9,7 @@
 import SpriteKit
 
 // MARK: - SKPhysicsContactDelegate
+
 extension GameScene: SKPhysicsContactDelegate {
     func didBegin(_ contact: SKPhysicsContact) {
         let isPlayer = contact.bodyA.category == .player
@@ -44,7 +45,7 @@ extension GameScene: SKPhysicsContactDelegate {
     
     fileprivate func playerDidCollide(with car: SKNode) {
         if lifeCount > 1 {
-            gameHelper.playEffect(.horns, in: self)
+            props.playEffect(.horns, in: self)
         }
         
         car.removeFromParent()
@@ -52,20 +53,21 @@ extension GameScene: SKPhysicsContactDelegate {
     }
     
     fileprivate func playerDidCollide(with coin: Coin) {
-        gameHelper.playEffect(.coin, in: self)
+        props.playEffect(.coin, in: self)
         coin.removeFromParent()
         score += coin.value
     }
     
     fileprivate func playerDidCollide(with fuelNode: Fuel) {
-        gameHelper.playEffect(.fuel, in: self)
+        props.playEffect(.fuel, in: self)
         fuelNode.removeFromParent()
-        let newValue = self.fuel + gameHelper.fuelValue
+        let newValue = self.fuel + props.fuelValue
         self.fuel = min(newValue, 100)
     }
 }
 
 // MARK: - SKPhysicsBody
+
 extension SKPhysicsBody {
     var category: Category {
         return Category(rawValue: categoryBitMask) ?? .none
