@@ -110,7 +110,7 @@ final class BackslashButton: UIButton {
 
         containerView.addSubview(self)
         self.pinEdgesToUnsafeArea()
-        self.contentEdgeInsets = UIDevice.current.isPad ? .initialize(16) : .initialize(10)
+        self.contentEdgeInsets = .initialize(10)
         
         return containerView
     }

@@ -52,11 +52,6 @@ class Menu: View {
                      font: UIFont = .systemFont(ofSize: 16, weight: .semibold),
                      height: CGFloat = Menu.buttonHeight) -> UIButton {
         
-        var aHeight = height
-        if height == Menu.buttonHeight {
-            aHeight = UIDevice.current.isPad ? height * 1.25 : height
-        }
-        
         let button = UIButton()
         button.setTitle(title.uppercased, for: .normal)
         button.setTitleColor(.white, for: .normal)
@@ -72,9 +67,9 @@ class Menu: View {
         button.backgroundColor = .primary
         button.layer.borderColor = UIColor.primaryBorder.cgColor
         button.layer.borderWidth = Globals.borderWidth
-        button.layer.cornerRadius = aHeight / 2
+        button.layer.cornerRadius = height / 2
         
-        button.pinHeight(to: aHeight)
+        button.pinHeight(to: height)
         return button
     }
     

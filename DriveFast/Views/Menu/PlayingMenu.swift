@@ -120,7 +120,7 @@ final class PlayingMenu: Menu {
             subview.removeFromSuperview()
         }
         
-        let constant: CGFloat = UIDevice.current.isPad ? 25 : 15
+        let constant: CGFloat = 15
         for _ in 0..<count {
             let imageView = UIImageView(image: Asset.heart.imageRepresentation())
             imageView.contentMode = .scaleAspectFit
@@ -137,7 +137,7 @@ final class PlayingMenu: Menu {
         verticalStackView.axis = .vertical
         
         addSubview(verticalStackView)
-        let constant: CGFloat = UIDevice.current.isPad ? 16 : 8
+        let constant: CGFloat = 8
         verticalStackView.pinTop(to: safeTopAnchor, constant: constant)
         verticalStackView.pinLeading(to: safeLeadingAnchor, constant: constant)
     }
@@ -151,20 +151,20 @@ final class PlayingMenu: Menu {
     
     private func setupProgressBar() {
         let fuelImageView = UIImageView(image: Asset.fuel.imageRepresentation())
-        fuelImageView.pinSize(to: UIDevice.current.isPad ? .initialize(48) : .initialize(32))
+        fuelImageView.pinSize(to: .initialize(32))
         fuelImageView.contentMode = .scaleAspectFit
         
         addSubview(fuelImageView)
-        let insets: UIEdgeInsets = UIDevice.current.isPad ? .viewEdge(16) : .viewEdge(8)
+        let insets: UIEdgeInsets = .viewEdge(8)
         fuelImageView.pinEdgesToView(self, insets: insets, exclude: [.top, .leading])
         
         addSubview(progressView)
-        let height: CGFloat = UIDevice.current.isPad ? 24 : 16
-        let width: CGFloat = UIDevice.current.isPad ? 300 : 240
+        let height: CGFloat = 16
+        let width: CGFloat = 240
         progressView.pinSize(to: .init(width: width, height: height))
         progressView.pinBottom(to: fuelImageView.topAnchor, constant: -(width / 2))
         
-        let constant: CGFloat = UIDevice.current.isPad ? 122 : 104
+        let constant: CGFloat = 104
         progressView.pinTrailing(to: safeTrailingAnchor, constant: constant)
     }
     
@@ -178,7 +178,7 @@ final class PlayingMenu: Menu {
     private func buildScoreLabel() -> UILabel {
         let scoreLabel = UILabel()
         scoreLabel.textColor = UIColor.white
-        scoreLabel.font = UIDevice.current.isPad ? .systemFont(ofSize: 24) : .systemFont(ofSize: 18)
+        scoreLabel.font = .systemFont(ofSize: 18)
         scoreLabel.text = Strings.score.localized + ": 0"
         return scoreLabel
     }
@@ -197,7 +197,7 @@ final class PlayingMenu: Menu {
         progressView.progressTintColor = .systemYellow
         progressView.trackTintColor = UIColor.systemRed.withAlphaComponent(0.6)
         progressView.layer.borderColor = UIColor.systemRed.cgColor
-        progressView.layer.cornerRadius = UIDevice.current.isPad ? 12 : 8
+        progressView.layer.cornerRadius = 8
         progressView.layer.borderWidth = 2
         progressView.layer.masksToBounds = true
         progressView.progress = 1.0
@@ -212,9 +212,9 @@ final class PlayingMenu: Menu {
         
         let image = Asset.pause.imageRepresentation()?.withRenderingMode(.alwaysTemplate)
         pauseButton.setImage(image, for: .normal)
-        pauseButton.imageEdgeInsets = UIDevice.current.isPad ? .initialize(4) : .initialize(2)
+        pauseButton.imageEdgeInsets = .initialize(2)
         
-        let height: CGFloat = UIDevice.current.isPad ? 70 : 40
+        let height: CGFloat = 40
         let size: CGSize = .initialize(height)
         let containerView = pauseButton.buildContainer(withSize: size, cornerRadius: size.height / 2)
         
@@ -222,7 +222,7 @@ final class PlayingMenu: Menu {
         enlargedContainerView.addSubview(containerView)
         enlargedContainerView.pinSize(to: .initialize(size.width * 1.5))
         
-        let padding: CGFloat = UIDevice.current.isPad ? 16 : 8
+        let padding: CGFloat = 8
         containerView.pinTop(to: enlargedContainerView.topAnchor, constant: padding)
         containerView.pinTrailing(to: enlargedContainerView.trailingAnchor, constant: -padding)
         return enlargedContainerView
