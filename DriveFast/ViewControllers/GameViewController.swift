@@ -272,20 +272,14 @@ final class GameViewController: UIViewController {
     }
     
     private func rate() {
-        if #available(iOS 10.3, *) {
-            DispatchQueue.main.async {
-                SKStoreReviewController.requestReview()
-            }
-        } else {
-            let urlString = "https://itunes.apple.com/app/id\(Globals.appID)?action=write-review"
-            URLNavigator().open(urlString)
-        }
+        let urlString = "https://itunes.apple.com/app/id\(Globals.appID)?action=write-review"
+        URLNavigator().open(urlString)
     }
     
     private func share() {
         if let url = URL(string: "https://apps.apple.com/app/id\(Globals.appID)") {
-            let viewController = UIActivityViewController(
-                activityItems: [url], applicationActivities: nil)
+            let viewController = UIActivityViewController(activityItems: [url],
+                                                          applicationActivities: nil)
             viewController.popoverPresentationController?.sourceView = self.view
             viewController.popoverPresentationController?.sourceRect = .zero
             self.present(viewController, animated: true, completion: nil)

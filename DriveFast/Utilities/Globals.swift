@@ -37,7 +37,7 @@ struct Globals {
     }
     
     static var borderWidth: CGFloat { 2 }
-    static var appID: Double { 1483121139 }
+    static var appID: String { "1483121139" }
     static var bundleID: String { "com.atillaozder.DriveFast" }
     static var leaderboardID: String { "\(bundleID).Leaderboard" }
     
