@@ -17,23 +17,11 @@ final class PlayingMenu: Menu {
     private var isAnimated: Bool = false
     weak var delegate: MenuDelegate?
     
-    private lazy var scoreLabel: UILabel = { buildScoreLabel() }()
-    
-    private lazy var horizontalLivesStackView: UIStackView = {
-        buildHorizontalLivesStackView()
-    }()
-    
-    private lazy var progressView: UIProgressView = {
-        buildProgressView()
-    }()
-    
-    private lazy var pauseButton: UIView = {
-        buildPauseButton()
-    }()
-    
-    private lazy var fuelAlertLabel: UILabel = {
-        buildFuelAlertLabel()
-    }()
+    private lazy var scoreLabel: UILabel = buildScoreLabel()
+    private lazy var horizontalLivesStackView: UIStackView = buildHorizontalLivesStackView()
+    private lazy var progressView: UIProgressView = buildProgressView()
+    private lazy var pauseButton: UIView = buildPauseButton()
+    private lazy var fuelAlertLabel: UILabel = buildFuelAlertLabel()
     
     // MARK: - Setup Views
     
@@ -178,7 +166,7 @@ final class PlayingMenu: Menu {
     private func buildScoreLabel() -> UILabel {
         let scoreLabel = UILabel()
         scoreLabel.textColor = UIColor.white
-        scoreLabel.font = .systemFont(ofSize: 18)
+        scoreLabel.font = .boldSystemFont(ofSize: 18)
         scoreLabel.text = Strings.score.localized + ": 0"
         return scoreLabel
     }

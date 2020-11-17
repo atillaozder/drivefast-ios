@@ -24,15 +24,12 @@ class Menu: View {
     enum MenuOption {
         case rate
     }
-    
-    static let buttonHeight: CGFloat = 44
-    
+        
+    var width: CGFloat { 200 }
     var spacing: CGFloat { 16 }
 
-    private(set) lazy var backButton: UIButton = { buildBackButton() }()
-    private(set) lazy var verticalStackView: UIStackView = {
-        buildVerticalStackView()
-    }()
+    private(set) lazy var backButton: UIButton = buildBackButton()
+    private(set) lazy var verticalStackView: UIStackView = buildVerticalStackView()
     
     // MARK: - Setup Views
     
@@ -42,15 +39,15 @@ class Menu: View {
         let containerView = UIView()
         containerView.addSubview(verticalStackView)
         verticalStackView.pinCenterOfSuperview()
-        verticalStackView.pinWidth(to: 200)
+        verticalStackView.pinWidth(to: width)
         
         addSubview(containerView)
         containerView.pinEdgesToSuperview()
     }
     
     func buildButton(title: Strings,
-                     font: UIFont = .systemFont(ofSize: 16, weight: .semibold),
-                     height: CGFloat = Menu.buttonHeight) -> UIButton {
+                     font: UIFont = .boldSystemFont(ofSize: 16),
+                     height: CGFloat = 48) -> UIButton {
         
         let button = UIButton()
         button.setTitle(title.uppercased, for: .normal)

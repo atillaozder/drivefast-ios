@@ -28,10 +28,10 @@ final class GameProps {
         return fuelConsumption * Float(fuelWaitForDuration) + 5
     }
     
-    let coinSound = SKAction.playSoundFileNamed("coin.wav", waitForCompletion: false)
-    let fuelSound = SKAction.playSoundFileNamed("fuel.wav", waitForCompletion: false)
-    let crashSound = SKAction.playSoundFileNamed("crash.wav", waitForCompletion: false)
-    let hornSound = SKAction.playSoundFileNamed("horns.mp3", waitForCompletion: false)
+    static let coinSound = SKAction.playSoundFileNamed("coin.wav", waitForCompletion: false)
+    static let fuelSound = SKAction.playSoundFileNamed("fuel.wav", waitForCompletion: false)
+    static let crashSound = SKAction.playSoundFileNamed("crash.wav", waitForCompletion: false)
+    static let hornSound = SKAction.playSoundFileNamed("horns.mp3", waitForCompletion: false)
             
     // MARK: - Helpers
     
@@ -46,13 +46,13 @@ final class GameProps {
         if UserDefaults.standard.isSoundOn {
             switch effect {
             case .coin:
-                scene.run(coinSound)
+                scene.run(GameProps.coinSound)
             case .fuel:
-                scene.run(fuelSound)
+                scene.run(GameProps.fuelSound)
             case .crash:
-                scene.run(crashSound)
+                scene.run(GameProps.crashSound)
             case .horns:
-                scene.run(hornSound)
+                scene.run(GameProps.hornSound)
             }
         }
     }

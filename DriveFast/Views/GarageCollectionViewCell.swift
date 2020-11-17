@@ -12,7 +12,9 @@ import UIKit
 
 final class GarageCollectionViewCell: UICollectionViewCell {
     
-    static let reuseId = "GarageCollectionViewCell"
+    static var reuseId: String {
+        "GarageCollectionViewCell"
+    }
 
     private let imageView: UIImageView = {
         let imageView = UIImageView()

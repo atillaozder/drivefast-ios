@@ -14,7 +14,8 @@ final class AdvertisementMenu: Menu {
     
     weak var delegate: MenuDelegate?
     
-    private lazy var scoreLabel: UILabel = { buildScoreLabel() }()
+    override var width: CGFloat { UIScreen.main.bounds.width }
+    private lazy var scoreLabel: UILabel = buildScoreLabel()
     
     override var isHidden: Bool {
         didSet {
@@ -24,16 +25,18 @@ final class AdvertisementMenu: Menu {
     
     override func setup() {
         verticalStackView.alignment = .center
-        verticalStackView.spacing = 8
+        verticalStackView.spacing = 16
         
         let titleLabel = buildTitleLabel()
-        
         verticalStackView.addArrangedSubview(titleLabel)
         verticalStackView.addArrangedSubview(scoreLabel)
-        verticalStackView.addArrangedSubview(UIView())
         
-        setupHorizontalStackView()
+        let spacer = UIView()
+        spacer.pinHeight(to: 6)
+        verticalStackView.addArrangedSubview(spacer)
         
+        setupButtons()
+                
         self.isHidden = true
         super.setup()
     }
@@ -41,23 +44,37 @@ final class AdvertisementMenu: Menu {
     // MARK: - Tap Handling
     
     @objc
-    private func didTapBack(_ sender: UIButton) {
+    private func didTapBack() {
         delegate?.menu(self, didUpdateGameState: .home)
     }
     
     @objc
-    private func didTapAdvertisement(_ sender: UIButton) {
-        sender.scale()
+    private func didTapAdvertisement() {
         delegate?.menu(self, didUpdateGameState: .adPresented)
     }
     
     // MARK: - Private Helper Methods
     
+    private func setupButtons() {
+        let menuButton = buildContainer(asset: .menu, title: Strings.backToMenu.localized)
+        menuButton.addTapGesture(target: self, action: #selector(didTapBack))
+        
+        let advButton = buildContainer(asset: .playVideo,
+                                       title: "watch a video",
+                                       subtitle: "to continue game")
+        advButton.addTapGesture(target: self, action: #selector(didTapAdvertisement))
+        
+        verticalStackView.addArrangedSubview(advButton)
+        verticalStackView.addArrangedSubview(menuButton)
+        
+        menuButton.pinWidth(to: advButton.widthAnchor)
+    }
+    
     private func buildTitleLabel() -> UILabel {
         let titleLabel = UILabel()
         titleLabel.text = Strings.score.uppercased
         titleLabel.textColor = UIColor.white
-        titleLabel.font = .systemFont(ofSize: 30)
+        titleLabel.font = .boldSystemFont(ofSize: 30)
         titleLabel.textAlignment = .center
         titleLabel.minimumScaleFactor = 0.5
         titleLabel.adjustsFontSizeToFitWidth = true
@@ -75,23 +92,62 @@ final class AdvertisementMenu: Menu {
         return scoreLabel
     }
     
-    private func setupHorizontalStackView() {
-        let horizontalStackView = UIStackView()
-        horizontalStackView.spacing = spacing
-        horizontalStackView.axis = .horizontal
-        horizontalStackView.distribution = .fillEqually
-        horizontalStackView.alignment = .fill
-        horizontalStackView.pinHeight(to: 66)
+    private func buildContainer(asset: Asset, title: String, subtitle: String? = nil) -> UIView {
+        let containerView = UIView()
+        containerView.backgroundColor = .primary
+        containerView.pinHeight(to: 64)
         
-        let menuButton = buildSquareButton(with: .menu)
-        menuButton.addTarget(self, action: #selector(didTapBack(_:)), for: .touchUpInside)
-        horizontalStackView.addArrangedSubview(menuButton)
+        containerView.layer.cornerRadius = 32
+        containerView.layer.borderColor = UIColor.primaryBorder.cgColor
+        containerView.layer.borderWidth = 2
         
-        let advButton = buildSquareButton(with: .roll)
-        advButton.imageEdgeInsets = .initialize(12)
-        advButton.addTarget(self, action: #selector(didTapAdvertisement(_:)), for: .touchUpInside)
-        horizontalStackView.addArrangedSubview(advButton)
+        let imageView: UIImageView = {
+            let imageView = UIImageView()
+            imageView.contentMode = .scaleAspectFit
+            imageView.tintColor = .white
+            imageView.image = asset.imageRepresentation()?.withRenderingMode(.alwaysTemplate)
+            
+            containerView.addSubview(imageView)
+            imageView.pinTrailing(to: containerView.trailingAnchor, constant: -10)
+            imageView.pinCenterY(to: containerView.centerYAnchor)
+            imageView.pinSize(to: .initialize(40))
+            return imageView
+        }()
         
-        verticalStackView.addArrangedSubview(horizontalStackView)
+        let verticalStackView: UIStackView = {
+            let titleLabel = buildLabel()
+            titleLabel.text = title.uppercased(with: .current)
+            
+            let verticalStackView = UIStackView(arrangedSubviews: [titleLabel])
+            verticalStackView.axis = .vertical
+            verticalStackView.spacing = 2
+            verticalStackView.distribution = .fill
+            verticalStackView.alignment = .fill
+            
+            if let subtitle = subtitle {
+                let subtitleLabel = buildLabel()
+                subtitleLabel.text = subtitle
+                subtitleLabel.font = UIFont.systemFont(ofSize: 12)
+                verticalStackView.addArrangedSubview(subtitleLabel)
+            }
+            
+            containerView.addSubview(verticalStackView)
+            verticalStackView.pinLeading(to: containerView.leadingAnchor, constant: 20)
+            verticalStackView.pinCenterY(to: containerView.centerYAnchor)
+            return verticalStackView
+        }()
+
+        verticalStackView.pinTrailing(to: imageView.leadingAnchor, constant: -10)
+        return containerView
+    }
+    
+    private func buildLabel() -> UILabel {
+        let label = UILabel()
+        label.textColor = .white
+        label.textAlignment = .center
+        label.minimumScaleFactor = 0.5
+        label.adjustsFontSizeToFitWidth = true
+        label.font = UIFont.boldSystemFont(ofSize: 18)
+        return label
     }
 }

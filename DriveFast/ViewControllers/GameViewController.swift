@@ -84,14 +84,14 @@ final class GameViewController: UIViewController {
         super.viewDidLoad()
         presentEmptyScene()
         requestGDPRConsent()
-        
+                
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(setStayPaused),
             name: .shouldStayPausedNotification,
             object: nil)
     }
-    
+
     // MARK: - Private Helper Methods
     
     @objc
@@ -260,9 +260,11 @@ final class GameViewController: UIViewController {
     private func requestReviewIfNeeded() {
         if #available(iOS 10.3, *) {
             let session = UserDefaults.standard.session
-            guard session > 0 &&
-                session.truncatingRemainder(dividingBy: 4) == 0 else {
-                    return
+            guard
+                session > 0 &&
+                session.truncatingRemainder(dividingBy: 4) == 0
+            else {
+                return
             }
             
             DispatchQueue.main.async {

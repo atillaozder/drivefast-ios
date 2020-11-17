@@ -22,7 +22,7 @@ extension UIView {
         self.addGestureRecognizer(tapGesture)
     }
     
-    func scale(_ factor: CGFloat = 0.9, withDuration duration: TimeInterval = 0.1) {
+    func scale(_ factor: CGFloat = 0.95, withDuration duration: TimeInterval = 0.1) {
         UIView.animate(withDuration: duration, animations: {
             self.transform = .init(scaleX: factor, y: factor)
         }) { (finished) in

@@ -30,9 +30,7 @@ final class GarageMenu: Menu {
             .init(width: 80, height: 140)
     }
     
-    private lazy var collectionView: UICollectionView = {
-        buildCollectionView()
-    }()
+    private lazy var collectionView: UICollectionView = buildCollectionView()
     
     override func setup() {
         setupCollectionView()

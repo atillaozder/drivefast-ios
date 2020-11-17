@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		A529EB096468BB2B778885D3 /* Pods_DriveFast.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C8E169B391C8119C9E4976D1 /* Pods_DriveFast.framework */; };
+		E880681B62E94C89A26B7B86 /* Pods_DriveFast.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 67CC45E1910A285A054C70FB /* Pods_DriveFast.framework */; };
 		FB0728A8245DD18E00F214F4 /* SplashViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB0728A7245DD18E00F214F4 /* SplashViewController.swift */; };
 		FB0728AB245DD1F400F214F4 /* GameManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB0728AA245DD1F400F214F4 /* GameManager.swift */; };
 		FB1581CF23547B1000DD82D3 /* coin.wav in Resources */ = {isa = PBXBuildFile; fileRef = FB1581CE23547B1000DD82D3 /* coin.wav */; };
@@ -17,7 +17,6 @@
 		FB1EB13C234FC2A9009C8E24 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FB1EB13B234FC2A9009C8E24 /* Assets.xcassets */; };
 		FB1EB13F234FC2A9009C8E24 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FB1EB13D234FC2A9009C8E24 /* LaunchScreen.storyboard */; };
 		FB21EC85244F0318008F8C07 /* GarageMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB21EC84244F0318008F8C07 /* GarageMenu.swift */; };
-		FB389B67245EC697000006F4 /* GameKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FB389B66245EC697000006F4 /* GameKit.framework */; };
 		FB732573243F49000001B9B7 /* Globals.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB732572243F49000001B9B7 /* Globals.swift */; };
 		FB732575243F492A0001B9B7 /* GameScene+SKPhysicsContactDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB732574243F492A0001B9B7 /* GameScene+SKPhysicsContactDelegate.swift */; };
 		FB732577243F4A580001B9B7 /* crash.wav in Resources */ = {isa = PBXBuildFile; fileRef = FB732576243F4A580001B9B7 /* crash.wav */; };
@@ -55,6 +54,7 @@
 		FBDB3930251DEE21004D9356 /* Notification+Name.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBDB392F251DEE21004D9356 /* Notification+Name.swift */; };
 		FBDB3932251DF4DD004D9356 /* GarageCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBDB3931251DF4DD004D9356 /* GarageCollectionViewCell.swift */; };
 		FBE5D3C92421245C00935A6D /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = FBE5D3C72421245C00935A6D /* Localizable.strings */; };
+		FBF8BD2E2564079F00B67532 /* AppTrackingTransparency.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FBF8BD2D2564079F00B67532 /* AppTrackingTransparency.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		FBF9951F2445C32C00072630 /* PlayingMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBF9951E2445C32C00072630 /* PlayingMenu.swift */; };
 		FBF995212445C80C00072630 /* PauseMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBF995202445C80C00072630 /* PauseMenu.swift */; };
 		FBFF2F9024448289000109E2 /* UIView+Autolayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBFF2F8F24448289000109E2 /* UIView+Autolayout.swift */; };
@@ -66,9 +66,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		59E70EAC8E08ED7CCDBEAA1A /* Pods-DriveFast.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DriveFast.debug.xcconfig"; path = "Target Support Files/Pods-DriveFast/Pods-DriveFast.debug.xcconfig"; sourceTree = "<group>"; };
-		744EBFBBED5D2C027E9BB677 /* Pods-DriveFast.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DriveFast.release.xcconfig"; path = "Target Support Files/Pods-DriveFast/Pods-DriveFast.release.xcconfig"; sourceTree = "<group>"; };
-		C8E169B391C8119C9E4976D1 /* Pods_DriveFast.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_DriveFast.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		67CC45E1910A285A054C70FB /* Pods_DriveFast.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_DriveFast.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		785DB7E95B93976B2425535D /* Pods-DriveFast.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DriveFast.debug.xcconfig"; path = "Target Support Files/Pods-DriveFast/Pods-DriveFast.debug.xcconfig"; sourceTree = "<group>"; };
+		EA76C2BF91BBD52E9D93DAFB /* Pods-DriveFast.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DriveFast.release.xcconfig"; path = "Target Support Files/Pods-DriveFast/Pods-DriveFast.release.xcconfig"; sourceTree = "<group>"; };
 		FB0728A7245DD18E00F214F4 /* SplashViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashViewController.swift; sourceTree = "<group>"; };
 		FB0728AA245DD1F400F214F4 /* GameManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameManager.swift; sourceTree = "<group>"; };
 		FB1581CE23547B1000DD82D3 /* coin.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = coin.wav; sourceTree = "<group>"; };
@@ -122,6 +122,7 @@
 		FBE5D3C82421245C00935A6D /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/Localizable.strings; sourceTree = "<group>"; };
 		FBE5D3CB2421246E00935A6D /* tr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = tr; path = tr.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		FBE5D3CC2421246E00935A6D /* tr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = tr; path = tr.lproj/Localizable.strings; sourceTree = "<group>"; };
+		FBF8BD2D2564079F00B67532 /* AppTrackingTransparency.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppTrackingTransparency.framework; path = System/Library/Frameworks/AppTrackingTransparency.framework; sourceTree = SDKROOT; };
 		FBF9951E2445C32C00072630 /* PlayingMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayingMenu.swift; sourceTree = "<group>"; };
 		FBF995202445C80C00072630 /* PauseMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PauseMenu.swift; sourceTree = "<group>"; };
 		FBFF2F8F24448289000109E2 /* UIView+Autolayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Autolayout.swift"; sourceTree = "<group>"; };
@@ -137,8 +138,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				FB389B67245EC697000006F4 /* GameKit.framework in Frameworks */,
-				A529EB096468BB2B778885D3 /* Pods_DriveFast.framework in Frameworks */,
+				FBF8BD2E2564079F00B67532 /* AppTrackingTransparency.framework in Frameworks */,
+				E880681B62E94C89A26B7B86 /* Pods_DriveFast.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -148,8 +149,9 @@
 		2215FE5EA4FF0E2649FCD805 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				FBF8BD2D2564079F00B67532 /* AppTrackingTransparency.framework */,
 				FB389B66245EC697000006F4 /* GameKit.framework */,
-				C8E169B391C8119C9E4976D1 /* Pods_DriveFast.framework */,
+				67CC45E1910A285A054C70FB /* Pods_DriveFast.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -157,8 +159,8 @@
 		E7164BA6207751D780B8DCAE /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				59E70EAC8E08ED7CCDBEAA1A /* Pods-DriveFast.debug.xcconfig */,
-				744EBFBBED5D2C027E9BB677 /* Pods-DriveFast.release.xcconfig */,
+				785DB7E95B93976B2425535D /* Pods-DriveFast.debug.xcconfig */,
+				EA76C2BF91BBD52E9D93DAFB /* Pods-DriveFast.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -339,11 +341,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = FB1EB143234FC2A9009C8E24 /* Build configuration list for PBXNativeTarget "DriveFast" */;
 			buildPhases = (
-				0FB0E7A4FA0B462CC98DFB46 /* [CP] Check Pods Manifest.lock */,
+				23AA1AF85AD3AFC8FDB52CED /* [CP] Check Pods Manifest.lock */,
+				4C65965E955CA25843865300 /* [CP] Prepare Artifacts */,
 				FB1EB127234FC2A8009C8E24 /* Sources */,
 				FB1EB128234FC2A8009C8E24 /* Frameworks */,
 				FB1EB129234FC2A8009C8E24 /* Resources */,
-				D9E2D6D4ADBB80D733278AA6 /* [CP] Embed Pods Frameworks */,
+				9BD06843669230CB1E4EE59A /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -410,7 +413,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		0FB0E7A4FA0B462CC98DFB46 /* [CP] Check Pods Manifest.lock */ = {
+		23AA1AF85AD3AFC8FDB52CED /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -432,7 +435,24 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		D9E2D6D4ADBB80D733278AA6 /* [CP] Embed Pods Frameworks */ = {
+		4C65965E955CA25843865300 /* [CP] Prepare Artifacts */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-DriveFast/Pods-DriveFast-artifacts-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Prepare Artifacts";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-DriveFast/Pods-DriveFast-artifacts-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-DriveFast/Pods-DriveFast-artifacts.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		9BD06843669230CB1E4EE59A /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -653,13 +673,13 @@
 		};
 		FB1EB144234FC2A9009C8E24 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 59E70EAC8E08ED7CCDBEAA1A /* Pods-DriveFast.debug.xcconfig */;
+			baseConfigurationReference = 785DB7E95B93976B2425535D /* Pods-DriveFast.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = DriveFast.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 28;
+				CURRENT_PROJECT_VERSION = 29;
 				DEVELOPMENT_TEAM = 74NMDHX448;
 				INFOPLIST_FILE = "$(SRCROOT)/DriveFast/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
@@ -667,7 +687,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.1.8;
+				MARKETING_VERSION = 2.1.9;
 				PRODUCT_BUNDLE_IDENTIFIER = com.retro2d.ios;
 				PRODUCT_NAME = DriveFast;
 				PROVISIONING_PROFILE_SPECIFIER = "Drive Fast Debug";
@@ -678,13 +698,13 @@
 		};
 		FB1EB145234FC2A9009C8E24 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 744EBFBBED5D2C027E9BB677 /* Pods-DriveFast.release.xcconfig */;
+			baseConfigurationReference = EA76C2BF91BBD52E9D93DAFB /* Pods-DriveFast.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = DriveFast.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 28;
+				CURRENT_PROJECT_VERSION = 29;
 				DEVELOPMENT_TEAM = 74NMDHX448;
 				INFOPLIST_FILE = "$(SRCROOT)/DriveFast/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
@@ -692,7 +712,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.1.8;
+				MARKETING_VERSION = 2.1.9;
 				PRODUCT_BUNDLE_IDENTIFIER = com.retro2d.ios;
 				PRODUCT_NAME = DriveFast;
 				PROVISIONING_PROFILE_SPECIFIER = "Drive Fast Release";

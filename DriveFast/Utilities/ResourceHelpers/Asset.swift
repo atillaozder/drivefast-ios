@@ -21,7 +21,7 @@ enum Asset: String {
     case splash = "splash"
     case fuel = "fuel"
     case menu = "menu"
-    case roll = "roll"
+    case playVideo = "play-video"
     
     func imageRepresentation() -> UIImage? {
         return UIImage(named: self.rawValue)

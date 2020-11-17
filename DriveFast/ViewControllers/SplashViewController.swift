@@ -90,7 +90,7 @@ final class SplashViewController: UIViewController {
     private func buildLoadingTitleLabel() -> UILabel {
         let loadingTitleLabel = UILabel()
         loadingTitleLabel.text = Strings.loading.localized
-        loadingTitleLabel.font = .systemFont(ofSize: 18, weight: .semibold)
+        loadingTitleLabel.font = .systemFont(ofSize: 18)
         loadingTitleLabel.textAlignment = .center
         loadingTitleLabel.textColor = .white
         return loadingTitleLabel
